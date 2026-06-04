@@ -16,6 +16,7 @@ use Modules\MenuMaster\Database\Seeders\MenuMasterDatabaseSeeder;
 use Modules\Role\Database\Seeders\RoleDatabaseSeeder;
 use Modules\Setting\Database\Seeders\SettingDatabaseSeeder;
 use Modules\State\Database\Seeders\StateDatabaseSeeder;
+use Modules\Subscription\Database\Seeders\SubscriptionDatabaseSeeder;
 use Modules\Unit\Database\Seeders\UnitDatabaseSeeder;
 use Modules\User\Database\Seeders\UserDatabaseSeeder;
 use Modules\Year\Database\Seeders\YearDatabaseSeeder;
@@ -50,6 +51,7 @@ class DatabaseSeeder extends Seeder
             StateDatabaseSeeder::class,
             CityDatabaseSeeder::class,
             CurrencyDatabaseSeeder::class,
+            SubscriptionDatabaseSeeder::class,
             UnitDatabaseSeeder::class,
             YearDatabaseSeeder::class,
         ]);

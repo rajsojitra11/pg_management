@@ -226,6 +226,20 @@ class MenuMasterDatabaseSeeder extends Seeder
                 'created_by' => 1,
                 'updated_by' => 1,
             ],
+            [
+                'id' => 3,
+                'menu_icon' => 'fa-solid fa-file-invoice',
+                'menu_title' => 'subscription::message.subscription',
+                'menu_route' => 'subscription.index',
+                'is_main_menu' => 0,
+                'parent_id' => null,
+                'module_name' => 'Subscription',
+                'order_display' => '001.003',
+                'display_order' => '1.3',
+                'if_can' => 'subscription-list',
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
 
             // ── Parent: General Master (id 2) ──────────────────────────
             [

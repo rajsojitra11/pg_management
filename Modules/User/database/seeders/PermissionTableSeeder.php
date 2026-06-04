@@ -263,6 +263,37 @@ class PermissionTableSeeder extends Seeder
                 'section' => 'General',
             ],
 
+            [
+                'title_tag' => 'Subscription',
+                'name' => 'subscription-list',
+                'title' => 'List',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Subscription',
+                'name' => 'subscription-create',
+                'title' => 'Create',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Subscription',
+                'name' => 'subscription-show',
+                'title' => 'Show',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Subscription',
+                'name' => 'subscription-edit',
+                'title' => 'Edit',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Subscription',
+                'name' => 'subscription-delete',
+                'title' => 'Delete',
+                'section' => 'General',
+            ],
+
             // Reports
             [
                 'title_tag' => 'Activity_Log_Report',

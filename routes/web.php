@@ -30,7 +30,7 @@ Route::get('/db-info', function () {
         'domain' => request()->getHost(),
         'database_name' => DB::connection()->getDatabaseName(),
         'connection_name' => config('database.default'),
-        'host' => config('database.connections.'.config('database.default').'.host'),
+        'host' => config('database.connections.' . config('database.default') . '.host'),
     ]);
 });
 Route::get('/clear-cache', function () {
@@ -55,31 +55,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('lookup/units', [LookupController::class, 'units'])->name('lookup.units');
     Route::get('lookup/years', [LookupController::class, 'years'])->name('lookup.years');
     Route::get('lookup/active-users', [LookupController::class, 'activeUsers'])->name('lookup.active-users');
-    Route::get('lookup/clients', [LookupController::class, 'clients'])->name('lookup.clients');
-    Route::get('lookup/papers', [LookupController::class, 'papers'])->name('lookup.papers');
-    Route::get('lookup/paper-finishes', [LookupController::class, 'paperFinishes'])->name('lookup.paper-finishes');
-    Route::get('lookup/paper-gsms', [LookupController::class, 'paperGsms'])->name('lookup.paper-gsms');
-    Route::get('lookup/sheet-sizes', [LookupController::class, 'sheetSizes'])->name('lookup.sheet-sizes');
-    Route::get('lookup/machines', [LookupController::class, 'machines'])->name('lookup.machines');
-    Route::get('lookup/vendors', [LookupController::class, 'vendors'])->name('lookup.vendors');
-    Route::get('lookup/job-sizes', [LookupController::class, 'jobSizes'])->name('lookup.job-sizes');
-    Route::get('lookup/printing-formats', [LookupController::class, 'printingFormats'])->name('lookup.printing-formats');
-    Route::get('lookup/plate-details', [LookupController::class, 'plateDetails'])->name('lookup.plate-details');
-    Route::get('lookup/paper-coatings', [LookupController::class, 'paperCoatings'])->name('lookup.paper-coatings');
-    Route::get('lookup/printings', [LookupController::class, 'printings'])->name('lookup.printings');
-    Route::get('lookup/post-press', [LookupController::class, 'postPress'])->name('lookup.post-press');
-    Route::get('lookup/post-press-categories', [LookupController::class, 'postPressCategories'])->name('lookup.post-press-categories');
 
-    // Job-card prefill lookups (used by PrintingJobDetail, PlateDetailForm, LaminationOrder, UvOrder)
-    Route::get('lookup/order-forms', [LookupController::class, 'orderForms'])->name('lookup.order-forms');
-    Route::get('lookup/order-forms/{id}/printing-job-prefill', [LookupController::class, 'orderFormPrintingJobPrefill'])
-        ->whereNumber('id')->name('lookup.order-forms.printing-job-prefill');
-    Route::get('lookup/order-forms/{id}/plate-detail-prefill', [LookupController::class, 'orderFormPlateDetailPrefill'])
-        ->whereNumber('id')->name('lookup.order-forms.plate-detail-prefill');
-    Route::get('lookup/order-forms/{id}/lamination-prefill', [LookupController::class, 'orderFormLaminationPrefill'])
-        ->whereNumber('id')->name('lookup.order-forms.lamination-prefill');
-    Route::get('lookup/order-forms/{id}/uv-prefill', [LookupController::class, 'orderFormUvPrefill'])
-        ->whereNumber('id')->name('lookup.order-forms.uv-prefill');
 
     // Impersonation routes
     Route::impersonate();
@@ -107,8 +83,7 @@ Route::middleware(['auth'])->group(function () {
 
         return response()->json(['authenticated' => false], 401);
     })->name('api.session.check');
-
 });
 
 Route::redirect('/', '/login');
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
