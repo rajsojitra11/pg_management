@@ -1,0 +1,12 @@
+{
+    "roboto": {
+        "normal": "F:\\Kaushik\\Project\\vinayak_offset_job_card\\storage\\fonts\/roboto_normal_6521008160b2f61db8553731bbb2ac95",
+        "bold": "F:\\Kaushik\\Project\\vinayak_offset_job_card\\storage\\fonts\/roboto_bold_35f1411e113a0254e6141c8da7fd6f73",
+        "italic": "F:\\Kaushik\\Project\\vinayak_offset_job_card\\storage\\fonts\/roboto_italic_8e590bde0c813110e88a318e6f862851",
+        "bold_italic": "roboto_bold_italic_bb27e0e587524ecc410653794de6fe87"
+    },
+    "arial": {
+        "normal": "F:\\Kaushik\\Project\\vinayak_offset_job_card\\storage\\fonts\/arial_normal_8c48dc4c82027837a46328a3577ce804",
+        "bold": "arial_bold_cc17595bed54c3dc3a4b7897b67de124"
+    }
+}

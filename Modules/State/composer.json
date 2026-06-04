@@ -1,0 +1,31 @@
+{
+    "name": "nwidart/state",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\State\\": "app/",
+            "Modules\\State\\Database\\Factories\\": "database/factories/",
+            "Modules\\State\\Database\\Seeders\\": "database/seeders/"
+        },
+        "files": [
+            "Helpers/state_helper.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\State\\Tests\\": "tests/"
+        }
+    }
+}

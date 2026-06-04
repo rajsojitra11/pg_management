@@ -1,0 +1,131 @@
+{
+    "module": "Setting",
+    "table": "settings",
+    "action": "update",
+    "generated_at": "2026-04-06T12:24:57+05:30",
+    "fields": {
+        "company_name": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": true,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "tag_line": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": true,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "gst_number": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:15"
+            ],
+            "type": "varchar",
+            "nullable": true,
+            "html_type": "text",
+            "max_length": 15
+        },
+        "pancard_number": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:10"
+            ],
+            "type": "varchar",
+            "nullable": true,
+            "html_type": "text",
+            "max_length": 10
+        },
+        "tan_number": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:14"
+            ],
+            "type": "varchar",
+            "nullable": true,
+            "html_type": "text",
+            "max_length": 14
+        },
+        "favicon": {
+            "rules": [
+                "nullable"
+            ],
+            "type": "blob",
+            "nullable": true,
+            "html_type": "text"
+        },
+        "logo": {
+            "rules": [
+                "nullable"
+            ],
+            "type": "blob",
+            "nullable": true,
+            "html_type": "text"
+        },
+        "logo_dark": {
+            "rules": [
+                "nullable"
+            ],
+            "type": "blob",
+            "nullable": true,
+            "html_type": "text"
+        },
+        "country_id": {
+            "rules": [
+                "nullable",
+                "integer"
+            ],
+            "type": "bigint",
+            "nullable": true,
+            "html_type": "text"
+        },
+        "state_id": {
+            "rules": [
+                "nullable",
+                "integer"
+            ],
+            "type": "bigint",
+            "nullable": true,
+            "html_type": "text"
+        },
+        "city_id": {
+            "rules": [
+                "nullable",
+                "integer"
+            ],
+            "type": "bigint",
+            "nullable": true,
+            "html_type": "text"
+        },
+        "year_display_format": {
+            "rules": [
+                "nullable",
+                "in:full_short,short_full,short_short,full_full,short,full"
+            ],
+            "type": "enum",
+            "nullable": false,
+            "html_type": "select",
+            "enum_values": [
+                "full_short",
+                "short_full",
+                "short_short",
+                "full_full",
+                "short",
+                "full"
+            ]
+        }
+    }
+}

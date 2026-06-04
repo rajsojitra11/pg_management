@@ -1,0 +1,28 @@
+{
+    "name": "nwidart/envvariable",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\EnvVariable\\": "app/",
+            "Modules\\EnvVariable\\Database\\Factories\\": "database/factories/",
+            "Modules\\EnvVariable\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\EnvVariable\\Tests\\": "tests/"
+        }
+    }
+}

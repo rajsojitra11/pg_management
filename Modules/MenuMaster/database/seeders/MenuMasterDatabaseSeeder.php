@@ -1,0 +1,346 @@
+<?php
+
+namespace Modules\MenuMaster\Database\Seeders;
+
+use App\Traits\SeederLogging;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+
+class MenuMasterDatabaseSeeder extends Seeder
+{
+    use SeederLogging;
+
+    public function run(): void
+    {
+        $existingCount = DB::table('menu_masters')->count();
+
+        if ($existingCount > 0) {
+            // Default to true (truncate) for non-interactive mode (e.g. migrate:fresh --seed)
+            if ($this->command?->confirm('Do you want to truncate the menu_masters table first?', true) ?? true) {
+                DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+                DB::table('menu_master_logs')->truncate();
+                DB::table('menu_masters')->truncate();
+                DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+            }
+        }
+
+        $menus = $this->getBasicMenus();
+
+        $defaultDate = getDefaultMigrationDate();
+
+        // Insert all menu items and create corresponding log entries
+        foreach ($menus as $menu) {
+            DB::table('menu_masters')->insert(array_merge($menu, [
+                'public_id' => (string) Str::ulid(),
+                'created_at' => $defaultDate,
+                'updated_at' => $defaultDate,
+            ]));
+
+            DB::table('menu_master_logs')->insert([
+                'menu_master_id' => $menu['id'],
+                'user_id' => 1,
+                'activity' => 'System Record Creation',
+                'user_remark' => 'Menu configuration seeded for navigation: ' . $menu['menu_title'],
+                'system_remark' => 'Initial Data Created By System Setup',
+                'old_values' => null,
+                'new_values' => json_encode(array_merge($menu, [
+                    'created_at' => $defaultDate,
+                    'updated_at' => $defaultDate,
+                ])),
+                'ip_address' => '127.0.0.1',
+                'user_agent' => 'System Data Creator',
+                'device' => 'Server',
+                'platform' => 'Server',
+                'browser' => 'Server',
+                'created_by' => 1,
+                'created_at' => $defaultDate,
+            ]);
+        }
+
+        // Add System Administration as a separate parent (dynamic ID)
+        $this->seedSystemAdminMenu($defaultDate);
+
+        $this->command?->info('Menu seeded for boilerplate (surviving modules only).');
+    }
+
+    /**
+     * Seed System Administration menu
+     */
+    private function seedSystemAdminMenu(string $defaultDate): void
+    {
+        $systemAdminMenuData = [
+            'menu_icon' => 'fa-solid fa-shield-halved',
+            'menu_title' => 'envvariable::message.system_administration',
+            'menu_route' => 'javascript:void(0)',
+            'parent_id' => null,
+            'module_name' => null,
+            'order_display' => '999',
+            'display_order' => '999',
+            'if_can' => 'system-administration-access',
+            'is_main_menu' => 1,
+            'public_id' => (string) Str::ulid(),
+            'created_at' => $defaultDate,
+            'updated_at' => $defaultDate,
+            'created_by' => 1,
+            'updated_by' => 1,
+        ];
+
+        $systemAdminId = DB::table('menu_masters')->insertGetId($systemAdminMenuData);
+
+        DB::table('menu_master_logs')->insert([
+            'menu_master_id' => $systemAdminId,
+            'user_id' => 1,
+            'activity' => 'System Record Creation',
+            'user_remark' => 'System initialization',
+            'system_remark' => 'System administration created navigation: ' . $systemAdminMenuData['menu_title'],
+            'old_values' => null,
+            'new_values' => json_encode(array_merge($systemAdminMenuData, ['id' => $systemAdminId])),
+            'ip_address' => '127.0.0.1',
+            'user_agent' => 'System Data Creator',
+            'device' => 'Server',
+            'platform' => 'Server',
+            'browser' => 'Server',
+            'created_by' => 1,
+            'created_at' => $defaultDate,
+        ]);
+
+        $systemSubmenus = [
+            [
+                'menu_icon' => 'fa-solid fa-gears',
+                'menu_title' => 'envvariable::message.env_variable',
+                'menu_route' => 'env-variable.index',
+                'module_name' => 'envvariable',
+                'order_display' => '999.001',
+                'display_order' => '999.1',
+                'if_can' => 'system-administration-access',
+                'is_main_menu' => 0,
+            ],
+        ];
+
+        foreach ($systemSubmenus as $submenu) {
+            $submenuData = array_merge($submenu, [
+                'parent_id' => $systemAdminId,
+                'public_id' => (string) Str::ulid(),
+                'created_at' => $defaultDate,
+                'updated_at' => $defaultDate,
+                'created_by' => 1,
+                'updated_by' => 1,
+            ]);
+
+            $submenuId = DB::table('menu_masters')->insertGetId($submenuData);
+
+            DB::table('menu_master_logs')->insert([
+                'menu_master_id' => $submenuId,
+                'user_id' => 1,
+                'activity' => 'System Record Creation',
+                'user_remark' => 'System administration submenu seeded for navigation: ' . $submenu['menu_title'],
+                'system_remark' => 'Initial Data Created By System Setup',
+                'old_values' => null,
+                'new_values' => json_encode(array_merge($submenuData, ['id' => $submenuId])),
+                'ip_address' => '127.0.0.1',
+                'user_agent' => 'System Data Creator',
+                'device' => 'Server',
+                'platform' => 'Server',
+                'browser' => 'Server',
+                'created_by' => 1,
+                'created_at' => $defaultDate,
+            ]);
+        }
+    }
+
+    /**
+     * Basic menu layout — labels match the static reference at
+     * Client Final theme/assets/js/erp-nav.js
+     *
+     * Parents:
+     *   0   — Dashboard (single top-level link, no children)
+     *   1   — Users (Role + User)
+     *   2   — General Master (Country, State, City, Unit, Currency, Year, Setting)
+     *   3   — Masters (Machine, Client, Vendor, Paper Coating/Finish/GSM, Paper, Plate Detail,
+     *                  Printing Format, Sheet Size, Job Size, Post Press, Printing)
+     *   4   — Job Card (Order Form, Create Order Form, Delivery Challan, Printing Job Detail,
+     *                  Plate Detail Form, Lamination Order, UV Order)
+     *   5   — Reports (Job Card Report, Delivery Challan Report)
+     *   999 — System Administration (env-variable etc.) — seeded separately in seedSystemAdminMenu()
+     */
+    private function getBasicMenus(): array
+    {
+        return [
+            // ── Top-level: Dashboard (id 0) ─────────────────────────────
+            [
+                'id' => 5000,
+                'menu_icon' => 'fa-solid fa-house',
+                'menu_title' => 'Dashboard',
+                'menu_route' => 'dashboard',
+                'is_main_menu' => 1,
+                'parent_id' => null,
+                'module_name' => 'Dashbord',
+                'order_display' => '000',
+                'display_order' => '0',
+                'if_can' => null,
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
+
+            // ── Parent: Users (id 1) ────────────────────────────────────
+            [
+                'id' => 1,
+                'menu_icon' => 'fa-solid fa-users',
+                'menu_title' => 'user::message.users',
+                'menu_route' => 'javascript:void(0)',
+                'is_main_menu' => 1,
+                'parent_id' => null,
+                'module_name' => null,
+                'order_display' => '001',
+                'display_order' => '1',
+                'if_can' => 'role-list,users-list',
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
+            [
+                'id' => 101,
+                'menu_icon' => 'fa-solid fa-user-shield',
+                'menu_title' => 'role::message.roles',
+                'menu_route' => 'roles.index',
+                'is_main_menu' => 0,
+                'parent_id' => 1,
+                'module_name' => 'Role',
+                'order_display' => '001.001',
+                'display_order' => '1.1',
+                'if_can' => 'role-list',
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
+            [
+                'id' => 102,
+                'menu_icon' => 'fa-solid fa-user',
+                'menu_title' => 'user::message.users',
+                'menu_route' => 'users.index',
+                'is_main_menu' => 0,
+                'parent_id' => 1,
+                'module_name' => 'User',
+                'order_display' => '001.002',
+                'display_order' => '1.2',
+                'if_can' => 'users-list',
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
+
+            // ── Parent: General Master (id 2) ──────────────────────────
+            [
+                'id' => 2,
+                'menu_icon' => 'fa-solid fa-globe',
+                'menu_title' => 'lang.general_master',
+                'menu_route' => 'javascript:void(0)',
+                'is_main_menu' => 1,
+                'parent_id' => null,
+                'module_name' => null,
+                'order_display' => '002',
+                'display_order' => '2',
+                'if_can' => 'country-list,state-list,city-list,unit-list,currency-list,year-list,setting',
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
+            [
+                'id' => 201,
+                'menu_icon' => 'fa-solid fa-flag',
+                'menu_title' => 'country::message.country',
+                'menu_route' => 'country.index',
+                'is_main_menu' => 0,
+                'parent_id' => 2,
+                'module_name' => 'Country',
+                'order_display' => '002.001',
+                'display_order' => '2.1',
+                'if_can' => 'country-list',
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
+            [
+                'id' => 202,
+                'menu_icon' => 'fa-solid fa-location-dot',
+                'menu_title' => 'state::message.state',
+                'menu_route' => 'state.index',
+                'is_main_menu' => 0,
+                'parent_id' => 2,
+                'module_name' => 'State',
+                'order_display' => '002.002',
+                'display_order' => '2.2',
+                'if_can' => 'state-list',
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
+            [
+                'id' => 203,
+                'menu_icon' => 'fa-solid fa-building',
+                'menu_title' => 'city::message.city',
+                'menu_route' => 'city.index',
+                'is_main_menu' => 0,
+                'parent_id' => 2,
+                'module_name' => 'City',
+                'order_display' => '002.003',
+                'display_order' => '2.3',
+                'if_can' => 'city-list',
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
+            [
+                'id' => 204,
+                'menu_icon' => 'fa-solid fa-ruler',
+                'menu_title' => 'unit::message.unit',
+                'menu_route' => 'unit.index',
+                'is_main_menu' => 0,
+                'parent_id' => 2,
+                'module_name' => 'Unit',
+                'order_display' => '002.004',
+                'display_order' => '2.4',
+                'if_can' => 'unit-list',
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
+            [
+                'id' => 205,
+                'menu_icon' => 'fa-solid fa-coins',
+                'menu_title' => 'currency::message.currency',
+                'menu_route' => 'currency.index',
+                'is_main_menu' => 0,
+                'parent_id' => 2,
+                'module_name' => 'Currency',
+                'order_display' => '002.005',
+                'display_order' => '2.5',
+                'if_can' => 'currency-list',
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
+            [
+                'id' => 206,
+                'menu_icon' => 'fa-solid fa-calendar',
+                'menu_title' => 'year::message.year',
+                'menu_route' => 'year.index',
+                'is_main_menu' => 0,
+                'parent_id' => 2,
+                'module_name' => 'Year',
+                'order_display' => '002.006',
+                'display_order' => '2.6',
+                'if_can' => 'year-list',
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
+            [
+                'id' => 207,
+                'menu_icon' => 'fa-solid fa-gear',
+                'menu_title' => 'setting::message.setting',
+                'menu_route' => 'setting.index',
+                'is_main_menu' => 0,
+                'parent_id' => 2,
+                'module_name' => 'Setting',
+                'order_display' => '002.007',
+                'display_order' => '2.7',
+                'if_can' => 'setting',
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
+
+        ];
+    }
+}

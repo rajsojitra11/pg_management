@@ -1,0 +1,29 @@
+{
+    "module": "Role",
+    "table": "roles",
+    "action": "delete",
+    "generated_at": "2026-04-06T12:24:56+05:30",
+    "fields": {
+        "id": {
+            "rules": [
+                "required",
+                "integer",
+                "exists:roles,id"
+            ],
+            "type": "bigint",
+            "nullable": false,
+            "html_type": "hidden"
+        },
+        "user_remark": {
+            "rules": [
+                "required",
+                "string",
+                "min:3",
+                "max:1000"
+            ],
+            "type": "varchar",
+            "nullable": false,
+            "html_type": "textarea"
+        }
+    }
+}

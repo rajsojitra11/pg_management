@@ -1,0 +1,9 @@
+{
+    "name": "City",
+    "alias": "city",
+    "description": "",
+    "keywords": [],
+    "priority": 83,
+    "providers": ["Modules\\City\\Providers\\CityServiceProvider"],
+    "files": []
+}

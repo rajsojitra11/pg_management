@@ -1,0 +1,11 @@
+{
+    "name": "Role",
+    "alias": "role",
+    "description": "",
+    "keywords": [],
+    "priority": 95,
+    "providers": [
+        "Modules\\Role\\Providers\\RoleServiceProvider"
+    ],
+    "files": []
+}

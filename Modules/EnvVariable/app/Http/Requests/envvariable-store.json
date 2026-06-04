@@ -1,0 +1,130 @@
+{
+    "module": "EnvVariable",
+    "table": "env_variables",
+    "action": "store",
+    "generated_at": "2026-04-06T12:24:52+05:30",
+    "fields": {
+        "key": {
+            "rules": [
+                "required",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": false,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "value": {
+            "rules": [
+                "nullable",
+                "string"
+            ],
+            "type": "text",
+            "nullable": true,
+            "html_type": "textarea"
+        },
+        "type": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:50"
+            ],
+            "type": "varchar",
+            "nullable": false,
+            "html_type": "text",
+            "max_length": 50
+        },
+        "options": {
+            "rules": [
+                "nullable"
+            ],
+            "type": "json",
+            "nullable": true,
+            "html_type": "text"
+        },
+        "category": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:100"
+            ],
+            "type": "varchar",
+            "nullable": true,
+            "html_type": "text",
+            "max_length": 100
+        },
+        "validation_rules": {
+            "rules": [
+                "nullable",
+                "string"
+            ],
+            "type": "text",
+            "nullable": true,
+            "html_type": "textarea"
+        },
+        "description": {
+            "rules": [
+                "nullable",
+                "string"
+            ],
+            "type": "text",
+            "nullable": true,
+            "html_type": "textarea"
+        },
+        "is_encrypted": {
+            "rules": [
+                "nullable",
+                "boolean"
+            ],
+            "type": "tinyint",
+            "nullable": false,
+            "html_type": "checkbox"
+        },
+        "is_sensitive": {
+            "rules": [
+                "nullable",
+                "boolean"
+            ],
+            "type": "tinyint",
+            "nullable": false,
+            "html_type": "checkbox"
+        },
+        "is_editable": {
+            "rules": [
+                "nullable",
+                "boolean"
+            ],
+            "type": "tinyint",
+            "nullable": false,
+            "html_type": "checkbox"
+        },
+        "requires_restart": {
+            "rules": [
+                "nullable",
+                "boolean"
+            ],
+            "type": "tinyint",
+            "nullable": false,
+            "html_type": "checkbox"
+        },
+        "sort_order": {
+            "rules": [
+                "nullable",
+                "integer"
+            ],
+            "type": "int",
+            "nullable": false,
+            "html_type": "text"
+        },
+        "is_active": {
+            "rules": [
+                "nullable",
+                "boolean"
+            ],
+            "type": "tinyint",
+            "nullable": false,
+            "html_type": "checkbox"
+        }
+    }
+}

@@ -1,0 +1,4349 @@
+[
+  {
+    "group": "Core Financial",
+    "icon": "fa-building-columns",
+    "modules": [
+      {
+        "id": "01",
+        "name": "General Ledger",
+        "slug": "general-ledger",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Chart of Accounts",
+            "children": [
+              "Account List",
+              "Account Groups",
+              "Account Templates"
+            ]
+          },
+          {
+            "name": "Journal Entries",
+            "children": [
+              "New Entry",
+              "Entry List",
+              "Recurring Entries",
+              "Import Entries"
+            ]
+          },
+          "Fiscal Calendar",
+          {
+            "name": "Intercompany",
+            "children": [
+              "IC Transactions",
+              "IC Reconciliation",
+              "Elimination Entries"
+            ]
+          },
+          {
+            "name": "Consolidation",
+            "children": [
+              "Consolidated Reports",
+              "Consolidation Journal"
+            ]
+          },
+          {
+            "name": "Revaluation",
+            "children": [
+              "Currency Revaluation",
+              "FX Gain/Loss"
+            ]
+          },
+          {
+            "name": "Reconciliation",
+            "children": [
+              "Subledger Reconciliation",
+              "Account Reconciliation"
+            ]
+          },
+          {
+            "name": "Audit",
+            "children": [
+              "GL Change Log",
+              "Approval History"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Trial Balance",
+              "Balance Sheet",
+              "Income Statement",
+              "Cash Flow Statement",
+              "Segment Reporting",
+              "Profit Center Report"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "02",
+        "name": "Accounts Payable",
+        "slug": "accounts-payable",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Vendors",
+            "children": [
+              "Vendor List",
+              "New Vendor",
+              "Vendor Groups"
+            ]
+          },
+          {
+            "name": "Invoices",
+            "children": [
+              "Invoice List",
+              "New Invoice",
+              "Recurring Invoices",
+              "Credit Notes"
+            ]
+          },
+          {
+            "name": "Payments",
+            "children": [
+              "Payment List",
+              "New Payment",
+              "Payment Runs",
+              "Remittance"
+            ]
+          },
+          {
+            "name": "Matching",
+            "children": [
+              "Three-Way Match",
+              "Match Exceptions"
+            ]
+          },
+          {
+            "name": "Approvals",
+            "children": [
+              "Invoice Approval Queue",
+              "Hold & Release"
+            ]
+          },
+          {
+            "name": "Tax",
+            "children": [
+              "Withholding Tax",
+              "1099 Reporting"
+            ]
+          },
+          {
+            "name": "Intercompany",
+            "children": [
+              "IC Invoices",
+              "IC Settlement"
+            ]
+          },
+          {
+            "name": "Analytics",
+            "children": [
+              "Duplicate Detection",
+              "Spend by Category"
+            ]
+          },
+          {
+            "name": "Vendor Portal",
+            "children": [
+              "Invoice Submission",
+              "Payment Tracking"
+            ]
+          },
+          {
+            "name": "Accruals",
+            "children": [
+              "Expense Accrual",
+              "Accrual Scheduler"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Aging Report",
+              "Vendor Statement",
+              "Payment Summary",
+              "Cash Requirement Forecast"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "03",
+        "name": "Accounts Receivable",
+        "slug": "accounts-receivable",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Customers",
+            "children": [
+              "Customer List",
+              "New Customer",
+              "Customer Groups"
+            ]
+          },
+          {
+            "name": "Invoices",
+            "children": [
+              "Invoice List",
+              "New Invoice",
+              "Recurring Invoices",
+              "Credit Notes"
+            ]
+          },
+          {
+            "name": "Receipts",
+            "children": [
+              "Receipt List",
+              "New Receipt",
+              "Bank Deposits"
+            ]
+          },
+          {
+            "name": "Collections",
+            "children": [
+              "Dunning Letters",
+              "Collection Activity",
+              "Escalation Queue"
+            ]
+          },
+          {
+            "name": "Credit",
+            "children": [
+              "Credit Limit Management",
+              "Credit Scoring",
+              "Credit Hold & Release"
+            ]
+          },
+          {
+            "name": "Revenue",
+            "children": [
+              "Deferred Revenue",
+              "Revenue Recognition",
+              "ASC 606 Compliance"
+            ]
+          },
+          {
+            "name": "Disputes",
+            "children": [
+              "Dispute Tracker",
+              "Dispute Resolution"
+            ]
+          },
+          {
+            "name": "Customer Portal",
+            "children": [
+              "Invoice Portal",
+              "Payment Portal"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Aging Report",
+              "Customer Statement",
+              "Collection Summary",
+              "Customer Profitability",
+              "DSO Analysis"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "04",
+        "name": "Fixed Assets",
+        "slug": "fixed-assets",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Asset Register",
+            "children": [
+              "Asset List",
+              "New Asset",
+              "Asset Categories",
+              "Barcode Labels"
+            ]
+          },
+          {
+            "name": "Depreciation",
+            "children": [
+              "Depreciation Schedule",
+              "Run Depreciation",
+              "Methods"
+            ]
+          },
+          {
+            "name": "Disposal",
+            "children": [
+              "Disposal List",
+              "New Disposal"
+            ]
+          },
+          {
+            "name": "Impairment",
+            "children": [
+              "Impairment Testing",
+              "Write-Down"
+            ]
+          },
+          {
+            "name": "Lease",
+            "children": [
+              "ROU Assets",
+              "Lease Schedule",
+              "ASC 842 Compliance"
+            ]
+          },
+          {
+            "name": "Revaluation",
+            "children": [
+              "Fair Value Revaluation",
+              "Revaluation Surplus"
+            ]
+          },
+          {
+            "name": "Transfer",
+            "children": [
+              "Inter-Company Transfer",
+              "Cost Center Reallocation"
+            ]
+          },
+          {
+            "name": "Maintenance",
+            "children": [
+              "Capex vs Expense",
+              "Asset Maintenance Log"
+            ]
+          },
+          {
+            "name": "Tax",
+            "children": [
+              "Tax Depreciation",
+              "Book vs Tax Reconciliation"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Asset Summary",
+              "Depreciation Report",
+              "Gain/Loss Report",
+              "Retirement Forecast"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "05",
+        "name": "Budgeting & Forecasting",
+        "slug": "budgeting-and-forecasting",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Budget Plans",
+            "children": [
+              "Plan List",
+              "New Plan",
+              "Templates"
+            ]
+          },
+          {
+            "name": "Forecasts",
+            "children": [
+              "Forecast List",
+              "New Forecast",
+              "Scenarios"
+            ]
+          },
+          "Variance Analysis",
+          {
+            "name": "Rolling",
+            "children": [
+              "Rolling Forecast",
+              "Reforecast"
+            ]
+          },
+          {
+            "name": "Planning",
+            "children": [
+              "Multi-Year Plan",
+              "Headcount Planning"
+            ]
+          },
+          {
+            "name": "Workflow",
+            "children": [
+              "Budget Submission",
+              "Budget Approval"
+            ]
+          },
+          {
+            "name": "Scenarios",
+            "children": [
+              "Sensitivity Analysis",
+              "Monte Carlo"
+            ]
+          },
+          {
+            "name": "Config",
+            "children": [
+              "Budget Authority",
+              "Budget Lock Control"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Budget vs Actual",
+              "Forecast Accuracy",
+              "Trend Analysis",
+              "Cash Flow Forecast",
+              "Budget Drill-Down"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "06",
+        "name": "Cash & Bank Management",
+        "slug": "cash-and-bank-management",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Bank Accounts",
+            "children": [
+              "Account List",
+              "New Account",
+              "Bank Feeds"
+            ]
+          },
+          {
+            "name": "Reconciliation",
+            "children": [
+              "Reconcile",
+              "History",
+              "Unmatched Items"
+            ]
+          },
+          "Cash Flow",
+          {
+            "name": "Payments",
+            "children": [
+              "Payment Approval",
+              "Wire Transfer",
+              "Check Management"
+            ]
+          },
+          {
+            "name": "Treasury",
+            "children": [
+              "Investment Positions",
+              "Loan Management",
+              "Interest Accrual"
+            ]
+          },
+          {
+            "name": "FX",
+            "children": [
+              "FX Positions",
+              "Hedging",
+              "Revaluation"
+            ]
+          },
+          {
+            "name": "Pooling",
+            "children": [
+              "Cash Pooling",
+              "Netting & Settlement"
+            ]
+          },
+          {
+            "name": "Statements",
+            "children": [
+              "Bank Statement Import",
+              "Auto-Matching"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Bank Summary",
+              "Cash Position",
+              "Float Analysis",
+              "Intraday Position"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "07",
+        "name": "Tax Management",
+        "slug": "tax-management",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Tax Rules",
+            "children": [
+              "Rule List",
+              "New Rule",
+              "Tax Groups",
+              "Tax Rates"
+            ]
+          },
+          {
+            "name": "Tax Returns",
+            "children": [
+              "Return List",
+              "New Return",
+              "Filing History"
+            ]
+          },
+          "Compliance",
+          {
+            "name": "Transfer Pricing",
+            "children": [
+              "TP Setup",
+              "TP Documentation"
+            ]
+          },
+          {
+            "name": "Provision",
+            "children": [
+              "Tax Provision",
+              "ETR Analysis",
+              "Uncertain Positions"
+            ]
+          },
+          {
+            "name": "Income Tax",
+            "children": [
+              "Corporate Tax",
+              "Loss Carryforward",
+              "Tax Credits"
+            ]
+          },
+          {
+            "name": "Withholding",
+            "children": [
+              "Withholding Setup",
+              "Withholding Payments"
+            ]
+          },
+          {
+            "name": "VAT/GST",
+            "children": [
+              "VAT Return Detail",
+              "Exemption Tracking"
+            ]
+          },
+          {
+            "name": "Config",
+            "children": [
+              "Jurisdiction Rules",
+              "Compliance Calendar"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Tax Liability",
+              "Tax Collected",
+              "Filing Summary"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "47",
+        "name": "Treasury Management",
+        "slug": "treasury-management",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Cash Positions",
+            "children": [
+              "Global Position",
+              "Daily Position",
+              "Forecast"
+            ]
+          },
+          {
+            "name": "Investments",
+            "children": [
+              "Portfolio",
+              "New Investment",
+              "Maturity Ladder"
+            ]
+          },
+          {
+            "name": "Debt",
+            "children": [
+              "Loan Portfolio",
+              "Credit Facilities",
+              "Covenant Tracking"
+            ]
+          },
+          {
+            "name": "FX",
+            "children": [
+              "Exposure Dashboard",
+              "Hedge Management",
+              "Deal Entry"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Treasury Summary",
+              "Interest Analysis"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "group": "Human Resources",
+    "icon": "fa-users",
+    "modules": [
+      {
+        "id": "08",
+        "name": "Human Resource Management",
+        "slug": "human-resource-management",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Employees",
+            "children": [
+              "Employee List",
+              "New Employee",
+              "Org Chart",
+              "Bulk Import"
+            ]
+          },
+          {
+            "name": "Departments",
+            "children": [
+              "Department List",
+              "New Department",
+              "Hierarchy"
+            ]
+          },
+          {
+            "name": "Positions",
+            "children": [
+              "Position List",
+              "New Position",
+              "Job Descriptions"
+            ]
+          },
+          {
+            "name": "Lifecycle",
+            "children": [
+              "Offboarding",
+              "Termination",
+              "Transfer & Promotion"
+            ]
+          },
+          {
+            "name": "Succession",
+            "children": [
+              "Succession Plan",
+              "Talent Pool",
+              "Critical Roles"
+            ]
+          },
+          {
+            "name": "Compensation",
+            "children": [
+              "Salary Review",
+              "Merit Planning",
+              "Comp Statement"
+            ]
+          },
+          {
+            "name": "Benefits",
+            "children": [
+              "Benefits Enrollment",
+              "Plan Management"
+            ]
+          },
+          {
+            "name": "Safety",
+            "children": [
+              "Incident Reporting",
+              "Safety Training"
+            ]
+          },
+          {
+            "name": "Compliance",
+            "children": [
+              "EEO Reporting"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Headcount",
+              "Turnover",
+              "Demographics"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "09",
+        "name": "Payroll",
+        "slug": "payroll",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Payroll Runs",
+            "children": [
+              "Run List",
+              "New Run",
+              "Preview",
+              "Finalize"
+            ]
+          },
+          {
+            "name": "Salary Structures",
+            "children": [
+              "Structure List",
+              "New Structure",
+              "Components"
+            ]
+          },
+          {
+            "name": "Deductions",
+            "children": [
+              "Deduction List",
+              "New Deduction",
+              "Statutory"
+            ]
+          },
+          {
+            "name": "Off-Cycle",
+            "children": [
+              "Bonus Payment",
+              "Separation Payment",
+              "Commission Run"
+            ]
+          },
+          {
+            "name": "Tax Filing",
+            "children": [
+              "W-2 Generation",
+              "941 Filing",
+              "1099 Generation"
+            ]
+          },
+          {
+            "name": "Garnishments",
+            "children": [
+              "Garnishment Setup",
+              "Garnishment Tracking"
+            ]
+          },
+          {
+            "name": "Advances",
+            "children": [
+              "Employee Loans",
+              "Advance Recovery"
+            ]
+          },
+          {
+            "name": "Pension",
+            "children": [
+              "Pension Contribution",
+              "Retirement Plan"
+            ]
+          },
+          {
+            "name": "Multi-Country",
+            "children": [
+              "Country Payroll Rules",
+              "Social Security"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Payslips",
+              "Payroll Summary",
+              "Tax Deductions",
+              "Bank File"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "10",
+        "name": "Recruitment",
+        "slug": "recruitment",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Job Openings",
+            "children": [
+              "Opening List",
+              "New Opening",
+              "Job Board"
+            ]
+          },
+          {
+            "name": "Applications",
+            "children": [
+              "Application List",
+              "Pipeline View",
+              "Shortlisted"
+            ]
+          },
+          {
+            "name": "Interviews",
+            "children": [
+              "Schedule",
+              "Feedback",
+              "Scorecards"
+            ]
+          },
+          {
+            "name": "Offers",
+            "children": [
+              "Offer Management",
+              "Offer Letter Template",
+              "Offer Negotiation"
+            ]
+          },
+          {
+            "name": "Onboarding",
+            "children": [
+              "Onboarding Checklist",
+              "Onboarding Tasks"
+            ]
+          },
+          {
+            "name": "Background",
+            "children": [
+              "Background Check",
+              "Reference Check"
+            ]
+          },
+          {
+            "name": "Assessments",
+            "children": [
+              "Skill Assessment",
+              "Personality Test"
+            ]
+          },
+          {
+            "name": "Diversity",
+            "children": [
+              "EEO Tracking",
+              "Diversity Metrics"
+            ]
+          },
+          {
+            "name": "Talent Pool",
+            "children": [
+              "Candidate Database"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Recruitment Funnel",
+              "Time to Hire",
+              "Source Analysis"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "11",
+        "name": "Attendance & Leave",
+        "slug": "attendance-and-leave",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Attendance Log",
+            "children": [
+              "Daily Log",
+              "Bulk Upload",
+              "Biometric Sync"
+            ]
+          },
+          {
+            "name": "Leave Requests",
+            "children": [
+              "Request List",
+              "New Request",
+              "Approvals"
+            ]
+          },
+          {
+            "name": "Policies",
+            "children": [
+              "Leave Types",
+              "Holiday Calendar",
+              "Accrual Rules"
+            ]
+          },
+          {
+            "name": "Shifts",
+            "children": [
+              "Shift Configuration",
+              "Shift Assignment",
+              "Shift Roster"
+            ]
+          },
+          {
+            "name": "Overtime",
+            "children": [
+              "Overtime Tracking",
+              "Overtime Approval"
+            ]
+          },
+          {
+            "name": "Corrections",
+            "children": [
+              "Attendance Correction",
+              "Amendment History"
+            ]
+          },
+          {
+            "name": "Compliance",
+            "children": [
+              "Work Hour Limits",
+              "Break Compliance"
+            ]
+          },
+          {
+            "name": "Forecasting",
+            "children": [
+              "Absence Forecast"
+            ]
+          },
+          {
+            "name": "Config",
+            "children": [
+              "Biometric Enrollment",
+              "Attendance Rules"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Attendance Summary",
+              "Leave Balance",
+              "Absentee Report"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "12",
+        "name": "Training & Development",
+        "slug": "training-and-development",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Programs",
+            "children": [
+              "Program List",
+              "New Program",
+              "Catalog"
+            ]
+          },
+          {
+            "name": "Enrollments",
+            "children": [
+              "Enrollment List",
+              "Batch Enroll"
+            ]
+          },
+          {
+            "name": "Certifications",
+            "children": [
+              "Certification List",
+              "Expiring Soon"
+            ]
+          },
+          {
+            "name": "Calendar",
+            "children": [
+              "Training Calendar",
+              "Instructor Availability"
+            ]
+          },
+          {
+            "name": "Content",
+            "children": [
+              "Course Content",
+              "Learning Paths"
+            ]
+          },
+          {
+            "name": "Assessments",
+            "children": [
+              "Exam Management",
+              "Quiz Builder"
+            ]
+          },
+          {
+            "name": "Compliance",
+            "children": [
+              "Mandatory Training",
+              "Compliance Tracker"
+            ]
+          },
+          {
+            "name": "Budget",
+            "children": [
+              "Training Budget",
+              "Training ROI"
+            ]
+          },
+          {
+            "name": "External",
+            "children": [
+              "External Courses",
+              "Tuition Reimbursement"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Training Hours",
+              "Completion Rate",
+              "Skill Matrix"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "13",
+        "name": "Employee Self-Service",
+        "slug": "employee-self-service",
+        "pages": [
+          "Dashboard",
+          "My Profile",
+          "My Requests",
+          "My Documents",
+          "Directory",
+          {
+            "name": "Leave",
+            "children": [
+              "Leave Request",
+              "Leave Balance"
+            ]
+          },
+          {
+            "name": "Benefits",
+            "children": [
+              "Benefits Selection",
+              "Plan Comparison"
+            ]
+          },
+          {
+            "name": "Pay",
+            "children": [
+              "Payslip View",
+              "Tax Form Access",
+              "Direct Deposit"
+            ]
+          },
+          {
+            "name": "Compensation",
+            "children": [
+              "Total Rewards"
+            ]
+          },
+          {
+            "name": "Expenses",
+            "children": [
+              "Expense Submission"
+            ]
+          },
+          {
+            "name": "Manager",
+            "children": [
+              "Manager Dashboard",
+              "Team Approvals"
+            ]
+          },
+          {
+            "name": "Training",
+            "children": [
+              "Self-Enrollment"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "My Activity"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "14",
+        "name": "Performance Management",
+        "slug": "performance-management",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Appraisals",
+            "children": [
+              "Appraisal List",
+              "New Appraisal",
+              "Templates"
+            ]
+          },
+          {
+            "name": "Goals",
+            "children": [
+              "Goal List",
+              "New Goal",
+              "OKRs"
+            ]
+          },
+          "Feedback",
+          {
+            "name": "Workflow",
+            "children": [
+              "Review Approval",
+              "Calibration Session"
+            ]
+          },
+          {
+            "name": "PIP",
+            "children": [
+              "PIP Creation",
+              "PIP Tracking",
+              "PIP Outcome"
+            ]
+          },
+          {
+            "name": "Development",
+            "children": [
+              "Development Plan",
+              "Action Items"
+            ]
+          },
+          {
+            "name": "Compensation",
+            "children": [
+              "Merit Linkage",
+              "Bonus Linkage"
+            ]
+          },
+          {
+            "name": "History",
+            "children": [
+              "Performance History",
+              "Multi-Year Trend"
+            ]
+          },
+          {
+            "name": "Acknowledgment",
+            "children": [
+              "Employee Response"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Performance Summary",
+              "Bell Curve",
+              "Comparison"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "group": "Supply Chain",
+    "icon": "fa-boxes-stacked",
+    "modules": [
+      {
+        "id": "15",
+        "name": "Procurement",
+        "slug": "procurement",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Purchase Requests",
+            "children": [
+              "Request List",
+              "New Request",
+              "Approvals"
+            ]
+          },
+          {
+            "name": "Purchase Orders",
+            "children": [
+              "PO List",
+              "New PO",
+              "Blanket Orders",
+              "PO Receipts"
+            ]
+          },
+          {
+            "name": "Suppliers",
+            "children": [
+              "Supplier List",
+              "New Supplier",
+              "Supplier Rating"
+            ]
+          },
+          {
+            "name": "RFQ",
+            "children": [
+              "RFQ List",
+              "New RFQ",
+              "Quote Comparison"
+            ]
+          },
+          {
+            "name": "Contracts",
+            "children": [
+              "Contract List",
+              "New Contract",
+              "Renewal Tracker"
+            ]
+          },
+          {
+            "name": "Approvals",
+            "children": [
+              "PO Approval",
+              "Approval Matrix"
+            ]
+          },
+          {
+            "name": "Matching",
+            "children": [
+              "Three-Way Match",
+              "Match Exceptions"
+            ]
+          },
+          {
+            "name": "Returns",
+            "children": [
+              "Goods Return",
+              "Return Authorization"
+            ]
+          },
+          {
+            "name": "Sustainability",
+            "children": [
+              "Supplier ESG",
+              "Compliance Scoring"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Spend Analysis",
+              "PO Summary",
+              "Supplier Performance"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "16",
+        "name": "Inventory Management",
+        "slug": "inventory-management",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Items",
+            "children": [
+              "Item List",
+              "New Item",
+              "Item Categories",
+              "Units of Measure"
+            ]
+          },
+          {
+            "name": "Stock Levels",
+            "children": [
+              "Current Stock",
+              "Reorder Report",
+              "Stock Valuation"
+            ]
+          },
+          {
+            "name": "Adjustments",
+            "children": [
+              "Adjustment List",
+              "New Adjustment",
+              "Stock Count"
+            ]
+          },
+          {
+            "name": "Lot & Serial",
+            "children": [
+              "Lot Tracking",
+              "Serial Number",
+              "Expiration Management"
+            ]
+          },
+          {
+            "name": "Cycle Count",
+            "children": [
+              "Count Schedule",
+              "Count Execution",
+              "Variance Investigation"
+            ]
+          },
+          {
+            "name": "Transfers",
+            "children": [
+              "Stock Transfer",
+              "Inter-Company Transfer"
+            ]
+          },
+          {
+            "name": "Receiving",
+            "children": [
+              "Goods Receipt",
+              "Quality Check"
+            ]
+          },
+          {
+            "name": "Reserves",
+            "children": [
+              "Inventory Allocation",
+              "Quarantine"
+            ]
+          },
+          {
+            "name": "Obsolescence",
+            "children": [
+              "Write-Off",
+              "Disposal"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Stock Movement",
+              "ABC Analysis",
+              "Aging Report"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "17",
+        "name": "Warehouse Management",
+        "slug": "warehouse-management",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Warehouses",
+            "children": [
+              "Warehouse List",
+              "New Warehouse",
+              "Layout"
+            ]
+          },
+          {
+            "name": "Zones & Bins",
+            "children": [
+              "Zone List",
+              "Bin Locations",
+              "Bin Assignment"
+            ]
+          },
+          {
+            "name": "Transfers",
+            "children": [
+              "Transfer List",
+              "New Transfer",
+              "Inter-Warehouse"
+            ]
+          },
+          {
+            "name": "Receiving",
+            "children": [
+              "Dock Appointment",
+              "ASN Processing",
+              "Putaway"
+            ]
+          },
+          {
+            "name": "Operations",
+            "children": [
+              "Wave Planning",
+              "Pick List",
+              "Packing Station",
+              "Staging Area",
+              "Shipping Handoff"
+            ]
+          },
+          {
+            "name": "Optimization",
+            "children": [
+              "Slotting",
+              "Replenishment",
+              "Cross-Dock"
+            ]
+          },
+          {
+            "name": "Labor",
+            "children": [
+              "Labor Performance",
+              "Crew Assignment"
+            ]
+          },
+          {
+            "name": "Returns",
+            "children": [
+              "Returns Processing"
+            ]
+          },
+          {
+            "name": "Yard",
+            "children": [
+              "Yard Management"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Utilization",
+              "Pick Efficiency",
+              "Receiving Log"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "18",
+        "name": "Logistics & Shipping",
+        "slug": "logistics-and-shipping",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Shipments",
+            "children": [
+              "Shipment List",
+              "New Shipment",
+              "Packing Slips"
+            ]
+          },
+          {
+            "name": "Carriers",
+            "children": [
+              "Carrier List",
+              "Rate Cards",
+              "Service Levels",
+              "Carrier Contracts",
+              "Carrier Scorecard",
+              "Rate Matrix"
+            ]
+          },
+          "Tracking",
+          {
+            "name": "Planning",
+            "children": [
+              "Shipment Consolidation",
+              "Route Optimization",
+              "Load Planning"
+            ]
+          },
+          {
+            "name": "Tracking & Delivery",
+            "children": [
+              "Real-Time Tracking",
+              "Exception Management",
+              "Proof of Delivery"
+            ]
+          },
+          {
+            "name": "Freight",
+            "children": [
+              "Freight Audit",
+              "Cost Allocation",
+              "Invoice Matching"
+            ]
+          },
+          {
+            "name": "Returns",
+            "children": [
+              "Return Shipment"
+            ]
+          },
+          {
+            "name": "Customs",
+            "children": [
+              "Customs Documentation",
+              "Commercial Invoice"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Shipping Cost",
+              "Delivery Performance",
+              "Returns Log"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "19",
+        "name": "Demand Planning",
+        "slug": "demand-planning",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Forecasts",
+            "children": [
+              "Forecast List",
+              "New Forecast",
+              "Models"
+            ]
+          },
+          {
+            "name": "Replenishment",
+            "children": [
+              "Replenishment Plan",
+              "Auto Reorder",
+              "Safety Stock"
+            ]
+          },
+          "Analysis",
+          {
+            "name": "Statistical",
+            "children": [
+              "Model Configuration",
+              "Best-Fit Selection",
+              "Outlier Detection"
+            ]
+          },
+          {
+            "name": "Consensus",
+            "children": [
+              "Consensus Workbench",
+              "Sales Input",
+              "Management Override"
+            ]
+          },
+          {
+            "name": "Sensing",
+            "children": [
+              "Demand Sensing",
+              "Leading Indicators"
+            ]
+          },
+          {
+            "name": "Accuracy",
+            "children": [
+              "Accuracy Dashboard",
+              "FVA Analysis"
+            ]
+          },
+          {
+            "name": "Hierarchy",
+            "children": [
+              "Product Hierarchy",
+              "Geographic Planning"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Demand vs Actual",
+              "Seasonality",
+              "Trend Report"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "group": "Manufacturing",
+    "icon": "fa-industry",
+    "modules": [
+      {
+        "id": "20",
+        "name": "Production Planning",
+        "slug": "production-planning",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Production Orders",
+            "children": [
+              "Order List",
+              "New Order",
+              "Release",
+              "Close"
+            ]
+          },
+          {
+            "name": "Scheduling",
+            "children": [
+              "Gantt View",
+              "Calendar",
+              "Shift Planning"
+            ]
+          },
+          {
+            "name": "MPS",
+            "children": [
+              "MPS Grid",
+              "ATP/CTP",
+              "Time Fence"
+            ]
+          },
+          {
+            "name": "MRP",
+            "children": [
+              "MRP Run",
+              "Planned Orders",
+              "Pegging Analysis",
+              "Exception Management"
+            ]
+          },
+          {
+            "name": "Capacity",
+            "children": [
+              "Capacity Overview",
+              "Load Analysis",
+              "Bottlenecks",
+              "Finite Scheduling",
+              "Load Leveling",
+              "Work Center Calendar"
+            ]
+          },
+          {
+            "name": "Subcontracting",
+            "children": [
+              "Subcontract Order",
+              "Material Issuance"
+            ]
+          },
+          {
+            "name": "Scenarios",
+            "children": [
+              "What-If Analysis",
+              "Scenario Comparison"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Production Summary",
+              "Yield Report",
+              "Downtime"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "21",
+        "name": "Bill of Materials",
+        "slug": "bill-of-materials",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "BOM List",
+            "children": [
+              "All BOMs",
+              "New BOM",
+              "Templates"
+            ]
+          },
+          {
+            "name": "BOM Details",
+            "children": [
+              "Component Tree",
+              "Where Used",
+              "Cost Rollup"
+            ]
+          },
+          "Revisions",
+          {
+            "name": "ECO",
+            "children": [
+              "ECO List",
+              "New ECO",
+              "Impact Analysis",
+              "ECO Approval"
+            ]
+          },
+          {
+            "name": "Routing",
+            "children": [
+              "Routing List",
+              "New Routing",
+              "Operation Sequence"
+            ]
+          },
+          {
+            "name": "Versions",
+            "children": [
+              "Revision Comparison",
+              "Rollback"
+            ]
+          },
+          {
+            "name": "Costing",
+            "children": [
+              "Cost Rollup",
+              "Cost Simulation"
+            ]
+          },
+          {
+            "name": "Advanced",
+            "children": [
+              "Phantom Assembly"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "BOM Comparison",
+              "Material Requirements",
+              "Cost Analysis"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "22",
+        "name": "Shop Floor Control",
+        "slug": "shop-floor-control",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Work Centers",
+            "children": [
+              "Center List",
+              "New Center",
+              "Scheduling"
+            ]
+          },
+          {
+            "name": "Operations",
+            "children": [
+              "Operation List",
+              "Routing",
+              "Standard Times"
+            ]
+          },
+          "Monitoring",
+          {
+            "name": "Execution",
+            "children": [
+              "Work Order Dispatch",
+              "Operation Tracking",
+              "Quantity Reporting"
+            ]
+          },
+          {
+            "name": "Labor",
+            "children": [
+              "Clock In/Out",
+              "Crew Management",
+              "Labor Reconciliation"
+            ]
+          },
+          {
+            "name": "Machines",
+            "children": [
+              "Machine Monitoring",
+              "Downtime Logging",
+              "ANDON Board"
+            ]
+          },
+          {
+            "name": "Material",
+            "children": [
+              "Backflush",
+              "Material Issue",
+              "Substitution Tracking"
+            ]
+          },
+          {
+            "name": "WIP",
+            "children": [
+              "WIP Valuation",
+              "WIP Aging"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "OEE Report",
+              "Labor Efficiency",
+              "Scrap Report"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "23",
+        "name": "Quality Management",
+        "slug": "quality-management",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Inspections",
+            "children": [
+              "Inspection List",
+              "New Inspection",
+              "Plans",
+              "Checklists"
+            ]
+          },
+          {
+            "name": "Non-Conformance",
+            "children": [
+              "NCR List",
+              "New NCR",
+              "Disposition"
+            ]
+          },
+          {
+            "name": "CAPA",
+            "children": [
+              "CAPA List",
+              "New CAPA",
+              "Root Cause"
+            ]
+          },
+          {
+            "name": "SPC",
+            "children": [
+              "SPC Charts",
+              "Control Limits",
+              "Capability Study",
+              "Out of Control"
+            ]
+          },
+          {
+            "name": "Inspection",
+            "children": [
+              "Incoming Inspection",
+              "Result Recording",
+              "Disposition"
+            ]
+          },
+          {
+            "name": "Vendor Quality",
+            "children": [
+              "Vendor Scorecard",
+              "Vendor Audit"
+            ]
+          },
+          {
+            "name": "Advanced",
+            "children": [
+              "First Article",
+              "Calibration",
+              "COA Generation"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Quality Metrics",
+              "Defect Pareto",
+              "Trend Report"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "24",
+        "name": "Maintenance Management",
+        "slug": "maintenance-management",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Work Orders",
+            "children": [
+              "Order List",
+              "New Order",
+              "Assignments",
+              "WO Lifecycle",
+              "Labor Assignment",
+              "Parts Consumption"
+            ]
+          },
+          {
+            "name": "Preventive",
+            "children": [
+              "PM Schedule",
+              "New PM Plan",
+              "Checklist Templates"
+            ]
+          },
+          {
+            "name": "Predictive",
+            "children": [
+              "Sensor Integration",
+              "Condition Thresholds",
+              "Auto Work Order"
+            ]
+          },
+          {
+            "name": "Corrective",
+            "children": [
+              "Maintenance Request",
+              "Fault Codes",
+              "Root Cause"
+            ]
+          },
+          {
+            "name": "Assets",
+            "children": [
+              "Equipment List",
+              "Spare Parts",
+              "Meter Readings"
+            ]
+          },
+          {
+            "name": "Spare Parts",
+            "children": [
+              "Parts BOM",
+              "Min/Max Config",
+              "Auto Reorder"
+            ]
+          },
+          {
+            "name": "Reliability",
+            "children": [
+              "MTBF Trending"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "MTBF/MTTR",
+              "Cost Report",
+              "Compliance"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "group": "Sales & Distribution",
+    "icon": "fa-cart-shopping",
+    "modules": [
+      {
+        "id": "25",
+        "name": "Sales Management",
+        "slug": "sales-management",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Quotations",
+            "children": [
+              "Quote List",
+              "New Quote",
+              "Templates",
+              "Convert to Order"
+            ]
+          },
+          {
+            "name": "Sales Orders",
+            "children": [
+              "Order List",
+              "New Order",
+              "Backorders"
+            ]
+          },
+          {
+            "name": "Customers",
+            "children": [
+              "Customer List",
+              "New Customer",
+              "Segments"
+            ]
+          },
+          {
+            "name": "Territory",
+            "children": [
+              "Territory Setup",
+              "Territory Assignment",
+              "Rep Assignment"
+            ]
+          },
+          {
+            "name": "Opportunity",
+            "children": [
+              "Opportunity List",
+              "New Opportunity",
+              "Pipeline View"
+            ]
+          },
+          {
+            "name": "Forecasting",
+            "children": [
+              "Forecast Submission",
+              "Forecast Rollup",
+              "Forecast Accuracy"
+            ]
+          },
+          {
+            "name": "Quota",
+            "children": [
+              "Quota Assignment",
+              "Quota Attainment"
+            ]
+          },
+          {
+            "name": "Commission",
+            "children": [
+              "Commission Plans",
+              "Commission Calculation",
+              "Commission Statements",
+              "Clawback Rules"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Sales Summary",
+              "Pipeline",
+              "Win/Loss",
+              "Commission"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "26",
+        "name": "Order Management",
+        "slug": "order-management",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Orders",
+            "children": [
+              "Order List",
+              "New Order",
+              "Order Status"
+            ]
+          },
+          {
+            "name": "Fulfillment",
+            "children": [
+              "Pick List",
+              "Pack",
+              "Ship",
+              "Delivery Confirmation"
+            ]
+          },
+          {
+            "name": "Returns",
+            "children": [
+              "Return List",
+              "New Return",
+              "RMA",
+              "Refunds"
+            ]
+          },
+          {
+            "name": "Credit",
+            "children": [
+              "Credit Check",
+              "Credit Hold",
+              "Credit Override"
+            ]
+          },
+          {
+            "name": "Availability",
+            "children": [
+              "ATP Check",
+              "CTP Check",
+              "Promise Date"
+            ]
+          },
+          {
+            "name": "Allocation",
+            "children": [
+              "Inventory Allocation",
+              "Wave Release"
+            ]
+          },
+          {
+            "name": "Blanket",
+            "children": [
+              "Blanket Order",
+              "Scheduled Release"
+            ]
+          },
+          {
+            "name": "Monitoring",
+            "children": [
+              "Order Status Dashboard",
+              "Exception Queue"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Fulfillment Rate",
+              "Order Cycle Time",
+              "Returns Analysis"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "27",
+        "name": "Pricing & Discount",
+        "slug": "pricing-and-discount",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Price Lists",
+            "children": [
+              "Price List",
+              "New Price List",
+              "Bulk Update"
+            ]
+          },
+          {
+            "name": "Discount Rules",
+            "children": [
+              "Rule List",
+              "New Rule",
+              "Volume Discounts",
+              "Tiered Pricing"
+            ]
+          },
+          {
+            "name": "Promotions",
+            "children": [
+              "Promotion List",
+              "New Promotion",
+              "Coupons"
+            ]
+          },
+          {
+            "name": "Waterfall",
+            "children": [
+              "Price Waterfall",
+              "Waterfall Simulation"
+            ]
+          },
+          {
+            "name": "Contracts",
+            "children": [
+              "Customer Pricing",
+              "Contract Renewal"
+            ]
+          },
+          {
+            "name": "Margin",
+            "children": [
+              "Floor Price",
+              "Margin Alerts",
+              "Override Authorization"
+            ]
+          },
+          {
+            "name": "Rebates",
+            "children": [
+              "Rebate Agreement",
+              "Rebate Accrual",
+              "Rebate Settlement"
+            ]
+          },
+          {
+            "name": "Advanced",
+            "children": [
+              "Dynamic Pricing",
+              "Competitive Pricing"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Margin Analysis",
+              "Discount Impact",
+              "Price History"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "28",
+        "name": "Point of Sale",
+        "slug": "point-of-sale",
+        "pages": [
+          "Dashboard",
+          "POS Terminal",
+          {
+            "name": "Transactions",
+            "children": [
+              "Transaction List",
+              "Voids",
+              "Refunds"
+            ]
+          },
+          {
+            "name": "Registers",
+            "children": [
+              "Register List",
+              "Open/Close",
+              "Cash Counts"
+            ]
+          },
+          {
+            "name": "Payments",
+            "children": [
+              "Split Tender",
+              "Gift Card",
+              "Store Credit"
+            ]
+          },
+          {
+            "name": "Cash",
+            "children": [
+              "Cash Drop",
+              "Denomination Count",
+              "Variance Tracking"
+            ]
+          },
+          {
+            "name": "Offline",
+            "children": [
+              "Offline Mode",
+              "Sync Management"
+            ]
+          },
+          {
+            "name": "Loyalty",
+            "children": [
+              "Loyalty Enrollment",
+              "Point Redemption"
+            ]
+          },
+          {
+            "name": "Multi-Store",
+            "children": [
+              "Store Config",
+              "Cross-Store Inventory"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Daily Sales",
+              "Cashier Summary",
+              "Product Mix"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "group": "CRM & Marketing",
+    "icon": "fa-bullseye",
+    "modules": [
+      {
+        "id": "29",
+        "name": "CRM — Leads & Opportunities",
+        "slug": "crm-leads-and-opportunities",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Leads",
+            "children": [
+              "Lead List",
+              "New Lead",
+              "Import Leads",
+              "Lead Scoring"
+            ]
+          },
+          {
+            "name": "Opportunities",
+            "children": [
+              "Opportunity List",
+              "New Opportunity",
+              "Kanban View"
+            ]
+          },
+          {
+            "name": "Pipeline",
+            "children": [
+              "Pipeline View",
+              "Stages",
+              "Forecasting"
+            ]
+          },
+          {
+            "name": "Accounts",
+            "children": [
+              "Account List",
+              "Account Hierarchy",
+              "Account 360"
+            ]
+          },
+          {
+            "name": "Contacts",
+            "children": [
+              "Contact List",
+              "Contact Roles"
+            ]
+          },
+          {
+            "name": "Activities",
+            "children": [
+              "Activity Log",
+              "Activity Scheduler"
+            ]
+          },
+          {
+            "name": "Competitors",
+            "children": [
+              "Competitor Database",
+              "Win/Loss Analysis"
+            ]
+          },
+          {
+            "name": "Scoring",
+            "children": [
+              "Scoring Model",
+              "MQL Threshold"
+            ]
+          },
+          {
+            "name": "Config",
+            "children": [
+              "Pipeline Stages"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Conversion Rate",
+              "Revenue Forecast",
+              "Activity Report"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "30",
+        "name": "Customer Service",
+        "slug": "customer-service",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Tickets",
+            "children": [
+              "Ticket List",
+              "New Ticket",
+              "Queue",
+              "Assignment Rules"
+            ]
+          },
+          {
+            "name": "Knowledge Base",
+            "children": [
+              "Articles",
+              "New Article",
+              "Categories"
+            ]
+          },
+          {
+            "name": "SLA",
+            "children": [
+              "SLA Policies",
+              "New Policy",
+              "Escalation Rules"
+            ]
+          },
+          {
+            "name": "Omnichannel",
+            "children": [
+              "Channel Config",
+              "Routing Rules"
+            ]
+          },
+          {
+            "name": "Escalation",
+            "children": [
+              "Escalation Matrix",
+              "Escalation Triggers"
+            ]
+          },
+          {
+            "name": "Feedback",
+            "children": [
+              "CSAT Survey",
+              "NPS Tracking",
+              "CES Tracking"
+            ]
+          },
+          {
+            "name": "Returns",
+            "children": [
+              "Complaint Handling",
+              "Warranty Check"
+            ]
+          },
+          {
+            "name": "Operations",
+            "children": [
+              "Queue Management"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Resolution Time",
+              "CSAT",
+              "Ticket Volume",
+              "Agent Performance"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "31",
+        "name": "Marketing Automation",
+        "slug": "marketing-automation",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Campaigns",
+            "children": [
+              "Campaign List",
+              "New Campaign",
+              "A/B Tests"
+            ]
+          },
+          {
+            "name": "Email Templates",
+            "children": [
+              "Template List",
+              "New Template",
+              "Builder"
+            ]
+          },
+          {
+            "name": "Analytics",
+            "children": [
+              "Open Rate",
+              "Click Rate",
+              "Conversions",
+              "ROI"
+            ]
+          },
+          {
+            "name": "Segmentation",
+            "children": [
+              "Segment Builder",
+              "Suppression Lists"
+            ]
+          },
+          {
+            "name": "Scoring",
+            "children": [
+              "Lead Scoring Model",
+              "MQL Routing"
+            ]
+          },
+          {
+            "name": "Landing Pages",
+            "children": [
+              "Page Builder",
+              "Form Builder"
+            ]
+          },
+          {
+            "name": "Events",
+            "children": [
+              "Event Management",
+              "Registration"
+            ]
+          },
+          {
+            "name": "Attribution",
+            "children": [
+              "Attribution Model",
+              "Campaign ROI"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Campaign Summary",
+              "Audience Growth",
+              "Channel Performance"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "group": "Project & Service",
+    "icon": "fa-diagram-project",
+    "modules": [
+      {
+        "id": "32",
+        "name": "Project Management",
+        "slug": "project-management",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Projects",
+            "children": [
+              "Project List",
+              "New Project",
+              "Templates",
+              "Archive"
+            ]
+          },
+          {
+            "name": "Tasks",
+            "children": [
+              "Task List",
+              "Kanban",
+              "Gantt Chart",
+              "My Tasks"
+            ]
+          },
+          {
+            "name": "Milestones",
+            "children": [
+              "Milestone List",
+              "New Milestone",
+              "Timeline"
+            ]
+          },
+          {
+            "name": "WBS",
+            "children": [
+              "WBS Editor",
+              "WBS Templates",
+              "Cost Breakdown"
+            ]
+          },
+          {
+            "name": "EVM",
+            "children": [
+              "EVM Dashboard",
+              "Earned Value Report",
+              "Variance Analysis"
+            ]
+          },
+          {
+            "name": "Financial",
+            "children": [
+              "Project Budget",
+              "Cost Tracking",
+              "Billing Schedule"
+            ]
+          },
+          {
+            "name": "Revenue",
+            "children": [
+              "Revenue Recognition",
+              "Revenue Forecast",
+              "Billing Milestones"
+            ]
+          },
+          {
+            "name": "Risk",
+            "children": [
+              "Risk Register",
+              "Risk Matrix",
+              "Mitigation Plans"
+            ]
+          },
+          {
+            "name": "Portfolio",
+            "children": [
+              "Portfolio Dashboard",
+              "Project Scoring",
+              "Pipeline"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Project Status",
+              "Budget vs Actual",
+              "Resource Usage"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "33",
+        "name": "Time & Expense",
+        "slug": "time-and-expense",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Timesheets",
+            "children": [
+              "Timesheet List",
+              "New Entry",
+              "Weekly View",
+              "Bulk Entry"
+            ]
+          },
+          {
+            "name": "Expenses",
+            "children": [
+              "Expense List",
+              "New Expense",
+              "Receipts"
+            ]
+          },
+          {
+            "name": "Travel",
+            "children": [
+              "Travel Requests",
+              "Travel Policy",
+              "Per Diem Rates"
+            ]
+          },
+          {
+            "name": "Approvals",
+            "children": [
+              "Pending Approvals",
+              "Approved",
+              "Rejected"
+            ]
+          },
+          {
+            "name": "Config",
+            "children": [
+              "Expense Categories",
+              "Approval Rules",
+              "Rate Cards"
+            ]
+          },
+          {
+            "name": "Billing",
+            "children": [
+              "Billable Time",
+              "Invoice Generation",
+              "Write-Offs"
+            ]
+          },
+          {
+            "name": "Overtime",
+            "children": [
+              "Overtime Policy",
+              "Overtime Requests",
+              "Overtime Report"
+            ]
+          },
+          {
+            "name": "Receipts",
+            "children": [
+              "Receipt Upload",
+              "OCR Processing",
+              "Receipt Archive"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Time Summary",
+              "Billable Hours",
+              "Expense Summary"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "34",
+        "name": "Service Contract Management",
+        "slug": "service-contract-management",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Contracts",
+            "children": [
+              "Contract List",
+              "New Contract",
+              "Templates"
+            ]
+          },
+          {
+            "name": "Renewals",
+            "children": [
+              "Upcoming",
+              "Expired",
+              "Auto-Renew Settings"
+            ]
+          },
+          {
+            "name": "Lifecycle",
+            "children": [
+              "Contract Stages",
+              "Amendment History",
+              "Termination Log"
+            ]
+          },
+          {
+            "name": "Billing",
+            "children": [
+              "Billing Schedule",
+              "Invoice Generation",
+              "Revenue Recognition"
+            ]
+          },
+          {
+            "name": "Delivery",
+            "children": [
+              "Service Delivery",
+              "Work Orders",
+              "Completion Tracking"
+            ]
+          },
+          {
+            "name": "SLA Tracking",
+            "children": [
+              "SLA Dashboard",
+              "Violations",
+              "Compliance"
+            ]
+          },
+          {
+            "name": "Analytics",
+            "children": [
+              "Contract Performance",
+              "Profitability Analysis",
+              "Risk Assessment"
+            ]
+          },
+          {
+            "name": "Customer Portal",
+            "children": [
+              "Portal Dashboard",
+              "Service Requests",
+              "Contract Documents"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Revenue by Contract",
+              "Renewal Rate",
+              "SLA Performance"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "35",
+        "name": "Resource Planning",
+        "slug": "resource-planning",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Resources",
+            "children": [
+              "Resource Pool",
+              "New Resource",
+              "Skills Matrix"
+            ]
+          },
+          {
+            "name": "Allocation",
+            "children": [
+              "Allocation Board",
+              "Conflicts",
+              "Requests"
+            ]
+          },
+          {
+            "name": "Rates",
+            "children": [
+              "Rate Cards",
+              "Cost Rates",
+              "Bill Rates"
+            ]
+          },
+          {
+            "name": "Competencies",
+            "children": [
+              "Competency Framework",
+              "Skill Assessment",
+              "Training Gaps"
+            ]
+          },
+          {
+            "name": "Forecasting",
+            "children": [
+              "Demand Forecast",
+              "Supply Forecast",
+              "Gap Analysis"
+            ]
+          },
+          {
+            "name": "External",
+            "children": [
+              "Contractor Pool",
+              "Vendor Resources",
+              "Onboarding"
+            ]
+          },
+          {
+            "name": "Optimization",
+            "children": [
+              "Auto-Assignment",
+              "Load Balancing",
+              "What-If Scenarios"
+            ]
+          },
+          {
+            "name": "Utilization",
+            "children": [
+              "Utilization Chart",
+              "Bench Report",
+              "Forecast"
+            ]
+          },
+          {
+            "name": "Analytics",
+            "children": [
+              "Resource KPIs",
+              "Trend Analysis",
+              "Cost Efficiency"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Capacity Planning",
+              "Demand vs Supply",
+              "Cost Report"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "group": "Business Intelligence",
+    "icon": "fa-chart-line",
+    "modules": [
+      {
+        "id": "36",
+        "name": "Reporting & Dashboards",
+        "slug": "reporting-and-dashboards",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Report Builder",
+            "children": [
+              "New Report",
+              "Field Selector",
+              "Filters",
+              "Formatting"
+            ]
+          },
+          {
+            "name": "Saved Reports",
+            "children": [
+              "My Reports",
+              "Shared Reports",
+              "Favorites"
+            ]
+          },
+          {
+            "name": "KPIs",
+            "children": [
+              "KPI Library",
+              "KPI Designer",
+              "Scorecards"
+            ]
+          },
+          {
+            "name": "Analytics",
+            "children": [
+              "Ad Hoc Analysis",
+              "Pivot Tables",
+              "Data Explorer"
+            ]
+          },
+          {
+            "name": "Compliance",
+            "children": [
+              "Regulatory Reports",
+              "Audit Reports",
+              "Filing Calendar"
+            ]
+          },
+          {
+            "name": "Governance",
+            "children": [
+              "Report Catalog",
+              "Data Lineage",
+              "Report Ownership"
+            ]
+          },
+          {
+            "name": "Access",
+            "children": [
+              "Report Permissions",
+              "Row-Level Security",
+              "Usage Analytics"
+            ]
+          },
+          {
+            "name": "Scheduled",
+            "children": [
+              "Schedule List",
+              "New Schedule",
+              "Distribution Lists"
+            ]
+          },
+          "Templates",
+          {
+            "name": "Reports",
+            "children": [
+              "Usage Analytics"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "37",
+        "name": "Business Intelligence",
+        "slug": "business-intelligence",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Data Explorer",
+            "children": [
+              "Query Builder",
+              "Data Sources",
+              "Joins"
+            ]
+          },
+          {
+            "name": "Visualizations",
+            "children": [
+              "Chart Gallery",
+              "New Visualization",
+              "Embed"
+            ]
+          },
+          {
+            "name": "KPI Library",
+            "children": [
+              "KPI List",
+              "New KPI",
+              "Thresholds",
+              "Alerts"
+            ]
+          },
+          {
+            "name": "Analytics",
+            "children": [
+              "Predictive Analytics",
+              "Statistical Models",
+              "Correlation Analysis"
+            ]
+          },
+          {
+            "name": "Governance",
+            "children": [
+              "Data Dictionary",
+              "Data Catalog",
+              "Quality Metrics"
+            ]
+          },
+          {
+            "name": "AI",
+            "children": [
+              "AI Insights",
+              "Anomaly Detection",
+              "Natural Language Query"
+            ]
+          },
+          {
+            "name": "Scenarios",
+            "children": [
+              "What-If Analysis",
+              "Scenario Comparison",
+              "Sensitivity Analysis"
+            ]
+          },
+          {
+            "name": "Mobile",
+            "children": [
+              "Mobile Dashboards",
+              "Push Alerts",
+              "Offline Reports"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Executive Summary",
+              "Trends",
+              "Benchmarks"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "group": "Governance & Risk",
+    "icon": "fa-shield-halved",
+    "modules": [
+      {
+        "id": "48",
+        "name": "GRC",
+        "slug": "grc",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Risk",
+            "children": [
+              "Risk Universe",
+              "Risk Assessment",
+              "Risk Appetite",
+              "Key Risk Indicators"
+            ]
+          },
+          {
+            "name": "Compliance",
+            "children": [
+              "Regulatory Register",
+              "Obligation Tracker",
+              "Policy Management"
+            ]
+          },
+          {
+            "name": "Controls",
+            "children": [
+              "Control Framework",
+              "Control Testing",
+              "Remediation"
+            ]
+          },
+          {
+            "name": "Incidents",
+            "children": [
+              "Incident Register",
+              "Investigation"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "GRC Scorecard",
+              "Audit Readiness"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "52",
+        "name": "Sustainability & ESG",
+        "slug": "sustainability-and-esg",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Carbon",
+            "children": [
+              "Carbon Footprint",
+              "Reduction Targets",
+              "Offset Tracking"
+            ]
+          },
+          {
+            "name": "Energy",
+            "children": [
+              "Consumption",
+              "Renewable Mix"
+            ]
+          },
+          {
+            "name": "Social",
+            "children": [
+              "Workforce Diversity",
+              "Community Impact"
+            ]
+          },
+          {
+            "name": "Governance",
+            "children": [
+              "Board Composition",
+              "Ethics Hotline"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "ESG Scorecard",
+              "Regulatory Filing"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "group": "Property & Fleet",
+    "icon": "fa-building",
+    "modules": [
+      {
+        "id": "49",
+        "name": "Real Estate & Lease Management",
+        "slug": "real-estate-and-lease-management",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Properties",
+            "children": [
+              "Property List",
+              "New Property"
+            ]
+          },
+          {
+            "name": "Leases",
+            "children": [
+              "Lease List",
+              "New Lease",
+              "ROU Assets",
+              "Payment Schedule"
+            ]
+          },
+          {
+            "name": "Compliance",
+            "children": [
+              "ASC 842 Dashboard",
+              "IFRS 16 Dashboard"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Lease Summary",
+              "Expense Report",
+              "Disclosure Notes"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "53",
+        "name": "Fleet Management",
+        "slug": "fleet-management",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Vehicles",
+            "children": [
+              "Vehicle List",
+              "New Vehicle"
+            ]
+          },
+          {
+            "name": "Maintenance",
+            "children": [
+              "Maintenance Schedule",
+              "Service History"
+            ]
+          },
+          {
+            "name": "Fuel",
+            "children": [
+              "Fuel Tracking",
+              "Fuel Cards"
+            ]
+          },
+          {
+            "name": "Drivers",
+            "children": [
+              "Driver List",
+              "Driver Assignment"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Fleet Summary"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "group": "Digital & Commerce",
+    "icon": "fa-globe",
+    "modules": [
+      {
+        "id": "50",
+        "name": "Vendor Portal",
+        "slug": "vendor-portal",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Purchase Orders",
+            "children": [
+              "My Orders",
+              "Order Detail"
+            ]
+          },
+          {
+            "name": "Invoices",
+            "children": [
+              "Submit Invoice",
+              "My Invoices"
+            ]
+          },
+          {
+            "name": "Payments",
+            "children": [
+              "Payment Status"
+            ]
+          },
+          {
+            "name": "Shipments",
+            "children": [
+              "Shipment Updates"
+            ]
+          },
+          {
+            "name": "Profile",
+            "children": [
+              "Company Profile"
+            ]
+          },
+          {
+            "name": "Performance",
+            "children": [
+              "My Scorecard"
+            ]
+          },
+          {
+            "name": "Communications",
+            "children": [
+              "Messages"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Vendor Activity"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "51",
+        "name": "Customer Portal",
+        "slug": "customer-portal",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Orders",
+            "children": [
+              "My Orders",
+              "Order Detail"
+            ]
+          },
+          {
+            "name": "Invoices",
+            "children": [
+              "My Invoices",
+              "Make Payment"
+            ]
+          },
+          {
+            "name": "Support",
+            "children": [
+              "My Tickets",
+              "New Ticket"
+            ]
+          },
+          {
+            "name": "Account",
+            "children": [
+              "My Profile",
+              "My Statements"
+            ]
+          },
+          {
+            "name": "Documents",
+            "children": [
+              "My Documents"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Customer Activity"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "54",
+        "name": "Subscription Billing",
+        "slug": "subscription-billing",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Subscriptions",
+            "children": [
+              "Subscription List",
+              "New Subscription"
+            ]
+          },
+          {
+            "name": "Plans",
+            "children": [
+              "Plan List",
+              "New Plan"
+            ]
+          },
+          {
+            "name": "Billing",
+            "children": [
+              "Billing Runs",
+              "Invoice List"
+            ]
+          },
+          {
+            "name": "Renewals",
+            "children": [
+              "Upcoming",
+              "Churn Analysis"
+            ]
+          },
+          {
+            "name": "Metrics",
+            "children": [
+              "MRR Analysis",
+              "Cohort Analysis"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Revenue Forecast"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "55",
+        "name": "Help Desk",
+        "slug": "help-desk",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Tickets",
+            "children": [
+              "Ticket List",
+              "New Ticket"
+            ]
+          },
+          {
+            "name": "Incidents",
+            "children": [
+              "Incident List",
+              "Major Incidents"
+            ]
+          },
+          {
+            "name": "Problems",
+            "children": [
+              "Problem List"
+            ]
+          },
+          {
+            "name": "Changes",
+            "children": [
+              "Change List",
+              "Change Calendar"
+            ]
+          },
+          {
+            "name": "Knowledge",
+            "children": [
+              "Article List",
+              "New Article"
+            ]
+          },
+          {
+            "name": "SLA",
+            "children": [
+              "SLA Policies"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "ITSM Summary"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "56",
+        "name": "Knowledge Base",
+        "slug": "knowledge-base",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Articles",
+            "children": [
+              "Article List",
+              "New Article",
+              "Review Queue"
+            ]
+          },
+          {
+            "name": "Categories",
+            "children": [
+              "Category Tree"
+            ]
+          },
+          {
+            "name": "Search",
+            "children": [
+              "Search Analytics"
+            ]
+          },
+          {
+            "name": "Feedback",
+            "children": [
+              "Article Feedback"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "KB Metrics"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "58",
+        "name": "E-commerce Integration",
+        "slug": "ecommerce-integration",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Stores",
+            "children": [
+              "Store List",
+              "Store Config"
+            ]
+          },
+          {
+            "name": "Sync",
+            "children": [
+              "Product Sync",
+              "Inventory Sync",
+              "Order Sync"
+            ]
+          },
+          {
+            "name": "Orders",
+            "children": [
+              "Online Orders",
+              "Returns & Exchanges"
+            ]
+          },
+          {
+            "name": "Analytics",
+            "children": [
+              "Channel Performance",
+              "Abandonment Analysis"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "E-commerce Summary"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "group": "Data & Intelligence",
+    "icon": "fa-brain",
+    "modules": [
+      {
+        "id": "57",
+        "name": "Master Data Management",
+        "slug": "master-data-management",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Golden Records",
+            "children": [
+              "Record List",
+              "Merge Tool"
+            ]
+          },
+          {
+            "name": "Deduplication",
+            "children": [
+              "Dedup Rules",
+              "Dedup Results"
+            ]
+          },
+          {
+            "name": "Quality",
+            "children": [
+              "Quality Rules",
+              "Quality Dashboard"
+            ]
+          },
+          {
+            "name": "Stewardship",
+            "children": [
+              "Steward Assignments",
+              "Data Issues"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "MDM Metrics"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "59",
+        "name": "AI/ML Analytics",
+        "slug": "ai-ml-analytics",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Models",
+            "children": [
+              "Model Registry",
+              "Model Training"
+            ]
+          },
+          {
+            "name": "Predictions",
+            "children": [
+              "Prediction Log",
+              "Anomaly Alerts"
+            ]
+          },
+          {
+            "name": "Datasets",
+            "children": [
+              "Dataset List"
+            ]
+          },
+          {
+            "name": "Experiments",
+            "children": [
+              "Experiment Tracker"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "AI Performance"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "60",
+        "name": "Data Governance",
+        "slug": "data-governance",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Catalog",
+            "children": [
+              "Data Catalog",
+              "Data Dictionary"
+            ]
+          },
+          {
+            "name": "Lineage",
+            "children": [
+              "Data Lineage",
+              "Impact Analysis"
+            ]
+          },
+          {
+            "name": "Classification",
+            "children": [
+              "Data Classification"
+            ]
+          },
+          {
+            "name": "Privacy",
+            "children": [
+              "PII Tracking"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Governance Metrics"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "61",
+        "name": "API Gateway",
+        "slug": "api-gateway",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "APIs",
+            "children": [
+              "API Catalog",
+              "API Versioning"
+            ]
+          },
+          {
+            "name": "Routing",
+            "children": [
+              "Route Config",
+              "Load Balancing"
+            ]
+          },
+          {
+            "name": "Security",
+            "children": [
+              "Rate Limiting"
+            ]
+          },
+          {
+            "name": "Monitoring",
+            "children": [
+              "API Metrics",
+              "Error Tracking"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Gateway Analytics"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "group": "Platform & Admin",
+    "icon": "fa-gear",
+    "modules": [
+      {
+        "id": "38",
+        "name": "User & Role Management",
+        "slug": "user-and-role-management",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Users",
+            "children": [
+              "User List",
+              "New User",
+              "Bulk Import",
+              "Active Sessions"
+            ]
+          },
+          {
+            "name": "Roles",
+            "children": [
+              "Role List",
+              "New Role",
+              "Role Matrix"
+            ]
+          },
+          {
+            "name": "Auth",
+            "children": [
+              "SSO Configuration",
+              "MFA Settings",
+              "Password Policy"
+            ]
+          },
+          {
+            "name": "Permissions",
+            "children": [
+              "Permission Map",
+              "Module Access",
+              "Field-Level",
+              "Data-Level Security",
+              "API Permissions"
+            ]
+          },
+          {
+            "name": "Governance",
+            "children": [
+              "Access Reviews",
+              "Segregation of Duties",
+              "Role Certification"
+            ]
+          },
+          {
+            "name": "Security",
+            "children": [
+              "IP Whitelist",
+              "Session Policy",
+              "Brute Force Protection"
+            ]
+          },
+          {
+            "name": "Delegation",
+            "children": [
+              "Delegation Rules",
+              "Active Delegations",
+              "Delegation History"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Login History",
+              "Access Audit",
+              "License Usage"
+            ]
+          },
+          "Profile",
+          "Settings",
+          "Change Password"
+        ]
+      },
+      {
+        "id": "39",
+        "name": "Workflow & Approvals",
+        "slug": "workflow-and-approvals",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Workflows",
+            "children": [
+              "Workflow List",
+              "New Workflow",
+              "Designer",
+              "Versioning",
+              "Import/Export"
+            ]
+          },
+          {
+            "name": "Approval Chains",
+            "children": [
+              "Chain List",
+              "New Chain",
+              "Delegation"
+            ]
+          },
+          {
+            "name": "Escalation",
+            "children": [
+              "Escalation Rules",
+              "Escalation Log",
+              "SLA Tracking"
+            ]
+          },
+          {
+            "name": "Rules",
+            "children": [
+              "Business Rules",
+              "Conditional Logic",
+              "Auto-Approve Rules"
+            ]
+          },
+          {
+            "name": "Authority",
+            "children": [
+              "Approval Limits",
+              "Signing Authority",
+              "Matrix Approval"
+            ]
+          },
+          {
+            "name": "Mobile",
+            "children": [
+              "Mobile Approvals",
+              "Push Notifications",
+              "Offline Queue"
+            ]
+          },
+          {
+            "name": "Templates",
+            "children": [
+              "Template List",
+              "New Template"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Approval Turnaround",
+              "Bottleneck Analysis"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "40",
+        "name": "Audit & Compliance",
+        "slug": "audit-and-compliance",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Audit Log",
+            "children": [
+              "Activity Log",
+              "Change History",
+              "Export"
+            ]
+          },
+          {
+            "name": "Policies",
+            "children": [
+              "Policy List",
+              "New Policy",
+              "Acknowledgments"
+            ]
+          },
+          {
+            "name": "GRC",
+            "children": [
+              "GRC Dashboard",
+              "Risk Register",
+              "Control Framework"
+            ]
+          },
+          {
+            "name": "Compliance",
+            "children": [
+              "Compliance Calendar",
+              "Regulatory Tracker",
+              "Certification Status",
+              "Gap Analysis"
+            ]
+          },
+          {
+            "name": "Controls",
+            "children": [
+              "Control List",
+              "New Control",
+              "Testing",
+              "Effectiveness Review",
+              "Remediation Plans"
+            ]
+          },
+          {
+            "name": "External Audit",
+            "children": [
+              "Audit Requests",
+              "Document Requests",
+              "Findings Tracker"
+            ]
+          },
+          {
+            "name": "Incidents",
+            "children": [
+              "Incident Log",
+              "Root Cause Analysis",
+              "Corrective Actions"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Compliance Score",
+              "Risk Assessment",
+              "SOX Report"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "41",
+        "name": "Document Management",
+        "slug": "document-management",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Documents",
+            "children": [
+              "Document List",
+              "Upload",
+              "Version History"
+            ]
+          },
+          {
+            "name": "Categories",
+            "children": [
+              "Category Tree",
+              "New Category",
+              "Tags"
+            ]
+          },
+          {
+            "name": "Lifecycle",
+            "children": [
+              "Review Cycles",
+              "Approval Workflow",
+              "Archival Policy"
+            ]
+          },
+          {
+            "name": "Security",
+            "children": [
+              "Access Control",
+              "Watermarking",
+              "DLP Rules"
+            ]
+          },
+          {
+            "name": "Compliance",
+            "children": [
+              "Retention Policy",
+              "Legal Hold",
+              "E-Discovery"
+            ]
+          },
+          {
+            "name": "Search",
+            "children": [
+              "Full-Text Search",
+              "Metadata Search",
+              "Saved Searches"
+            ]
+          },
+          {
+            "name": "Templates",
+            "children": [
+              "Template List",
+              "New Template",
+              "Merge Fields"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Storage Usage",
+              "Access Log",
+              "Expiring Documents"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "42",
+        "name": "Notification & Alerts",
+        "slug": "notification-and-alerts",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Rules",
+            "children": [
+              "Rule List",
+              "New Rule",
+              "Conditions"
+            ]
+          },
+          {
+            "name": "Templates",
+            "children": [
+              "Template List",
+              "New Template",
+              "Variables"
+            ]
+          },
+          {
+            "name": "Preferences",
+            "children": [
+              "User Preferences",
+              "Notification Schedule"
+            ]
+          },
+          {
+            "name": "Channels",
+            "children": [
+              "Email",
+              "SMS",
+              "Push",
+              "In-App",
+              "Slack Integration",
+              "Webhook"
+            ]
+          },
+          {
+            "name": "Delivery",
+            "children": [
+              "Delivery Status",
+              "Retry Policy"
+            ]
+          },
+          {
+            "name": "Analytics",
+            "children": [
+              "Notification Metrics",
+              "Engagement Tracking"
+            ]
+          },
+          "History",
+          {
+            "name": "Reports",
+            "children": [
+              "Delivery Report"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "43",
+        "name": "Integration & API",
+        "slug": "integration-and-api",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Connections",
+            "children": [
+              "Connection List",
+              "New Connection",
+              "OAuth Apps"
+            ]
+          },
+          {
+            "name": "Connectors",
+            "children": [
+              "Connector List",
+              "Pre-Built Connectors"
+            ]
+          },
+          {
+            "name": "API Keys",
+            "children": [
+              "Key List",
+              "New Key",
+              "Rate Limits"
+            ]
+          },
+          {
+            "name": "Sync",
+            "children": [
+              "Sync Mapping",
+              "Sync Schedule",
+              "Conflict Resolution"
+            ]
+          },
+          {
+            "name": "Webhooks",
+            "children": [
+              "Webhook List",
+              "New Webhook",
+              "Event Types"
+            ]
+          },
+          {
+            "name": "Docs",
+            "children": [
+              "API Reference",
+              "Developer Portal"
+            ]
+          },
+          {
+            "name": "Testing",
+            "children": [
+              "Sandbox Environment"
+            ]
+          },
+          {
+            "name": "Logs",
+            "children": [
+              "Request Log",
+              "Error Log",
+              "Usage Stats"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Integration Health"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "44",
+        "name": "Multi-Company & Multi-Currency",
+        "slug": "multi-company-and-multi-currency",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Companies",
+            "children": [
+              "Company List",
+              "New Company",
+              "Inter-Company Rules",
+              "Legal Entity Setup",
+              "Org Hierarchy"
+            ]
+          },
+          {
+            "name": "Currencies",
+            "children": [
+              "Currency List",
+              "New Currency",
+              "Rounding Rules"
+            ]
+          },
+          {
+            "name": "Intercompany",
+            "children": [
+              "IC Transaction Log",
+              "IC Settlement"
+            ]
+          },
+          {
+            "name": "Transfer Pricing",
+            "children": [
+              "Transfer Price Setup"
+            ]
+          },
+          {
+            "name": "Exchange Rates",
+            "children": [
+              "Rate Table",
+              "Auto-Fetch",
+              "History"
+            ]
+          },
+          {
+            "name": "Consolidation",
+            "children": [
+              "Translation Method"
+            ]
+          },
+          {
+            "name": "FX",
+            "children": [
+              "FX Exposure"
+            ]
+          },
+          {
+            "name": "Compliance",
+            "children": [
+              "Local Tax Compliance"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "Consolidated",
+              "Elimination Entries",
+              "FX Gain/Loss"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "45",
+        "name": "Data Import & Migration",
+        "slug": "data-import-and-migration",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "Import",
+            "children": [
+              "New Import",
+              "Field Mapping",
+              "Validation",
+              "History"
+            ]
+          },
+          {
+            "name": "Export",
+            "children": [
+              "New Export",
+              "Scheduled Exports",
+              "Formats"
+            ]
+          },
+          {
+            "name": "Cleansing",
+            "children": [
+              "Duplicate Detection",
+              "Data Quality Rules"
+            ]
+          },
+          {
+            "name": "Migration",
+            "children": [
+              "Migration Plan",
+              "Cutover Plan",
+              "Data Reconciliation"
+            ]
+          },
+          {
+            "name": "Archive",
+            "children": [
+              "Archive Policy",
+              "Archived Data"
+            ]
+          },
+          {
+            "name": "Quality",
+            "children": [
+              "Data Quality Dashboard"
+            ]
+          },
+          {
+            "name": "Templates",
+            "children": [
+              "Download Templates",
+              "Custom Templates"
+            ]
+          },
+          "History",
+          {
+            "name": "Reports",
+            "children": [
+              "Migration Status"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "46",
+        "name": "System Configuration",
+        "slug": "system-configuration",
+        "pages": [
+          "Dashboard",
+          {
+            "name": "General",
+            "children": [
+              "Company Profile",
+              "Locale",
+              "Date/Time Formats"
+            ]
+          },
+          {
+            "name": "System",
+            "children": [
+              "Feature Flags",
+              "Debug Mode"
+            ]
+          },
+          {
+            "name": "Email",
+            "children": [
+              "SMTP Settings",
+              "Email Templates",
+              "Test Email"
+            ]
+          },
+          {
+            "name": "Security",
+            "children": [
+              "Encryption Settings",
+              "Certificate Management"
+            ]
+          },
+          {
+            "name": "Audit",
+            "children": [
+              "Audit Config"
+            ]
+          },
+          {
+            "name": "Regional",
+            "children": [
+              "Country Settings",
+              "Language Support"
+            ]
+          },
+          {
+            "name": "Numbering",
+            "children": [
+              "Sequences",
+              "Prefixes",
+              "Reset Rules"
+            ]
+          },
+          {
+            "name": "Integrations",
+            "children": [
+              "Plugin Management"
+            ]
+          },
+          {
+            "name": "Customization",
+            "children": [
+              "Custom Fields",
+              "Custom Forms",
+              "Themes"
+            ]
+          },
+          {
+            "name": "Reports",
+            "children": [
+              "System Health"
+            ]
+          },
+          {
+            "name": "Search",
+            "children": [
+              "Global Search"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "group": "Samples & Theme",
+    "icon": "fa-palette",
+    "modules": [
+      {
+        "id": "99",
+        "name": "Samples",
+        "slug": "samples",
+        "pages": [
+          "Sample List",
+          "Sample Form",
+          "Sample Detail",
+          "Components",
+          "Blank",
+          "404 Not Found",
+          "Offline",
+          "Login",
+          "Register",
+          "Change Password",
+          "Forgot Password",
+          "Reset Password"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,101 @@
+# =============================================================================
+# .claudeignore — paths Claude (and AI tools) should never read
+# Keep this in sync with the actual junk + secrets in the repo.
+# =============================================================================
+
+# Archived Claude state (CLAUDE.md, .claude/, transcripts, memory, plans, docs)
+_aignore/
+
+# Local backups & dumps (NOT under version control)
+_backup/
+_code_backup/
+_database_files/
+_screenshots/
+_browser_smoke/
+_smoke_test/
+_smoke_screenshots/
+*.backup
+*.bak
+.env.backup-pre-restructure
+
+# Secrets & env (~34KB each — never expose)
+.env
+.env.*
+!.env.example
+.env\ copy
+
+# Database dumps & archives (very large)
+*.sql
+*.zip
+*.tar
+*.tar.gz
+*.7z
+*.rar
+database.zip
+testing_norvium_24_03_2026.zip
+
+# Auto-generated IDE helpers (~1.4MB)
+_ide_helper.php
+_ide_helper_models.php
+.phpstorm.meta.php
+.phpunit.result.cache
+
+# Lock files (~518KB — derive from composer.json/package.json)
+composer.lock
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Static geo data (~53MB)
+public/cities.json
+public/states.json
+public/countries.json
+
+# Vendored / compiled frontend assets (~20MB)
+public/assets/vendor/
+public/build/
+public/hot
+public/storage
+public/setting/
+public/assets/validation/
+public/mix-manifest.json
+
+# Per-module dependencies (each Module can have its own)
+Modules/*/node_modules/
+Modules/*/vendor/
+
+# Top-level dependencies (~296MB)
+node_modules/
+vendor/
+
+# Laravel runtime storage (logs, cache, sessions, views)
+storage/
+bootstrap/cache/
+
+# Test artifacts & coverage
+coverage/
+.phpunit.cache/
+tests/e2e/reports/
+tests/e2e/test-results/
+tests/e2e/playwright-report/
+tests/e2e/node_modules/
+
+# Static reference docs (PDFs/Office — Claude can read but they burn tokens)
+*.pdf
+*.docx
+*.xlsx
+*.pptx
+iqualims-Brochure-13-9-25.pdf
+
+# IDE / OS metadata
+.idea/
+.vscode/
+.cspell/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Misc
+setup_sudoers.sh
+user.ini

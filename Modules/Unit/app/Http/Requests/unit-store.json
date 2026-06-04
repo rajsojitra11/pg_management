@@ -1,0 +1,28 @@
+{
+    "module": "Unit",
+    "table": "units",
+    "action": "store",
+    "generated_at": "2026-04-06T12:24:58+05:30",
+    "fields": {
+        "name": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": true,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "unit_value": {
+            "rules": [
+                "nullable",
+                "numeric"
+            ],
+            "type": "double",
+            "nullable": true,
+            "html_type": "text"
+        }
+    }
+}

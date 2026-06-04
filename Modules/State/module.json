@@ -1,0 +1,9 @@
+{
+    "name": "State",
+    "alias": "state",
+    "description": "",
+    "keywords": [],
+    "priority": 84,
+    "providers": ["Modules\\State\\Providers\\StateServiceProvider"],
+    "files": []
+}

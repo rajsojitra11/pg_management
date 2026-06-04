@@ -1,0 +1,53 @@
+<?php
+
+namespace $NAMESPACE$;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\User\Models\User;
+
+class $LOG_CLASS$ extends Model
+{
+    public $timestamps = false;
+
+    protected $fillable = [
+        '$FOREIGN_KEY$',
+        'user_id',
+        'activity',
+        'user_remark',
+        'system_remark',
+        'old_values',
+        'new_values',
+        'ip_address',
+        'user_agent',
+        'device',
+        'platform',
+        'browser',
+        'created_by',
+        'created_at',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'old_values' => 'array',
+            'new_values' => 'array',
+            'created_at' => 'datetime',
+        ];
+    }
+
+    public function $MODEL_VARIABLE$(): BelongsTo
+    {
+        return $this->belongsTo($MODEL_CLASS$::class, '$FOREIGN_KEY$')->withTrashed();
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class)->withTrashed();
+    }
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by')->withTrashed();
+    }
+}

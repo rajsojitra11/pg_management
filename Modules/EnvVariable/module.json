@@ -1,0 +1,9 @@
+{
+    "name": "EnvVariable",
+    "alias": "envvariable",
+    "description": "",
+    "keywords": [],
+    "priority": 67,
+    "providers": ["Modules\\EnvVariable\\Providers\\EnvVariableServiceProvider"],
+    "files": []
+}

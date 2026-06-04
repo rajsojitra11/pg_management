@@ -1,0 +1,94 @@
+{
+    "module": "Year",
+    "table": "years",
+    "action": "store",
+    "generated_at": "2026-04-06T12:24:59+05:30",
+    "fields": {
+        "name": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": true,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "full_short": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": true,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "short_full": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": true,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "short_short": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": true,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "full_full": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": true,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "short": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": true,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "full": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": true,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "set_default": {
+            "rules": [
+                "nullable",
+                "boolean"
+            ],
+            "type": "tinyint",
+            "nullable": false,
+            "html_type": "checkbox"
+        }
+    }
+}

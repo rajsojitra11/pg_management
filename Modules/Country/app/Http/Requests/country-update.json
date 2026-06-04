@@ -1,0 +1,30 @@
+{
+    "module": "Country",
+    "table": "countries",
+    "action": "update",
+    "generated_at": "2026-04-06T12:24:50+05:30",
+    "fields": {
+        "name": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": true,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "code": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": true,
+            "html_type": "text",
+            "max_length": 255
+        }
+    }
+}

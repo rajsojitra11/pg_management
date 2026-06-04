@@ -1,0 +1,44 @@
+{
+    "module": "State",
+    "table": "states",
+    "action": "store",
+    "generated_at": "2026-04-06T12:24:57+05:30",
+    "fields": {
+        "country_id": {
+            "rules": [
+                "nullable",
+                "integer",
+                "exists:countries,id"
+            ],
+            "type": "bigint",
+            "nullable": true,
+            "html_type": "select",
+            "foreign": {
+                "table": "countries",
+                "column": "id"
+            }
+        },
+        "name": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": true,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "code": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": true,
+            "html_type": "text",
+            "max_length": 255
+        }
+    }
+}

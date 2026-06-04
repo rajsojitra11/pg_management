@@ -1,0 +1,30 @@
+{
+    "module": "Currency",
+    "table": "currencies",
+    "action": "store",
+    "generated_at": "2026-04-06T12:24:51+05:30",
+    "fields": {
+        "currency_name": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": true,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "currency_symbol": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": true,
+            "html_type": "text",
+            "max_length": 255
+        }
+    }
+}

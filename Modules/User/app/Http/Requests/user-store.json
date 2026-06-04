@@ -1,0 +1,116 @@
+{
+    "module": "User",
+    "table": "users",
+    "action": "store",
+    "generated_at": "2026-04-06T12:24:59+05:30",
+    "fields": {
+        "name": {
+            "rules": [
+                "required",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": false,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "mobile": {
+            "rules": [
+                "required",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": false,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "username": {
+            "rules": [
+                "required",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": false,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "email": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": true,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "designation": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": true,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "password": {
+            "rules": [
+                "required",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": false,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "status": {
+            "rules": [
+                "required",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": false,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "menu_style": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": false,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "theme": {
+            "rules": [
+                "nullable",
+                "string",
+                "max:255"
+            ],
+            "type": "varchar",
+            "nullable": false,
+            "html_type": "text",
+            "max_length": 255
+        },
+        "is_blocked": {
+            "rules": [
+                "nullable",
+                "boolean"
+            ],
+            "type": "tinyint",
+            "nullable": false,
+            "html_type": "checkbox"
+        }
+    }
+}

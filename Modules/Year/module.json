@@ -1,0 +1,9 @@
+{
+    "name": "Year",
+    "alias": "year",
+    "description": "",
+    "keywords": [],
+    "priority": 70,
+    "providers": ["Modules\\Year\\Providers\\YearServiceProvider"],
+    "files": []
+}

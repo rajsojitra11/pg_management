@@ -1,0 +1,9 @@
+{
+    "name": "MenuMaster",
+    "alias": "menumaster",
+    "description": "",
+    "keywords": [],
+    "priority": 69,
+    "providers": ["Modules\\MenuMaster\\Providers\\MenuMasterServiceProvider"],
+    "files": []
+}

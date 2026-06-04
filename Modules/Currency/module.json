@@ -1,0 +1,9 @@
+{
+    "name": "Currency",
+    "alias": "currency",
+    "description": "",
+    "keywords": [],
+    "priority": 68,
+    "providers": ["Modules\\Currency\\Providers\\CurrencyServiceProvider"],
+    "files": []
+}
