@@ -12,5 +12,6 @@
     "Currency": true,
     "Unit": true,
     "Year": true,
-    "Subscription": true
+    "Subscription": true,
+    "PgManagement": true
 }

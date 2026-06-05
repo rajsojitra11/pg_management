@@ -240,6 +240,20 @@ class MenuMasterDatabaseSeeder extends Seeder
                 'created_by' => 1,
                 'updated_by' => 1,
             ],
+            [
+                'id' => 4,
+                'menu_icon' => 'fa-solid fa-building',
+                'menu_title' => 'pgmanagement::message.pg_management',
+                'menu_route' => 'pgmanagement.index',
+                'is_main_menu' => 0,
+                'parent_id' => null,
+                'module_name' => 'PgManagement',
+                'order_display' => '001.004',
+                'display_order' => '1.4',
+                'if_can' => 'pgmanagement-list',
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
 
             // ── Parent: General Master (id 2) ──────────────────────────
             [

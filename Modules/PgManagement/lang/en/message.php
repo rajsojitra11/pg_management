@@ -1,0 +1,37 @@
+<?php
+
+return [
+    'pg_management' => 'Manage PG',
+    'pg_management_master' => 'PG Management Master',
+    'list' => 'PG Management List',
+    'pg_name' => 'PG Name',
+    'owner' => 'Owner',
+    'mobile_no' => 'Mobile No',
+    'total_block' => 'Total Block',
+    'total_room' => 'Total Room',
+    'country' => 'Country',
+    'state' => 'State',
+    'city' => 'City',
+    'pincode' => 'Pincode',
+    'address' => 'Address',
+    'add' => 'Add PG',
+    'edit' => 'Edit PG',
+    'enter_pg_name' => 'Enter PG name',
+    'enter_mobile_no' => 'Enter mobile number',
+    'enter_pincode' => 'Enter pincode',
+    'enter_address' => 'Enter address',
+    'enter_unique_pg_name' => 'The PG name has already been taken',
+    'enter_valid_owner' => 'Please select a valid owner',
+    'enter_total_block' => 'Enter total blocks',
+    'enter_total_room' => 'Enter total rooms',
+    'validation' => [],
+
+    'search_placeholder' => 'Search by PG name, owner or mobile',
+    'apply' => 'Search',
+    'reset' => 'Reset',
+
+    'created' => 'PG created successfully',
+    'updated' => 'PG updated successfully',
+    'deleted' => 'PG deleted successfully',
+    'restored' => 'PG restored successfully',
+];

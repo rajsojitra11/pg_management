@@ -135,7 +135,7 @@ class UserController extends Controller
         $array_role = ['Super_Admin'];
         $roleMaster = Role::whereNotIn('name', $array_role)->pluck('name', 'name')->all();
 
-        $parentUsers = User::where('status', 'Active')->where('id', '!=', 1)->orderBy('email')->get(['id', 'name', 'email']);
+        $parentUsers = User::where('status', 'Active')->orderBy('email')->get(['id', 'name', 'email']);
 
         if (! auth()->user()->hasRole('Super_Admin')) {
             $parentUsers = $parentUsers->where('id', auth()->id());
@@ -266,7 +266,7 @@ class UserController extends Controller
         $rolePermissionIds = $user->getPermissionsViaRoles()->pluck('id')->toArray();
         $directPermissionIds = $user->getDirectPermissions()->pluck('id')->toArray();
 
-        $parentUsers = User::where('status', 'Active')->where('id', '!=', 1)->where('id', '!=', $user->id)->orderBy('email')->get(['id', 'name', 'email']);
+        $parentUsers = User::where('status', 'Active')->where('id', '!=', $user->id)->orderBy('email')->get(['id', 'name', 'email']);
 
         if (! auth()->user()->hasRole('Super_Admin')) {
             $parentUsers = $parentUsers->where('id', auth()->id());

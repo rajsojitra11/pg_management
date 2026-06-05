@@ -1,0 +1,31 @@
+{
+    "name": "nwidart/pgmanagement",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\PgManagement\\": "app/",
+            "Modules\\PgManagement\\Database\\Factories\\": "database/factories/",
+            "Modules\\PgManagement\\Database\\Seeders\\": "database/seeders/"
+        },
+        "files": [
+            "Helpers/pg_management_helper.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\PgManagement\\Tests\\": "tests/"
+        }
+    }
+}

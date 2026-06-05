@@ -1,0 +1,11 @@
+{
+    "name": "PgManagement",
+    "alias": "pgmanagement",
+    "description": "",
+    "keywords": [],
+    "priority": 95,
+    "providers": [
+        "Modules\\PgManagement\\Providers\\PgManagementServiceProvider"
+    ],
+    "files": []
+}

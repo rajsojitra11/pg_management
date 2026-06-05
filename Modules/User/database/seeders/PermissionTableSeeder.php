@@ -294,6 +294,37 @@ class PermissionTableSeeder extends Seeder
                 'section' => 'General',
             ],
 
+            [
+                'title_tag' => 'PgManagement',
+                'name' => 'pgmanagement-list',
+                'title' => 'List',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'PgManagement',
+                'name' => 'pgmanagement-create',
+                'title' => 'Create',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'PgManagement',
+                'name' => 'pgmanagement-show',
+                'title' => 'Show',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'PgManagement',
+                'name' => 'pgmanagement-edit',
+                'title' => 'Edit',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'PgManagement',
+                'name' => 'pgmanagement-delete',
+                'title' => 'Delete',
+                'section' => 'General',
+            ],
+
             // Reports
             [
                 'title_tag' => 'Activity_Log_Report',
