@@ -48,7 +48,6 @@ class CreateAdminUserSeeder extends Seeder
             'email' => 'super@adm.com',
             'password' => bcrypt('Tech@#311'),
             'status' => 'Active',
-            'designation' => 'System Administrator',
         ], [
             'firstname' => 'Super',
             'lastname' => 'Admin',
@@ -79,7 +78,6 @@ class CreateAdminUserSeeder extends Seeder
             'email' => 'pg_admin@adm.com',
             'password' => bcrypt('Company'),
             'status' => 'Active',
-            'designation' => 'Pg Administrator',
         ], [
             'firstname' => 'Pg',
             'lastname' => 'Admin',

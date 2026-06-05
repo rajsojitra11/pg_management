@@ -51,7 +51,6 @@ class User extends Authenticatable
         'menu_style',
         'theme',
         'status',
-        'designation',
         'manager_id',
         'head_id',
         'is_blocked',

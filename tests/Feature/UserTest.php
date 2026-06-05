@@ -42,7 +42,6 @@ class UserTest extends TestCase
             'username' => 'johndoe',
             'password' => 'Password1@',
             'confirm_password' => 'Password1@',
-            'designation' => 'Test Engineer',
             'status' => 'Active',
             'roles' => [$this->testRole->id],
         ], $overrides);
@@ -325,6 +324,6 @@ class UserTest extends TestCase
     public function test_validation_missing_required_fields(): void
     {
         $response = $this->post(route('users.store'), []);
-        $response->assertSessionHasErrors(['firstname', 'username', 'designation', 'status']);
+        $response->assertSessionHasErrors(['firstname', 'username', 'status']);
     }
 }

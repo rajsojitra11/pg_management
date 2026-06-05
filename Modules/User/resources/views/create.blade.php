@@ -173,17 +173,19 @@
                 </div>
             </div>
 
-            {{-- Row 4: Designation | Role | Status --}}
+            {{-- Row 4: Parent User | Role | Status --}}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
                 <div>
-                    <label class="block text-sm font-medium text-zinc-700 mb-1.5">{{ __('user::message.designation') }}</label>
-                    <input type="text" name="designation" id="designation"
-                           class="h-9 w-full rounded-md border border-zinc-200 bg-transparent px-3 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2"
-                           placeholder="{{ __('user::message.select_designation') }}" value="{{ old('designation') }}"
-                           list="designation-suggestions" autocomplete="off">
-                    <datalist id="designation-suggestions"></datalist>
-                    @if ($errors->has('designation'))
-                        <p class="mt-1 text-xs text-red-500">{{ $errors->first('designation') }}</p>
+                    <label class="block text-sm font-medium text-zinc-700 mb-1.5">{{ __('user::message.parent_user') }}</label>
+                    <select name="parent_id" id="parent_id"
+                            class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2">
+                        <option value="">{{ __('message.common.select') }}</option>
+                        @foreach ($parentUsers as $pu)
+                            <option value="{{ $pu->id }}" {{ old('parent_id') == $pu->id ? 'selected' : '' }}>{{ $pu->email }}</option>
+                        @endforeach
+                    </select>
+                    @if ($errors->has('parent_id'))
+                        <p class="mt-1 text-xs text-red-500">{{ $errors->first('parent_id') }}</p>
                     @endif
                 </div>
                 <div>
@@ -256,20 +258,6 @@ $(document).ready(function() {
         });
     }
     
-    // Designation autocomplete
-    (function() {
-        var $input = $('#designation'), $datalist = $('#designation-suggestions'), debounce;
-        function load(q) {
-            $.get('{{ route("users.designations") }}', { q: q || '' }, function(data) {
-                var html = '';
-                (data || []).forEach(function(d) { html += '<option value="' + $('<span>').text(d).html() + '">'; });
-                $datalist.html(html);
-            });
-        }
-        load('');
-        $input.on('input', function() { clearTimeout(debounce); debounce = setTimeout(function() { load($input.val()); }, 300); });
-    })();
-
     // State → City cascade
     (function() {
         var $state = $('#state_id');
@@ -314,6 +302,13 @@ $(document).ready(function() {
             $preview.html('<i class="fa-solid fa-user text-zinc-400 text-sm"></i>');
         }
     });
+
+    // Initialize Select2 on parent user, role, and status dropdowns
+    if (typeof initErpSelect === 'function') {
+        initErpSelect('#parent_id', { allowClear: true, placeholder: '{{ __("message.common.select") }}' });
+        initErpSelect('#roles', { allowClear: true, placeholder: '{{ __("message.common.select") }}' });
+        initErpSelect('#status', { allowClear: true, placeholder: '{{ __("message.common.select") }}' });
+    }
 
     // Show server validation errors inline
     function showInlineServerErrors($form, errors) {

@@ -62,7 +62,7 @@
                     <th>{{ __('user::message.mobile_number') }}</th>
                     <th>{{ __('user::message.email') }}</th>
                     <th>{{ __('user::message.user_name') }}</th>
-                    <th>{{ __('user::message.designation') }}</th>
+                    <th>{{ __('user::message.parent_user') }}</th>
                     <th>{{ __('user::message.role') }}</th>
                     <th>Status</th>
                     <th>{{ __('message.common.action') }}</th>
@@ -98,7 +98,7 @@ $(document).ready(function() {
             { data: 'mobile', name: 'mobile' },
             { data: 'email', name: 'email' },
             { data: 'username', name: 'username' },
-            { data: 'designation', name: 'designation' },
+            { data: 'parent_user', name: 'parent_user', orderable: false, searchable: false },
             { data: 'role', name: 'role', orderable: false, searchable: false },
             { data: 'status_display', name: 'status_display', orderable: false, searchable: false, width: '80px' },
             { data: 'action', name: 'action', orderable: false, searchable: false, width: '120px' },

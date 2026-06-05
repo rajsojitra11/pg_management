@@ -18,7 +18,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('change-layout', [UserController::class, 'changeLayout'])->name('change-layout');
     Route::post('change-theme', [UserController::class, 'changeTheme'])->name('change-theme');
 
-    Route::get('users/designations/suggestions', [UserController::class, 'designationSuggestions'])->name('users.designations');
     Route::post('user-login-status-change', [UserController::class, 'userBlockUnblock'])->name('user-login-status-change');
     Route::post('user-status-change', [UserController::class, 'userActivateDeactivate'])->name('user-status-change');
     Route::get('profile/activities', [UserController::class, 'activities'])->name('profile.activities');

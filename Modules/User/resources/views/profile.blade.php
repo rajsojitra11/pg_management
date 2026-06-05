@@ -137,8 +137,8 @@
                     <p class="text-sm font-mono font-medium text-zinc-900">{{ $user->username ?? '—' }}</p>
                 </div>
                 <div>
-                    <p class="text-xs text-zinc-400 uppercase tracking-wider mb-1">{{ __('user::message.designation') }}</p>
-                    <p class="text-sm font-medium text-zinc-900">{{ $user->designation ?? '—' }}</p>
+                    <p class="text-xs text-zinc-400 uppercase tracking-wider mb-1">{{ __('user::message.parent_user') }}</p>
+                    <p class="text-sm font-medium text-zinc-900">{{ $user->profile?->parentUser?->email ?? '—' }}</p>
                 </div>
                 <div>
                     <p class="text-xs text-zinc-400 uppercase tracking-wider mb-1">{{ __('user::message.role') }}</p>

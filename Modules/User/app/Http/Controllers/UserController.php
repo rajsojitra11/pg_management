@@ -39,7 +39,11 @@ class UserController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = User::with('profile')->where('id', '!=', '1')->whereDoesntHave('roles', fn ($q) => $q->where('name', 'customer'));
+            $query = User::with('profile.parentUser')->where('id', '!=', '1')->whereDoesntHave('roles', fn ($q) => $q->where('name', 'customer'));
+
+            if (! auth()->user()->hasRole('Super_Admin')) {
+                $query->whereHas('profile', fn ($q) => $q->where('parent_id', auth()->id()));
+            }
 
             if ($search = trim((string) request('filter_search'))) {
                 $query->where(function ($q) use ($search) {
@@ -101,6 +105,13 @@ class UserController extends Controller
 
                     return '<span class="inline-flex items-center whitespace-nowrap rounded-md border px-2.5 py-0.5 text-xs font-medium" style="background-color:#fffbeb;color:#d97706;border-color:#fde68a;">Inactive</span>';
                 })
+                ->addColumn('parent_user', function ($row) {
+                    $parent = $row->profile?->parentUser;
+                    if ($parent) {
+                        return '<span class="text-zinc-700">' . e($parent->email) . '</span>';
+                    }
+                    return '<span class="text-zinc-400">—</span>';
+                })
                 ->addColumn('role', function ($row) {
                     $roles = '';
                     foreach ($row->getRoleNames() as $v) {
@@ -121,14 +132,16 @@ class UserController extends Controller
 
     public function create()
     {
-        // Role list stays server-rendered: Spatie role assignment is by NAME
-        // (not id), and the role <select> needs the full set rendered up front.
-        // See LOOKUP-CONSOLIDATION-001 — documented exception.
         $array_role = ['Super_Admin'];
         $roleMaster = Role::whereNotIn('name', $array_role)->pluck('name', 'name')->all();
 
-        // Manager / Head pickers load via `lookup.active-users` (R-PROJ-016).
-        return view('user::create', compact('roleMaster'));
+        $parentUsers = User::where('status', 'Active')->where('id', '!=', 1)->orderBy('email')->get(['id', 'name', 'email']);
+
+        if (! auth()->user()->hasRole('Super_Admin')) {
+            $parentUsers = $parentUsers->where('id', auth()->id());
+        }
+
+        return view('user::create', compact('roleMaster', 'parentUsers'));
     }
 
     public function store(StoreUserRequest $request)
@@ -142,7 +155,6 @@ class UserController extends Controller
             $user->mobile = $request->mobile;
             $user->username = $request->username;
             $user->status = $request->status;
-            $user->designation = $request->designation;
             $user->manager_id = $request->filled('manager_id') ? (int) $request->manager_id : null;
             $user->head_id = $request->filled('head_id') ? (int) $request->head_id : null;
             $user->created_by = auth()->id();
@@ -160,6 +172,7 @@ class UserController extends Controller
             $userProfile->date_of_birth = (! empty($request->dateofbirth)) ? date('Y-m-d', strtotime($request->dateofbirth)) : null;
             $userProfile->state_id = $request->filled('state_id') ? (int) $request->state_id : null;
             $userProfile->city_id = $request->filled('city_id') ? (int) $request->city_id : null;
+            $userProfile->parent_id = $request->filled('parent_id') ? (int) $request->parent_id : null;
             $userProfile->address = $request->address;
             if ($request->hasFile('profile_photo')) {
                 $userProfile->profile_photo = $request->file('profile_photo')->store('profile-photos', 'public');
@@ -253,7 +266,13 @@ class UserController extends Controller
         $rolePermissionIds = $user->getPermissionsViaRoles()->pluck('id')->toArray();
         $directPermissionIds = $user->getDirectPermissions()->pluck('id')->toArray();
 
-        return view('user::edit', compact('roleMaster', 'userProfile', 'user', 'userRole', 'permission', 'rolePermissionIds', 'directPermissionIds'));
+        $parentUsers = User::where('status', 'Active')->where('id', '!=', 1)->where('id', '!=', $user->id)->orderBy('email')->get(['id', 'name', 'email']);
+
+        if (! auth()->user()->hasRole('Super_Admin')) {
+            $parentUsers = $parentUsers->where('id', auth()->id());
+        }
+
+        return view('user::edit', compact('roleMaster', 'userProfile', 'user', 'userRole', 'permission', 'rolePermissionIds', 'directPermissionIds', 'parentUsers'));
     }
 
     public function update(UpdateUserRequest $request, $id)
@@ -282,7 +301,7 @@ class UserController extends Controller
             $originalEmail = $user->email;
             $originalMobile = $user->mobile;
             $originalUsername = $user->username;
-            $originalDesignation = $user->designation;
+            $originalParentId = $userProfile->parent_id;
             $originalStatus = $user->status;
             $originalRoles = $user->roles->pluck('name')->toArray();
 
@@ -306,7 +325,7 @@ class UserController extends Controller
             $newEmail = strtolower($request->email);
             $newMobile = $request->mobile;
             $newUsername = $request->username;
-            $newDesignation = $request->designation;
+            $newParentId = $request->filled('parent_id') ? (int) $request->parent_id : null;
             $newStatus = $request->status;
             $newRoles = $request->input('roles');
             $newFirstname = ucwords($request->firstname);
@@ -322,7 +341,6 @@ class UserController extends Controller
                 $originalEmail !== $newEmail ||
                 $originalMobile !== $newMobile ||
                 $originalUsername !== $newUsername ||
-                $originalDesignation !== $newDesignation ||
                 $originalStatus !== $newStatus
             ) {
                 $hasChanges = true;
@@ -333,6 +351,7 @@ class UserController extends Controller
                 $originalFirstname !== $newFirstname ||
                 $originalLastname !== $newLastname ||
                 $originalDateOfBirth !== $newDateOfBirth ||
+                $originalParentId != $newParentId ||
                 $originalStateId != $request->state_id ||
                 $originalCityId != $request->city_id ||
                 $request->hasFile('profile_photo')
@@ -380,7 +399,6 @@ class UserController extends Controller
             $user->email = $newEmail;
             $user->mobile = $newMobile;
             $user->username = $newUsername;
-            $user->designation = $newDesignation;
             $user->status = $newStatus;
             $user->updated_by = auth()->id(); // REQUIRED: Add user tracking
             if ($request->password) {
@@ -399,6 +417,7 @@ class UserController extends Controller
             $userProfile->firstname = $newFirstname;
             $userProfile->lastname = $newLastname;
             $userProfile->date_of_birth = $newDateOfBirth;
+            $userProfile->parent_id = $newParentId;
             $userProfile->state_id = $request->filled('state_id') ? (int) $request->state_id : null;
             $userProfile->city_id = $request->filled('city_id') ? (int) $request->city_id : null;
             if ($request->hasFile('profile_photo')) {
@@ -521,22 +540,7 @@ class UserController extends Controller
         }
     }
 
-    public function designationSuggestions(Request $request)
-    {
-        $search = $request->query('q', '');
-        $query = User::whereNotNull('designation')
-            ->where('designation', '!=', '')
-            ->select('designation')
-            ->distinct();
 
-        if ($search) {
-            $query->where('designation', 'LIKE', '%'.$search.'%');
-        }
-
-        return response()->json(
-            $query->orderBy('designation')->limit(15)->pluck('designation')
-        );
-    }
 
     public function changeTheme(Request $request)
     {

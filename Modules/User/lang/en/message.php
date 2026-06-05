@@ -32,7 +32,6 @@ return [
     'confirm_password' => 'Confirm Password',
     'current_password' => 'Current Password',
     'new_password' => 'New Password',
-    'designation' => 'Designation',
     'department' => 'Department',
     'role' => 'Role',
     'search' => 'Search',
@@ -154,7 +153,7 @@ return [
     'enter_password_regex' => 'at least 1 uppercase letter, 1 lowercase letter, 1 special character and 1 number',
     'password_mismatch' => 'Passwords do not match.',
 
-    'select_designation' => 'Enter designation',
+    'select_parent_user' => 'Select parent user',
     'select_role' => 'Select role',
     'enter_user_status' => 'Enter user status',
     'status_must_be_active_inactive' => 'Enter user status',

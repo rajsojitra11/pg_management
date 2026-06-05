@@ -36,7 +36,7 @@
             </div>
             <div>
                 <h3 class="text-base font-semibold text-zinc-900">{{ $user->name_prefix ? $user->name_prefix.' ' : '' }}{{ $user->name }}</h3>
-                <p class="text-sm text-zinc-500">{{ $user->designation ?? '—' }}</p>
+                <p class="text-sm text-zinc-500">{{ $userProfile->parentUser?->email ?? '—' }}</p>
             </div>
         </div>
 
@@ -67,8 +67,8 @@
                 <p class="text-sm text-zinc-800 mt-0.5">{{ $userProfile->date_of_birth ? \Carbon\Carbon::parse($userProfile->date_of_birth)->format('d-m-Y') : '—' }}</p>
             </div>
             <div>
-                <p class="text-xs font-medium text-zinc-400 uppercase tracking-wide">{{ __('user::message.designation') }}</p>
-                <p class="text-sm text-zinc-800 mt-0.5">{{ $user->designation ?? '—' }}</p>
+                <p class="text-xs font-medium text-zinc-400 uppercase tracking-wide">{{ __('user::message.parent_user') }}</p>
+                <p class="text-sm text-zinc-800 mt-0.5">{{ $userProfile->parentUser?->email ?? '—' }}</p>
             </div>
             <div>
                 <p class="text-xs font-medium text-zinc-400 uppercase tracking-wide">{{ __('user::message.role') }}</p>

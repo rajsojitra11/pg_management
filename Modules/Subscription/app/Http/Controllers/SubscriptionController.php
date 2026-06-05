@@ -26,7 +26,25 @@ class SubscriptionController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            return DataTables::of(Subscription::select('id', 'public_id', 'subscriber_name', 'email', 'phone', 'plan_type', 'start_date', 'end_date', 'status', 'amount', 'payment_status'))
+            $query = Subscription::select('id', 'public_id', 'subscriber_name', 'email', 'phone', 'plan_type', 'start_date', 'end_date', 'status', 'amount', 'payment_status');
+
+            if ($search = trim((string) request('filter_search'))) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('subscriber_name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%");
+                });
+            }
+
+            if ($status = request('filter_status')) {
+                $query->where('status', $status);
+            }
+
+            if ($paymentStatus = request('filter_payment_status')) {
+                $query->where('payment_status', $paymentStatus);
+            }
+
+            return DataTables::of($query)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $flag = true;
@@ -42,7 +60,28 @@ class SubscriptionController extends Controller
                     if ($row->status === 'active') {
                         return '<span class="inline-flex items-center rounded-md bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700 border border-green-200">Active</span>';
                     }
+                    if ($row->status === 'expired') {
+                        return '<span class="inline-flex items-center rounded-md bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700 border border-red-200">Expired</span>';
+                    }
+                    if ($row->status === 'cancelled') {
+                        return '<span class="inline-flex items-center rounded-md bg-zinc-50 px-2 py-0.5 text-xs font-medium text-zinc-700 border border-zinc-200">Cancelled</span>';
+                    }
+                    if ($row->status === 'pending') {
+                        return '<span class="inline-flex items-center rounded-md bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 border border-amber-200">Pending</span>';
+                    }
                     return $row->status ? ucfirst($row->status) : '';
+                })
+                ->editColumn('payment_status', function ($row) {
+                    if ($row->payment_status === 'paid') {
+                        return '<span class="inline-flex items-center rounded-md bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700 border border-green-200">Paid</span>';
+                    }
+                    if ($row->payment_status === 'unpaid') {
+                        return '<span class="inline-flex items-center rounded-md bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700 border border-red-200">Unpaid</span>';
+                    }
+                    if ($row->payment_status === 'pending') {
+                        return '<span class="inline-flex items-center rounded-md bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 border border-amber-200">Pending</span>';
+                    }
+                    return $row->payment_status ? ucfirst($row->payment_status) : '';
                 })
                 ->escapeColumns([])
                 ->make(true);

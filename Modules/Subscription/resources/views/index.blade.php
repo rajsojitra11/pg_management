@@ -17,6 +17,43 @@
     </div>
 </div>
 
+{{-- Filter Bar --}}
+<form id="filter_form" class="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm mb-4" onsubmit="return false;">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 lg:items-end">
+        <div class="lg:col-span-4">
+            <label class="block text-xs font-medium text-zinc-500 mb-1">{{ __('message.common.search') }}</label>
+            <div class="flex h-9 rounded-md border border-zinc-200 bg-white focus-within:ring-2 focus-within:ring-zinc-900 focus-within:ring-offset-2 overflow-hidden">
+                <span class="inline-flex items-center px-3 bg-zinc-50 border-r border-zinc-200 text-zinc-400 text-xs"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="text" id="filterSearch" name="filter_search" placeholder="{{ __('subscription::message.search_placeholder') }}" class="flex-1 min-w-0 bg-transparent px-3 text-sm text-zinc-700 placeholder:text-zinc-400 focus:outline-none">
+            </div>
+        </div>
+        <div class="lg:col-span-3">
+            <label class="block text-xs font-medium text-zinc-500 mb-1">{{ __('subscription::message.status') }}</label>
+            <select id="filterStatus" name="filter_status" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-700 focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500">
+                <option value="">{{ __('message.common.select') }}</option>
+                <option value="active">{{ __('subscription::message.status_active') }}</option>
+                <option value="expired">{{ __('subscription::message.status_expired') }}</option>
+                <option value="cancelled">{{ __('subscription::message.status_cancelled') }}</option>
+                <option value="pending">{{ __('subscription::message.status_pending') }}</option>
+            </select>
+        </div>
+        <div class="lg:col-span-3">
+            <label class="block text-xs font-medium text-zinc-500 mb-1">{{ __('subscription::message.payment_status') }}</label>
+            <select id="filterPaymentStatus" name="filter_payment_status" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-700 focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500">
+                <option value="">{{ __('message.common.select') }}</option>
+                <option value="paid">{{ __('subscription::message.payment_status_paid') }}</option>
+                <option value="unpaid">{{ __('subscription::message.payment_status_unpaid') }}</option>
+                <option value="pending">{{ __('subscription::message.payment_status_pending') }}</option>
+            </select>
+        </div>
+        <div class="lg:col-span-2 flex items-center gap-2 justify-end">
+            <button type="button" class="search h-9 px-4 rounded-md bg-zinc-900 text-white text-sm font-medium hover:bg-zinc-800">{{ __('subscription::message.apply') }}</button>
+            <button type="button" class="reset h-9 px-3 rounded-md border border-zinc-200 bg-white text-sm text-zinc-500 hover:bg-zinc-50">{{ __('subscription::message.reset') }}</button>
+        </div>
+    </div>
+</form>
+
+{{-- DataTable Card --}}
 <div class="rounded-lg border border-zinc-200 bg-white shadow-sm">
     <div class="p-4 overflow-x-auto">
         <table id="table" class="display responsive nowrap w-full">
@@ -263,7 +300,14 @@
 
     $(function() {
         table = initErpTable('#table', {
-            ajax: window.URL_ROUTE,
+            ajax: {
+                url: window.URL_ROUTE,
+                data: function (d) {
+                    d.filter_search = $('#filterSearch').val();
+                    d.filter_status = $('#filterStatus').val();
+                    d.filter_payment_status = $('#filterPaymentStatus').val();
+                }
+            },
             processing: true,
             serverSide: true,
             scrollX: true,
@@ -283,6 +327,22 @@
                 { data: 'action', name: 'action', orderable: false, sortable: false, width: '160px' }
             ]
         });
+
+        $(document).on('click', '#filter_form .search', function() {
+            table.ajax.reload();
+        });
+
+        $(document).on('click', '#filter_form .reset', function() {
+            $('#filter_form')[0].reset();
+            $('#filter_form').find('select').each(function () {
+                if (this._erpSelectInst) this._erpSelectInst.setValue('');
+            });
+            table.ajax.reload();
+        });
+
+        if (typeof initErpSelect === 'function') {
+            initErpSelect('#filterPaymentStatus', { allowClear: true, placeholder: '{{ __("message.common.select") }}' });
+        }
 
         if (typeof erpSearchSelect === 'function') {
             emailSelectInst = erpSearchSelect('#email', { placeholder: '{{ __("subscription::message.enter_email") }}' });

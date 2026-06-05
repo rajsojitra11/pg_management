@@ -48,7 +48,7 @@ class StoreUserRequest extends FormRequest
             ],
             'password' => 'required_with:confirm_password|min:8|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[@$!%*#?&]/',
             'confirm_password' => 'required|same:password',
-            'designation' => 'nullable|string|max:255',
+            'parent_id' => 'nullable|integer|exists:users,id',
             'roles' => 'required|array',
             'state_id' => 'nullable|integer|exists:states,id',
             'city_id' => 'nullable|integer|exists:cities,id',
@@ -72,7 +72,7 @@ class StoreUserRequest extends FormRequest
             'username.regex' => __('user::message.username_no_spaces'),
             'password.min' => __('user::message.enter_password_min'),
             'password.regex' => __('user::message.enter_password_regex'),
-            'designation.required' => __('user::message.select_designation'),
+            'parent_id.integer' => __('user::message.select_parent_user'),
             'roles.required' => __('user::message.select_role'),
         ];
     }

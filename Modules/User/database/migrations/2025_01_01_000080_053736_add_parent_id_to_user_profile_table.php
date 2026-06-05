@@ -11,8 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (! Schema::hasTable('user_profile')) {
-
+        if (Schema::hasTable('user_profile') && ! Schema::hasColumn('user_profile', 'parent_id')) {
             Schema::table('user_profile', function (Blueprint $table) {
                 $table->unsignedBigInteger('parent_id')->after('user_id')->comment('user id')->nullable();
                 $table->foreign('parent_id')->references('id')->on('users');

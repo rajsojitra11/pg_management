@@ -40,6 +40,11 @@ class UserProfile extends Model
         return $this->belongsTo(City::class, 'city_id');
     }
 
+    public function parentUser()
+    {
+        return $this->belongsTo(User::class, 'parent_id');
+    }
+
     /**
      * Override logging configuration to log UserProfile changes to User logs
      */

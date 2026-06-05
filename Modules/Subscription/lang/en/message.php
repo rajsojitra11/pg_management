@@ -25,6 +25,17 @@ return [
     'end_date_after_start' => 'End date must be after or equal to start date',
     'validation' => [],
 
+    'search_placeholder' => 'Search by name, email or phone',
+    'status_active' => 'Active',
+    'status_expired' => 'Expired',
+    'status_cancelled' => 'Cancelled',
+    'status_pending' => 'Pending',
+    'payment_status_paid' => 'Paid',
+    'payment_status_unpaid' => 'Unpaid',
+    'payment_status_pending' => 'Pending',
+    'apply' => 'Search',
+    'reset' => 'Reset',
+
     'created' => 'Subscription created successfully',
     'updated' => 'Subscription updated successfully',
     'deleted' => 'Subscription deleted successfully',
