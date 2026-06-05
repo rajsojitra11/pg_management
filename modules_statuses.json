@@ -13,5 +13,6 @@
     "Unit": true,
     "Year": true,
     "Subscription": true,
-    "PgManagement": true
+    "PgManagement": true,
+    "Room": true
 }

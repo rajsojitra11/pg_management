@@ -325,6 +325,68 @@ class PermissionTableSeeder extends Seeder
                 'section' => 'General',
             ],
 
+            [
+                'title_tag' => 'Room_Category',
+                'name' => 'room-category-list',
+                'title' => 'List',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Room_Category',
+                'name' => 'room-category-create',
+                'title' => 'Create',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Room_Category',
+                'name' => 'room-category-show',
+                'title' => 'Show',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Room_Category',
+                'name' => 'room-category-edit',
+                'title' => 'Edit',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Room_Category',
+                'name' => 'room-category-delete',
+                'title' => 'Delete',
+                'section' => 'General',
+            ],
+
+            [
+                'title_tag' => 'Room',
+                'name' => 'room-list',
+                'title' => 'List',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Room',
+                'name' => 'room-create',
+                'title' => 'Create',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Room',
+                'name' => 'room-show',
+                'title' => 'Show',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Room',
+                'name' => 'room-edit',
+                'title' => 'Edit',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Room',
+                'name' => 'room-delete',
+                'title' => 'Delete',
+                'section' => 'General',
+            ],
+
             // Reports
             [
                 'title_tag' => 'Activity_Log_Report',

@@ -1,0 +1,54 @@
+<?php
+
+namespace Modules\Room\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Modules\Room\Models\Room;
+
+class UpdateRoomRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        $id = Room::findByAnyKey($this->route('room') ?? $this->input('id'))?->id;
+
+        return [
+            'pg_id' => ['required', 'exists:pg_management,id'],
+            'category_id' => ['required', 'exists:pg_room_categories,id'],
+            'room_no' => [
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('pg_rooms')->ignore($id)->whereNull('deleted_at'),
+            ],
+            'bed_capacity' => ['nullable', 'integer', 'min:0'],
+            'rent_amount' => ['nullable', 'numeric', 'min:0'],
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'pg_id' => __('room::message.pg'),
+            'category_id' => __('room::message.category'),
+            'room_no' => __('room::message.room_no'),
+            'bed_capacity' => __('room::message.bed_capacity'),
+            'rent_amount' => __('room::message.rent_amount'),
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'pg_id.required' => __('room::message.select_pg'),
+            'category_id.required' => __('room::message.select_category'),
+            'room_no.required' => __('room::message.enter_room_no'),
+            'room_no.unique' => __('room::message.room_no_taken'),
+        ];
+    }
+}

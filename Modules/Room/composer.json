@@ -1,0 +1,31 @@
+{
+    "name": "nwidart/room",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Room\\": "app/",
+            "Modules\\Room\\Database\\Factories\\": "database/factories/",
+            "Modules\\Room\\Database\\Seeders\\": "database/seeders/"
+        },
+        "files": [
+            "Helpers/room_helper.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Room\\Tests\\": "tests/"
+        }
+    }
+}
