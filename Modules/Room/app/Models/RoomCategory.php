@@ -24,10 +24,18 @@ class RoomCategory extends Model
     protected $fillable = [
         'pg_id',
         'category_name',
+        'status',
         'created_by',
         'updated_by',
         'deleted_by',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'status' => 'string',
+        ];
+    }
 
     protected function getLoggingConfig(): array
     {

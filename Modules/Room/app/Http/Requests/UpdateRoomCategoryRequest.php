@@ -25,6 +25,7 @@ class UpdateRoomCategoryRequest extends FormRequest
                 'max:255',
                 Rule::unique('pg_room_categories')->ignore($id)->whereNull('deleted_at'),
             ],
+            'status' => ['nullable', 'string', 'in:active,inactive'],
         ];
     }
 

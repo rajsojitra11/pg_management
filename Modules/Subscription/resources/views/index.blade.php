@@ -345,7 +345,11 @@
         }
 
         if (typeof erpSearchSelect === 'function') {
-            emailSelectInst = erpSearchSelect('#email', { placeholder: '{{ __("subscription::message.enter_email") }}' });
+            var emailOptions = {!! json_encode($pgAdminUsers->map(function($u) { return ['value' => $u->email, 'label' => $u->email]; })->values()) !!};
+            emailSelectInst = erpSearchSelect('#email', {
+                placeholder: '{{ __("subscription::message.enter_email") }}',
+                options: emailOptions
+            });
         }
     });
 

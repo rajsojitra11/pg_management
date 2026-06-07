@@ -22,6 +22,7 @@ class StoreRoomCategoryRequest extends FormRequest
                 'max:255',
                 Rule::unique('pg_room_categories')->whereNull('deleted_at'),
             ],
+            'status' => ['nullable', 'string', 'in:active,inactive'],
         ];
     }
 

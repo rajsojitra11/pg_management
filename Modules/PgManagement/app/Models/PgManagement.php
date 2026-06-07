@@ -32,6 +32,7 @@ class PgManagement extends Model
         'city_id',
         'pincode',
         'address',
+        'status',
         'created_by',
         'updated_by',
         'deleted_by',
@@ -43,6 +44,7 @@ class PgManagement extends Model
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
             'deleted_at' => 'datetime',
+            'status' => 'string',
         ];
     }
 

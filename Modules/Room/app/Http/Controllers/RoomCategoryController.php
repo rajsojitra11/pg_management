@@ -26,7 +26,12 @@ class RoomCategoryController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = RoomCategory::with('pg')->select('id', 'public_id', 'pg_id', 'category_name');
+            $user = auth()->user();
+            $query = RoomCategory::with('pg')->select('id', 'public_id', 'pg_id', 'category_name', 'status');
+
+            if ($user->hasRole('Pg_Admin')) {
+                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+            }
 
             return DataTables::of($query)
                 ->addIndexColumn()
@@ -46,7 +51,14 @@ class RoomCategoryController extends Controller
                 ->escapeColumns([])
                 ->make(true);
         } else {
-            $pgList = PgManagement::select('id', 'pg_name')->get();
+            $user = auth()->user();
+            $query = PgManagement::select('id', 'pg_name')->where('status', 'active');
+
+            if ($user->hasRole('Pg_Admin')) {
+                $query->where('owner_id', $user->id);
+            }
+
+            $pgList = $query->get();
 
             return view('room::category.index', compact('pgList'));
         }

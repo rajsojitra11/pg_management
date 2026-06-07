@@ -47,6 +47,7 @@
                     <th>{{ __('pgmanagement::message.total_block') }}</th>
                     <th>{{ __('pgmanagement::message.total_room') }}</th>
                     <th>{{ __('pgmanagement::message.pincode') }}</th>
+                    <th>{{ __('message.common.status') }}</th>
                     <th>{{ __('message.common.action') }}</th>
                 </tr>
             </thead>
@@ -131,7 +132,7 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-3">
+                        <div class="grid grid-cols-3 gap-3">
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="country_id">
                                     {{ __('pgmanagement::message.country') }}
@@ -155,9 +156,6 @@
                                 </select>
                                 <div class="mt-1 text-sm text-red-500" id="error_state_id"></div>
                             </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="city_id">
                                     {{ __('pgmanagement::message.city') }}
@@ -169,6 +167,9 @@
                                 </select>
                                 <div class="mt-1 text-sm text-red-500" id="error_city_id"></div>
                             </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="pincode">
                                     {{ __('pgmanagement::message.pincode') }}
@@ -178,6 +179,17 @@
                                        name="pincode" id="pincode"
                                        placeholder="{{ __('pgmanagement::message.enter_pincode') }}">
                                 <div class="mt-1 text-sm text-red-500" id="error_pincode"></div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-zinc-700 mb-1" for="status">
+                                    {{ __('message.common.status') }}
+                                </label>
+                                <select name="status" id="status"
+                                        class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500">
+                                    <option value="active">{{ __('message.common.active') }}</option>
+                                    <option value="inactive">{{ __('message.common.inactive') }}</option>
+                                </select>
+                                <div class="mt-1 text-sm text-red-500" id="error_status"></div>
                             </div>
                         </div>
 
@@ -260,6 +272,10 @@
                         <p class="text-sm text-zinc-900" id="view_pincode">-</p>
                     </div>
                     <div>
+                        <p class="text-xs font-medium text-zinc-500 mb-1">{{ __('message.common.status') }}</p>
+                        <p class="text-sm text-zinc-900" id="view_status">-</p>
+                    </div>
+                    <div>
                         <p class="text-xs font-medium text-zinc-500 mb-1">{{ __('pgmanagement::message.address') }}</p>
                         <p class="text-sm text-zinc-900" id="view_address">-</p>
                     </div>
@@ -318,6 +334,7 @@
                 { data: 'total_block', name: 'total_block' },
                 { data: 'total_room', name: 'total_room' },
                 { data: 'pincode', name: 'pincode' },
+                { data: 'status', name: 'status', render: function(data) { return data ? data.charAt(0).toUpperCase() + data.slice(1) : '-'; } },
                 { data: 'action', name: 'action', orderable: false, sortable: false, width: '160px' }
             ]
         });
@@ -408,6 +425,7 @@
         $('#error_city_id').html('');
         $('#error_pincode').html('');
         $('#error_address').html('');
+        $('#error_status').html('');
         $('#inlineModal').find('.erp-btn-locked').each(function() {
             $(this).css({ opacity: '', pointerEvents: '' }).removeClass('erp-btn-locked').removeData('erp-original-pointer');
         });
@@ -456,6 +474,7 @@
                     $('#view_city_id').text(d.city_id || '-');
                     $('#view_pincode').text(d.pincode || '-');
                     $('#view_address').text(d.address || '-');
+                    $('#view_status').text(d.status ? d.status.charAt(0).toUpperCase() + d.status.slice(1) : '-');
                     $('#view_created_at').text(d.created_at || '-');
                     $('#view_updated_at').text(d.updated_at || '-');
                     $('#viewModal').removeClass('hidden');
@@ -491,6 +510,7 @@
                     $("#city_id").val(response.result.city_id);
                     $("#pincode").val(response.result.pincode);
                     $("#address").val(response.result.address);
+                    $("#status").val(response.result.status);
                     $("#id").val(id);
 
                     if (ownerSelectInst && typeof ownerSelectInst.setValue === 'function') {

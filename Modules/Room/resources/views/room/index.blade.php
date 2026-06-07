@@ -46,6 +46,7 @@
                     <th>{{ __('room::message.category') }}</th>
                     <th>{{ __('room::message.bed_capacity') }}</th>
                     <th>{{ __('room::message.rent_amount') }}</th>
+                    <th>{{ __('message.common.status') }}</th>
                     <th>{{ __('message.common.action') }}</th>
                 </tr>
             </thead>
@@ -97,18 +98,17 @@
                             <div class="mt-1 text-sm text-red-500" id="error_category_id"></div>
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-medium text-zinc-700 mb-1" for="room_no">
-                                {{ __('room::message.room_no') }}<span class="text-red-500"> *</span>
-                            </label>
-                            <input type="text" required
-                                   class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
-                                   name="room_no" id="room_no"
-                                   placeholder="{{ __('room::message.enter_room_no') }}">
-                            <div class="mt-1 text-sm text-red-500" id="error_room_no"></div>
-                        </div>
-
                         <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-sm font-medium text-zinc-700 mb-1" for="room_no">
+                                    {{ __('room::message.room_no') }}<span class="text-red-500"> *</span>
+                                </label>
+                                <input type="text" required
+                                       class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
+                                       name="room_no" id="room_no"
+                                       placeholder="{{ __('room::message.enter_room_no') }}">
+                                <div class="mt-1 text-sm text-red-500" id="error_room_no"></div>
+                            </div>
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="bed_capacity">
                                     {{ __('room::message.bed_capacity') }}
@@ -119,6 +119,9 @@
                                        placeholder="{{ __('room::message.enter_bed_capacity') }}">
                                 <div class="mt-1 text-sm text-red-500" id="error_bed_capacity"></div>
                             </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="rent_amount">
                                     {{ __('room::message.rent_amount') }}
@@ -128,6 +131,17 @@
                                        name="rent_amount" id="rent_amount"
                                        placeholder="{{ __('room::message.enter_rent_amount') }}">
                                 <div class="mt-1 text-sm text-red-500" id="error_rent_amount"></div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-zinc-700 mb-1" for="status">
+                                    {{ __('message.common.status') }}
+                                </label>
+                                <select name="status" id="status"
+                                        class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500">
+                                    <option value="active">{{ __('message.common.active') }}</option>
+                                    <option value="inactive">{{ __('message.common.inactive') }}</option>
+                                </select>
+                                <div class="mt-1 text-sm text-red-500" id="error_status"></div>
                             </div>
                         </div>
                     </div>
@@ -181,6 +195,10 @@
                     <div>
                         <p class="text-xs font-medium text-zinc-500 mb-1">{{ __('room::message.rent_amount') }}</p>
                         <p class="text-sm text-zinc-900" id="view_rent_amount">-</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-zinc-500 mb-1">{{ __('message.common.status') }}</p>
+                        <p class="text-sm text-zinc-900" id="view_status">-</p>
                     </div>
                     <div>
                         <p class="text-xs font-medium text-zinc-500 mb-1">{{ __('message.common.created_at') }}</p>
@@ -237,6 +255,7 @@
                 { data: 'category_name', name: 'category_name', orderable: false, searchable: false },
                 { data: 'bed_capacity', name: 'bed_capacity' },
                 { data: 'rent_amount', name: 'rent_amount' },
+                { data: 'status', name: 'status', render: function(data) { return data ? data.charAt(0).toUpperCase() + data.slice(1) : '-'; } },
                 { data: 'action', name: 'action', orderable: false, sortable: false, width: '160px' }
             ]
         });
@@ -296,6 +315,7 @@
         $('#error_room_no').html('');
         $('#error_bed_capacity').html('');
         $('#error_rent_amount').html('');
+        $('#error_status').html('');
         $('#inlineModal').find('.erp-btn-locked').each(function() {
             $(this).css({ opacity: '', pointerEvents: '' }).removeClass('erp-btn-locked').removeData('erp-original-pointer');
         });
@@ -343,6 +363,7 @@
                     $('#view_category_name').text(d.category_id || '-');
                     $('#view_bed_capacity').text(d.bed_capacity || '-');
                     $('#view_rent_amount').text(d.rent_amount || '-');
+                    $('#view_status').text(d.status ? d.status.charAt(0).toUpperCase() + d.status.slice(1) : '-');
                     $('#view_created_at').text(d.created_at || '-');
                     $('#view_updated_at').text(d.updated_at || '-');
                     $('#viewModal').removeClass('hidden');
@@ -372,6 +393,7 @@
                     $("#room_no").val(response.result.room_no);
                     $("#bed_capacity").val(response.result.bed_capacity);
                     $("#rent_amount").val(response.result.rent_amount);
+                    $("#status").val(response.result.status);
                     $("#id").val(id);
 
                     if (pgSelectInst && typeof pgSelectInst.setValue === 'function') {

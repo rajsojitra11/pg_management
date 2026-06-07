@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('room_no');
             $table->integer('bed_capacity')->nullable();
             $table->decimal('rent_amount', 10, 2)->nullable();
+            $table->string('status')->default('active');
             $table->timestamps();
             defaultMigration($table);
         });

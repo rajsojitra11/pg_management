@@ -86,7 +86,13 @@ class SubscriptionController extends Controller
                 ->escapeColumns([])
                 ->make(true);
         } else {
-            $pgAdminUsers = User::role('Pg_Admin')->get(['id', 'email', 'name']);
+            $user = auth()->user();
+
+            if ($user->hasRole('Pg_Admin')) {
+                $pgAdminUsers = $user->status === 'Active' ? collect([$user]) : collect();
+            } else {
+                $pgAdminUsers = User::role('Pg_Admin')->where('status', 'Active')->get(['id', 'email', 'name']);
+            }
 
             return view('subscription::index', compact('pgAdminUsers'));
         }

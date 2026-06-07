@@ -43,6 +43,7 @@
                     <th>#</th>
                     <th>{{ __('room::message.category_name') }}</th>
                     <th>{{ __('room::message.pg') }}</th>
+                    <th>{{ __('message.common.status') }}</th>
                     <th>{{ __('message.common.action') }}</th>
                 </tr>
             </thead>
@@ -80,6 +81,18 @@
                                 @endforeach
                             </select>
                             <div class="mt-1 text-sm text-red-500" id="error_pg_id"></div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-700 mb-1" for="status">
+                                {{ __('message.common.status') }}
+                            </label>
+                            <select name="status" id="status"
+                                    class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500">
+                                <option value="active">{{ __('message.common.active') }}</option>
+                                <option value="inactive">{{ __('message.common.inactive') }}</option>
+                            </select>
+                            <div class="mt-1 text-sm text-red-500" id="error_status"></div>
                         </div>
 
                         <div>
@@ -133,6 +146,10 @@
                         <p class="text-sm text-zinc-900" id="view_pg_name">-</p>
                     </div>
                     <div>
+                        <p class="text-xs font-medium text-zinc-500 mb-1">{{ __('message.common.status') }}</p>
+                        <p class="text-sm text-zinc-900" id="view_status">-</p>
+                    </div>
+                    <div>
                         <p class="text-xs font-medium text-zinc-500 mb-1">{{ __('message.common.created_at') }}</p>
                         <p class="text-sm text-zinc-900" id="view_created_at">-</p>
                     </div>
@@ -183,6 +200,7 @@
                 { data: 'id', render: function(data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; }, orderable: false, width: '50px' },
                 { data: 'category_name', name: 'category_name' },
                 { data: 'pg_name', name: 'pg_name', orderable: false, searchable: false },
+                { data: 'status', name: 'status', render: function(data) { return data ? data.charAt(0).toUpperCase() + data.slice(1) : '-'; } },
                 { data: 'action', name: 'action', orderable: false, sortable: false, width: '160px' }
             ]
         });
@@ -212,6 +230,7 @@
         $('#form').find('.erp-form-error-banner').hide();
         $('#error_pg_id').html('');
         $('#error_category_name').html('');
+        $('#error_status').html('');
         $('#inlineModal').find('.erp-btn-locked').each(function() {
             $(this).css({ opacity: '', pointerEvents: '' }).removeClass('erp-btn-locked').removeData('erp-original-pointer');
         });
@@ -252,6 +271,7 @@
                     var d = response.result;
                     $('#view_category_name').text(d.category_name || '-');
                     $('#view_pg_name').text(d.pg_id || '-');
+                    $('#view_status').text(d.status ? d.status.charAt(0).toUpperCase() + d.status.slice(1) : '-');
                     $('#view_created_at').text(d.created_at || '-');
                     $('#view_updated_at').text(d.updated_at || '-');
                     $('#viewModal').removeClass('hidden');
@@ -279,6 +299,7 @@
                 if (response.status_code == 200) {
                     $("#exampleModalTitle").html("{{ __('room::message.edit_category') }}");
                     $("#category_name").val(response.result.category_name);
+                    $("#status").val(response.result.status);
                     $("#id").val(id);
 
                     if (pgSelectInst && typeof pgSelectInst.setValue === 'function') {

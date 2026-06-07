@@ -26,7 +26,12 @@ class PgManagementController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = PgManagement::select('id', 'public_id', 'pg_name', 'owner_id', 'mobile_no', 'total_block', 'total_room', 'country_id', 'state_id', 'city_id', 'pincode', 'address');
+            $user = auth()->user();
+            $query = PgManagement::select('id', 'public_id', 'pg_name', 'owner_id', 'mobile_no', 'total_block', 'total_room', 'country_id', 'state_id', 'city_id', 'pincode', 'address', 'status');
+
+            if ($user->hasRole('Pg_Admin')) {
+                $query->where('owner_id', $user->id);
+            }
 
             if ($search = trim((string) request('filter_search'))) {
                 $query->where(function ($q) use ($search) {
@@ -53,7 +58,13 @@ class PgManagementController extends Controller
                 ->escapeColumns([])
                 ->make(true);
         } else {
-            $pgAdminUsers = User::role('Pg_Admin')->get(['id', 'email', 'name']);
+            $user = auth()->user();
+
+            if ($user->hasRole('Pg_Admin')) {
+                $pgAdminUsers = $user->status === 'Active' ? collect([$user]) : collect();
+            } else {
+                $pgAdminUsers = User::role('Pg_Admin')->where('status', 'Active')->get(['id', 'email', 'name']);
+            }
 
             return view('pgmanagement::index', compact('pgAdminUsers'));
         }

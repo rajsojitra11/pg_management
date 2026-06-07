@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('public_id', 26)->unique();
             $table->unsignedBigInteger('pg_id');
             $table->string('category_name');
+            $table->string('status')->default('active');
             $table->timestamps();
             defaultMigration($table);
         });

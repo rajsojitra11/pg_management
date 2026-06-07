@@ -30,6 +30,7 @@ class StorePgManagementRequest extends FormRequest
             'city_id' => ['nullable', 'exists:cities,id'],
             'pincode' => ['nullable', 'string', 'max:10'],
             'address' => ['nullable', 'string'],
+            'status' => ['nullable', 'string', 'in:active,inactive'],
         ];
     }
 

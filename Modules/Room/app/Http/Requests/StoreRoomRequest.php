@@ -25,6 +25,7 @@ class StoreRoomRequest extends FormRequest
             ],
             'bed_capacity' => ['nullable', 'integer', 'min:0'],
             'rent_amount' => ['nullable', 'numeric', 'min:0'],
+            'status' => ['nullable', 'string', 'in:active,inactive'],
         ];
     }
 

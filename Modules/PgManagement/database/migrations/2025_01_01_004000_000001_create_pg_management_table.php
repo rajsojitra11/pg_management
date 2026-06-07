@@ -21,6 +21,7 @@ return new class extends Migration
             $table->unsignedBigInteger('city_id')->nullable();
             $table->string('pincode', 10)->nullable();
             $table->text('address')->nullable();
+            $table->string('status')->default('active');
             $table->timestamps();
             defaultMigration($table);
         });

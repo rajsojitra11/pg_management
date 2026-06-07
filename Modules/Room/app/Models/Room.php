@@ -27,6 +27,7 @@ class Room extends Model
         'room_no',
         'bed_capacity',
         'rent_amount',
+        'status',
         'created_by',
         'updated_by',
         'deleted_by',
@@ -36,6 +37,7 @@ class Room extends Model
     {
         return [
             'rent_amount' => 'decimal:2',
+            'status' => 'string',
         ];
     }
 

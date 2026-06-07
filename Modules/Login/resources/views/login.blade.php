@@ -163,7 +163,7 @@
                                     </span>
                                 @else
                                     <div class="h-11 w-11 rounded-lg bg-zinc-900 flex items-center justify-center">
-                                        <i class="fa-solid fa-print text-white text-lg"></i>
+                                        <i class="fa-solid fa-building text-white text-lg"></i>
                                     </div>
                                 @endif
                             </div>
