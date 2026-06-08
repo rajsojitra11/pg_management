@@ -298,6 +298,20 @@ class MenuMasterDatabaseSeeder extends Seeder
                 'created_by' => 1,
                 'updated_by' => 1,
             ],
+            [
+                'id' => 6,
+                'menu_icon' => 'fa-solid fa-bullhorn',
+                'menu_title' => 'noticeboard::message.noticeboards',
+                'menu_route' => 'noticeboard.index',
+                'is_main_menu' => 0,
+                'parent_id' => null,
+                'module_name' => 'Noticeboard',
+                'order_display' => '001.006',
+                'display_order' => '1.6',
+                'if_can' => 'noticeboard-list',
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
 
             // ── Parent: General Master (id 2) ──────────────────────────
             [

@@ -387,6 +387,37 @@ class PermissionTableSeeder extends Seeder
                 'section' => 'General',
             ],
 
+            [
+                'title_tag' => 'Noticeboard',
+                'name' => 'noticeboard-list',
+                'title' => 'List',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Noticeboard',
+                'name' => 'noticeboard-create',
+                'title' => 'Create',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Noticeboard',
+                'name' => 'noticeboard-show',
+                'title' => 'Show',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Noticeboard',
+                'name' => 'noticeboard-edit',
+                'title' => 'Edit',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Noticeboard',
+                'name' => 'noticeboard-delete',
+                'title' => 'Delete',
+                'section' => 'General',
+            ],
+
             // Reports
             [
                 'title_tag' => 'Activity_Log_Report',
@@ -524,6 +555,7 @@ class PermissionTableSeeder extends Seeder
                 'room-list', 'room-create', 'room-show', 'room-edit',
                 'room-category-list', 'room-category-show',
                 'subscription-list', 'subscription-create', 'subscription-show', 'subscription-edit',
+                'noticeboard-list', 'noticeboard-create', 'noticeboard-show', 'noticeboard-edit',
             ];
             $pgManagerPermissions = Permission::whereIn('name', $pgManagerPermissionNames)->pluck('id')->toArray();
             $pgManagerRole->syncPermissions($pgManagerPermissions);

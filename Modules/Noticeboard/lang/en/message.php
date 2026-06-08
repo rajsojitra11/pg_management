@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'noticeboard' => 'Noticeboard',
+    'noticeboards' => 'Noticeboards',
+    'noticeboard_master' => 'Noticeboard Master',
+    'noticeboard_list' => 'Noticeboard List',
+    'add_noticeboard' => 'Add Notice',
+    'edit_noticeboard' => 'Edit Notice',
+    'view_noticeboard' => 'Notice',
+    'pg' => 'PG',
+    'title' => 'Title',
+    'image' => 'Image',
+    'description' => 'Description',
+    'status' => 'Status',
+    'select_pg' => 'Please select a PG',
+    'enter_title' => 'Enter notice title',
+    'title_taken' => 'This title is already taken',
+    'select_image' => 'Select an image',
+    'enter_description' => 'Enter notice description',
+    'search_placeholder' => 'Search by title or PG',
+    'apply' => 'Search',
+    'reset' => 'Reset',
+    'created' => 'Notice created successfully',
+    'updated' => 'Notice updated successfully',
+    'deleted' => 'Notice deleted successfully',
+    'restored' => 'Notice restored successfully',
+];

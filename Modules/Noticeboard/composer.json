@@ -1,0 +1,31 @@
+{
+    "name": "nwidart/noticeboard",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Noticeboard\\": "app/",
+            "Modules\\Noticeboard\\Database\\Factories\\": "database/factories/",
+            "Modules\\Noticeboard\\Database\\Seeders\\": "database/seeders/"
+        },
+        "files": [
+            "Helpers/noticeboard_helper.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Noticeboard\\Tests\\": "tests/"
+        }
+    }
+}

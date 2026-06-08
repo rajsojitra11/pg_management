@@ -14,5 +14,6 @@
     "Year": true,
     "Subscription": true,
     "PgManagement": true,
-    "Room": true
+    "Room": true,
+    "Noticeboard": true
 }

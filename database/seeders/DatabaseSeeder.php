@@ -13,6 +13,7 @@ use Modules\Dashbord\Database\Seeders\DashbordDatabaseSeeder;
 use Modules\EnvVariable\Database\Seeders\EnvVariableDatabaseSeeder;
 use Modules\Login\Database\Seeders\LoginDatabaseSeeder;
 use Modules\MenuMaster\Database\Seeders\MenuMasterDatabaseSeeder;
+use Modules\Noticeboard\Database\Seeders\NoticeboardDatabaseSeeder;
 use Modules\Role\Database\Seeders\RoleDatabaseSeeder;
 use Modules\Setting\Database\Seeders\SettingDatabaseSeeder;
 use Modules\State\Database\Seeders\StateDatabaseSeeder;
@@ -52,6 +53,7 @@ class DatabaseSeeder extends Seeder
             CityDatabaseSeeder::class,
             CurrencyDatabaseSeeder::class,
             SubscriptionDatabaseSeeder::class,
+            NoticeboardDatabaseSeeder::class,
             UnitDatabaseSeeder::class,
             YearDatabaseSeeder::class,
         ]);

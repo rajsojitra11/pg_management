@@ -1,0 +1,11 @@
+{
+    "name": "Noticeboard",
+    "alias": "noticeboard",
+    "description": "Noticeboard module for managing notices with rich text",
+    "keywords": [],
+    "priority": 97,
+    "providers": [
+        "Modules\\Noticeboard\\Providers\\NoticeboardServiceProvider"
+    ],
+    "files": []
+}
