@@ -18,10 +18,21 @@ class Role extends SpatieRole
         'name',
         'title',
         'guard_name',
+        'access_type',
         'created_by',
         'updated_by',
         'deleted_by',
     ];
+
+    public function isWebAccessible(): bool
+    {
+        return in_array($this->access_type, ['web', 'both']);
+    }
+
+    public function isMobileAccessible(): bool
+    {
+        return in_array($this->access_type, ['mobile', 'both']);
+    }
 
     protected function getLoggingConfig(): array
     {

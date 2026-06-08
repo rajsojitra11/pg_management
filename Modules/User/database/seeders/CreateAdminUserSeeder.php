@@ -40,7 +40,7 @@ class CreateAdminUserSeeder extends Seeder
             }
         }
 
-        // ── Super_Admin user + role ─────────────────────────────────────
+        // ── Super_Admin user + role (web only) ──────────────────────────
         $superAdminUser = $this->createUserWithLogging([
             'name' => 'Super_Admin',
             'mobile' => '9876543210',
@@ -58,6 +58,7 @@ class CreateAdminUserSeeder extends Seeder
             ['name' => 'Super_Admin', 'guard_name' => 'web'],
             [
                 'title' => 'Super_Admin',
+                'access_type' => 'web',
                 'created_by' => 1,
                 'updated_by' => 1,
                 'created_at' => $migrationDate,
@@ -70,7 +71,7 @@ class CreateAdminUserSeeder extends Seeder
             $this->logSeederOperation("Assigned Super_Admin role to user: {$superAdminUser->name}", User::class, $superAdminRole);
         }
 
-        // ── Pg_Admin user + role ───────────────────────────────────
+        // ── Pg_Admin user + role (web + mobile app) ──────────────────
         $companyAdminUser = $this->createUserWithLogging([
             'name' => 'Pg Admin',
             'mobile' => '9876543110',
@@ -88,6 +89,7 @@ class CreateAdminUserSeeder extends Seeder
             ['name' => 'Pg_Admin', 'guard_name' => 'web'],
             [
                 'title' => 'Pg_Admin',
+                'access_type' => 'both',
                 'created_by' => 1,
                 'updated_by' => 1,
                 'created_at' => $migrationDate,
@@ -98,6 +100,68 @@ class CreateAdminUserSeeder extends Seeder
         if ($companyAdminUser && $companyAdminRole) {
             $companyAdminUser->assignRole($companyAdminRole);
             $this->logSeederOperation("Assigned Pg_Admin role to user: {$companyAdminUser->name}", User::class, $companyAdminRole);
+        }
+
+        // ── Pg_Manager user + role (mobile app only) ─────────────────
+        $pgManagerUser = $this->createUserWithLogging([
+            'name' => 'Pg Manager',
+            'mobile' => '9876543220',
+            'username' => 'pg_manager',
+            'email' => 'pg_manager@app.com',
+            'password' => bcrypt('Manager@123'),
+            'status' => 'Active',
+        ], [
+            'firstname' => 'Pg',
+            'lastname' => 'Manager',
+            'date_of_birth' => '1990-01-01',
+        ]);
+
+        $pgManagerRole = Role::firstOrCreate(
+            ['name' => 'Pg_Manager', 'guard_name' => 'web'],
+            [
+                'title' => 'Pg_Manager',
+                'access_type' => 'mobile',
+                'created_by' => 1,
+                'updated_by' => 1,
+                'created_at' => $migrationDate,
+                'updated_at' => $migrationDate,
+            ]
+        );
+
+        if ($pgManagerUser && $pgManagerRole) {
+            $pgManagerUser->assignRole($pgManagerRole);
+            $this->logSeederOperation("Assigned Pg_Manager role to user: {$pgManagerUser->name}", User::class, $pgManagerRole);
+        }
+
+        // ── Tenant user + role (mobile app only) ─────────────────────
+        $tenantUser = $this->createUserWithLogging([
+            'name' => 'Tenant',
+            'mobile' => '9876543230',
+            'username' => 'tenant',
+            'email' => 'tenant@app.com',
+            'password' => bcrypt('Tenant@123'),
+            'status' => 'Active',
+        ], [
+            'firstname' => 'Tenant',
+            'lastname' => 'User',
+            'date_of_birth' => '1990-01-01',
+        ]);
+
+        $tenantRole = Role::firstOrCreate(
+            ['name' => 'Tenant', 'guard_name' => 'web'],
+            [
+                'title' => 'Tenant',
+                'access_type' => 'mobile',
+                'created_by' => 1,
+                'updated_by' => 1,
+                'created_at' => $migrationDate,
+                'updated_at' => $migrationDate,
+            ]
+        );
+
+        if ($tenantUser && $tenantRole) {
+            $tenantUser->assignRole($tenantRole);
+            $this->logSeederOperation("Assigned Tenant role to user: {$tenantUser->name}", User::class, $tenantRole);
         }
     }
 

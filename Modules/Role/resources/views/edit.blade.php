@@ -35,10 +35,10 @@
                 {{ __('role::message.name') }} <span class="text-red-500">*</span>
             </label>
             <input type="text" name="name" id="roleName" required
-                   class="w-full sm:w-96 h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-700 placeholder:text-zinc-400 focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500 {{ in_array($role->id, [1, 2, 3]) ? 'bg-zinc-50' : '' }}"
+                   class="w-full sm:w-96 h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-700 placeholder:text-zinc-400 focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500 {{ in_array($role->name, ['Super_Admin', 'Pg_Admin', 'Pg_Manager', 'Tenant']) ? 'bg-zinc-50' : '' }}"
                    placeholder="{{ __('role::message.name') }}" value="{{ old('name', $role->name) }}"
-                   {{ in_array($role->id, [1, 2, 3]) ? 'readonly' : '' }}>
-            @if (in_array($role->id, [1, 2, 3]))
+                   {{ in_array($role->name, ['Super_Admin', 'Pg_Admin', 'Pg_Manager', 'Tenant']) ? 'readonly' : '' }}">
+            @if (in_array($role->name, ['Super_Admin', 'Pg_Admin', 'Pg_Manager', 'Tenant']))
                 <p class="mt-1.5 text-xs" style="color: var(--erp-text-tertiary);">
                     <i class="fa-solid fa-lock text-xs mr-1"></i>System role — name cannot be changed
                 </p>

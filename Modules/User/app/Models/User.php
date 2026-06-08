@@ -231,6 +231,35 @@ class User extends Authenticatable
     }
 
     /**
+     * All descendant user ids (immediate children + their children + …).
+     * Walks the user_profile.parent_id chain breadth-first; cycle-safe.
+     */
+    public function getAllSubordinateIds(): array
+    {
+        $visited = [];
+        $queue = [$this->id];
+
+        while (! empty($queue)) {
+            $batch = $queue;
+            $queue = [];
+            $children = UserProfile::whereIn('parent_id', $batch)
+                ->pluck('user_id')
+                ->filter()
+                ->unique()
+                ->values()
+                ->all();
+            foreach ($children as $cid) {
+                if (! in_array($cid, $visited, true) && $cid !== $this->id) {
+                    $visited[] = $cid;
+                    $queue[] = $cid;
+                }
+            }
+        }
+
+        return $visited;
+    }
+
+    /**
      * True when $this is anywhere up the hierarchy chain above $userId.
      * Use this for "manager-can-override" gates — e.g. Item edit override.
      */

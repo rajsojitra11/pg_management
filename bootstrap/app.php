@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckAccessType;
 use App\Http\Middleware\SessionExpiryHandler;
 use App\Http\Middleware\SessionExtensionMiddleware;
 use Illuminate\Foundation\Application;
@@ -32,6 +33,11 @@ return Application::configure(basePath: dirname(__DIR__))
             SessionExtensionMiddleware::class,
             SessionExpiryHandler::class,
             AuthenticateSession::class,
+            CheckAccessType::class.':web',
+        ]);
+
+        $middleware->api(append: [
+            CheckAccessType::class.':mobile',
         ]);
 
         $middleware->alias([
@@ -40,6 +46,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => RoleOrPermissionMiddleware::class,
             'session.extend' => SessionExtensionMiddleware::class,
             'auth.session' => AuthenticateSession::class,
+            'access.type' => CheckAccessType::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

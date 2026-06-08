@@ -56,7 +56,7 @@
                 </a>
                 @endcan
             </div>
-            @if ($role->id != 1 && $role->id != 2 && $role->id != 3)
+            @if (! in_array($role->name, ['Super_Admin', 'Pg_Admin', 'Pg_Manager', 'Tenant']))
                 @can('role-delete')
                 <a href="javascript:void(0);" data-id="{{ $role->id }}" class="delete p-1.5 rounded-md text-red-500 hover:bg-red-50 transition-colors">
                     <i class="fa-solid fa-trash text-xs"></i>

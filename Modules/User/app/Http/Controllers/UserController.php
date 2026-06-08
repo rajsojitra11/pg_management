@@ -42,7 +42,12 @@ class UserController extends Controller
             $query = User::with('profile.parentUser')->where('id', '!=', '1')->whereDoesntHave('roles', fn ($q) => $q->where('name', 'customer'));
 
             if (! auth()->user()->hasRole('Super_Admin')) {
-                $query->whereHas('profile', fn ($q) => $q->where('parent_id', auth()->id()));
+                $subIds = auth()->user()->getAllSubordinateIds();
+                if (! empty($subIds)) {
+                    $query->whereIn('id', $subIds);
+                } else {
+                    $query->whereRaw('1 = 0');
+                }
             }
 
             if ($search = trim((string) request('filter_search'))) {

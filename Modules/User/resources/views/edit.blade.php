@@ -209,6 +209,7 @@
             </div>
 
             {{-- Direct Permissions (chip grid — same as Role edit) --}}
+            @can('system-administration-access')
             @if (isset($permission) && count($permission) > 0)
             <div class="pt-6 border-t border-zinc-200">
                 @include('role::partials.permission-grid', [
@@ -219,6 +220,7 @@
                 ])
             </div>
             @endif
+            @endcan
 
             {{-- Actions --}}
             <div class="flex items-center justify-end gap-2 mt-10 pt-6 border-t border-zinc-200">

@@ -174,41 +174,9 @@
                 </button>
             </div>
 
-            <div class="p-5 space-y-4">
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <p class="text-xs font-medium text-zinc-500 mb-1">{{ __('room::message.room_no') }}</p>
-                        <p class="text-sm font-semibold text-zinc-900" id="view_room_no">-</p>
-                    </div>
-                    <div>
-                        <p class="text-xs font-medium text-zinc-500 mb-1">{{ __('room::message.pg') }}</p>
-                        <p class="text-sm text-zinc-900" id="view_pg_name">-</p>
-                    </div>
-                    <div>
-                        <p class="text-xs font-medium text-zinc-500 mb-1">{{ __('room::message.category') }}</p>
-                        <p class="text-sm text-zinc-900" id="view_category_name">-</p>
-                    </div>
-                    <div>
-                        <p class="text-xs font-medium text-zinc-500 mb-1">{{ __('room::message.bed_capacity') }}</p>
-                        <p class="text-sm text-zinc-900" id="view_bed_capacity">-</p>
-                    </div>
-                    <div>
-                        <p class="text-xs font-medium text-zinc-500 mb-1">{{ __('room::message.rent_amount') }}</p>
-                        <p class="text-sm text-zinc-900" id="view_rent_amount">-</p>
-                    </div>
-                    <div>
-                        <p class="text-xs font-medium text-zinc-500 mb-1">{{ __('message.common.status') }}</p>
-                        <p class="text-sm text-zinc-900" id="view_status">-</p>
-                    </div>
-                    <div>
-                        <p class="text-xs font-medium text-zinc-500 mb-1">{{ __('message.common.created_at') }}</p>
-                        <p class="text-sm text-zinc-900" id="view_created_at">-</p>
-                    </div>
-                    <div>
-                        <p class="text-xs font-medium text-zinc-500 mb-1">{{ __('message.common.updated_at') }}</p>
-                        <p class="text-sm text-zinc-900" id="view_updated_at">-</p>
-                    </div>
-                </div>
+            <div class="p-6">
+                <p class="text-sm font-medium text-zinc-500 mb-4 text-center">{{ __('room::message.bed_capacity') }}</p>
+                <div class="flex flex-wrap justify-center gap-4" id="view_bed_capacity">-</div>
             </div>
 
             <div class="flex items-center justify-end gap-2 p-4 border-t border-zinc-200">
@@ -358,14 +326,15 @@
             success: function(response) {
                 if (response.status_code == 200) {
                     var d = response.result;
-                    $('#view_room_no').text(d.room_no || '-');
-                    $('#view_pg_name').text(d.pg_id || '-');
-                    $('#view_category_name').text(d.category_id || '-');
-                    $('#view_bed_capacity').text(d.bed_capacity || '-');
-                    $('#view_rent_amount').text(d.rent_amount || '-');
-                    $('#view_status').text(d.status ? d.status.charAt(0).toUpperCase() + d.status.slice(1) : '-');
-                    $('#view_created_at').text(d.created_at || '-');
-                    $('#view_updated_at').text(d.updated_at || '-');
+                    var bedHtml = '';
+                    if (d.bed_capacity) {
+                        for (var i = 0; i < d.bed_capacity; i++) {
+                            bedHtml += '<button type="button" class="bed-select p-3 rounded-lg border-2 border-zinc-200 text-zinc-400 hover:border-zinc-400 hover:text-zinc-600 transition-colors"><i class="fa-solid fa-bed text-3xl"></i></button>';
+                        }
+                    } else {
+                        bedHtml = '-';
+                    }
+                    $('#view_bed_capacity').html(bedHtml);
                     $('#viewModal').removeClass('hidden');
                 } else if (response.status_code == 201 || response.status_code == 404) {
                     toastr.warning(response.message, "Warning");
@@ -374,6 +343,10 @@
                 }
             }
         });
+    });
+
+    $(document).on('click', '.bed-select', function() {
+        $(this).toggleClass('border-zinc-900 bg-zinc-100 text-zinc-900');
     });
 
     $(document).on('click', '.edit', function(e) {

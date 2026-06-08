@@ -494,19 +494,19 @@ class PermissionTableSeeder extends Seeder
             }
         }
 
-        // After creating permissions, sync them to Super_Admin and Pg_Admin roles
+        // After creating permissions, sync them to roles
         $allPermissions = Permission::pluck('id', 'id')->all();
 
         // Get system administration permission
         $systemAdminPermission = Permission::where('name', 'system-administration-access')->first();
 
-        // Sync all permissions to Super_Admin (including system-administration-access)
+        // ── Super_Admin: all permissions ───────────────────────────────
         $superAdminRole = Role::where('name', 'Super_Admin')->first();
         if ($superAdminRole) {
             $superAdminRole->syncPermissions($allPermissions);
         }
 
-        // Sync all permissions EXCEPT system-administration-access to Pg_Admin
+        // ── Pg_Admin: all except system-administration-access ──────────
         $PgAdminRole = Role::where('name', 'Pg_Admin')->first();
         if ($PgAdminRole) {
             $companyPermissions = $allPermissions;
@@ -514,6 +514,31 @@ class PermissionTableSeeder extends Seeder
                 unset($companyPermissions[$systemAdminPermission->id]);
             }
             $PgAdminRole->syncPermissions($companyPermissions);
+        }
+
+        // ── Pg_Manager: mobile-relevant permissions ────────────────────
+        $pgManagerRole = Role::where('name', 'Pg_Manager')->first();
+        if ($pgManagerRole) {
+            $pgManagerPermissionNames = [
+                'pgmanagement-list', 'pgmanagement-create', 'pgmanagement-show', 'pgmanagement-edit',
+                'room-list', 'room-create', 'room-show', 'room-edit',
+                'room-category-list', 'room-category-show',
+                'subscription-list', 'subscription-create', 'subscription-show', 'subscription-edit',
+            ];
+            $pgManagerPermissions = Permission::whereIn('name', $pgManagerPermissionNames)->pluck('id')->toArray();
+            $pgManagerRole->syncPermissions($pgManagerPermissions);
+        }
+
+        // ── Tenant: minimal read-only permissions ──────────────────────
+        $tenantRole = Role::where('name', 'Tenant')->first();
+        if ($tenantRole) {
+            $tenantPermissionNames = [
+                'pgmanagement-show',
+                'room-show',
+                'subscription-list', 'subscription-show',
+            ];
+            $tenantPermissions = Permission::whereIn('name', $tenantPermissionNames)->pluck('id')->toArray();
+            $tenantRole->syncPermissions($tenantPermissions);
         }
     }
 }
