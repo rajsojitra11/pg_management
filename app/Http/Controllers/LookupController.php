@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use Modules\City\Models\City;
 use Modules\Country\Models\Country;
 use Modules\Currency\Models\Currency;
+use Modules\PgManagement\Models\PgManagement;
+use Modules\Room\Models\Room;
 use Modules\State\Models\State;
 use Modules\Unit\Models\Unit;
 use Modules\User\Models\User;
@@ -176,6 +178,40 @@ class LookupController extends Controller
             ->limit($this->limit($request))
             ->get()
             ->map(fn($y) => ['value' => (string) $y->id, 'label' => $y->name]);
+
+        return response()->json($rows);
+    }
+
+    public function pgList(Request $request): JsonResponse
+    {
+        $user = auth()->user();
+
+        $rows = PgManagement::select('id', 'pg_name')
+            ->where('status', 'active')
+            ->when($user->hasRole('Pg_Admin'), fn($q) => $q->where('owner_id', $user->id))
+            ->when($request->filled('q'), fn($q) => $q->where('pg_name', 'like', '%' . $request->input('q') . '%'))
+            ->orderBy('pg_name')
+            ->limit($this->limit($request))
+            ->get()
+            ->map(fn($p) => ['value' => (string) $p->id, 'label' => $p->pg_name]);
+
+        return response()->json($rows);
+    }
+
+    public function roomsByPg(Request $request): JsonResponse
+    {
+        $pgId = $request->input('pg_id');
+        if (! $pgId) {
+            return response()->json([]);
+        }
+
+        $rows = Room::select('id', 'room_no')
+            ->where('pg_id', $pgId)
+            ->where('status', 'active')
+            ->orderBy('room_no')
+            ->limit($this->limit($request))
+            ->get()
+            ->map(fn($r) => ['value' => (string) $r->id, 'label' => $r->room_no]);
 
         return response()->json($rows);
     }

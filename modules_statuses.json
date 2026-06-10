@@ -15,5 +15,6 @@
     "Subscription": true,
     "PgManagement": true,
     "Room": true,
-    "Noticeboard": true
+    "Noticeboard": true,
+    "Tenant": true
 }

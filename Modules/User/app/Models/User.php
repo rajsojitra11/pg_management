@@ -232,7 +232,7 @@ class User extends Authenticatable
 
     /**
      * All descendant user ids (immediate children + their children + …).
-     * Walks the user_profile.parent_id chain breadth-first; cycle-safe.
+     * Walks the user_hierarchies table breadth-first; cycle-safe.
      */
     public function getAllSubordinateIds(): array
     {
@@ -242,7 +242,8 @@ class User extends Authenticatable
         while (! empty($queue)) {
             $batch = $queue;
             $queue = [];
-            $children = UserProfile::whereIn('parent_id', $batch)
+            $children = UserHierarchy::whereIn('parent_id', $batch)
+                ->whereNull('deleted_at')
                 ->pluck('user_id')
                 ->filter()
                 ->unique()

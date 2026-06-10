@@ -55,6 +55,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('lookup/units', [LookupController::class, 'units'])->name('lookup.units');
     Route::get('lookup/years', [LookupController::class, 'years'])->name('lookup.years');
     Route::get('lookup/active-users', [LookupController::class, 'activeUsers'])->name('lookup.active-users');
+    Route::get('lookup/pg-list', [LookupController::class, 'pgList'])->name('lookup.pg-list');
+    Route::get('lookup/rooms-by-pg', [LookupController::class, 'roomsByPg'])->name('lookup.rooms-by-pg');
 
 
     // Impersonation routes

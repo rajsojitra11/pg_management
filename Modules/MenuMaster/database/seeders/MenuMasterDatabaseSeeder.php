@@ -313,6 +313,36 @@ class MenuMasterDatabaseSeeder extends Seeder
                 'updated_by' => 1,
             ],
 
+            // ── Parent: Tenant (id 7) ───────────────────────────────────
+            [
+                'id' => 7,
+                'menu_icon' => 'fa-solid fa-user-group',
+                'menu_title' => 'tenant::message.tenant',
+                'menu_route' => 'javascript:void(0)',
+                'is_main_menu' => 1,
+                'parent_id' => null,
+                'module_name' => null,
+                'order_display' => '001.007',
+                'display_order' => '1.7',
+                'if_can' => 'tenant-list',
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
+            [
+                'id' => 701,
+                'menu_icon' => 'fa-solid fa-users-gear',
+                'menu_title' => 'tenant::message.manage_tenant',
+                'menu_route' => 'tenant.index',
+                'is_main_menu' => 0,
+                'parent_id' => 7,
+                'module_name' => 'Tenant',
+                'order_display' => '001.007.001',
+                'display_order' => '1.7.1',
+                'if_can' => 'tenant-list',
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
+
             // ── Parent: General Master (id 2) ──────────────────────────
             [
                 'id' => 2,

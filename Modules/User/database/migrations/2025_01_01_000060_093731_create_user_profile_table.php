@@ -18,6 +18,7 @@ return new class extends Migration
                 $table->string('firstname');
                 $table->string('lastname');
                 $table->date('date_of_birth')->nullable();
+                $table->string('gender', 10)->nullable();
                 $table->timestamps();
                 $table->softDeletes();
                 $table->unsignedBigInteger('created_by')->comment('user id')->nullable();
