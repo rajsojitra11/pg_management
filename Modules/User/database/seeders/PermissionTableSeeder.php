@@ -449,6 +449,37 @@ class PermissionTableSeeder extends Seeder
                 'section' => 'General',
             ],
 
+            [
+                'title_tag' => 'Payment',
+                'name' => 'payment-list',
+                'title' => 'List',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Payment',
+                'name' => 'payment-create',
+                'title' => 'Create',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Payment',
+                'name' => 'payment-show',
+                'title' => 'Show',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Payment',
+                'name' => 'payment-edit',
+                'title' => 'Edit',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Payment',
+                'name' => 'payment-delete',
+                'title' => 'Delete',
+                'section' => 'General',
+            ],
+
             // Reports
             [
                 'title_tag' => 'Activity_Log_Report',
@@ -588,6 +619,7 @@ class PermissionTableSeeder extends Seeder
                 'subscription-list', 'subscription-create', 'subscription-show', 'subscription-edit',
                 'noticeboard-list', 'noticeboard-create', 'noticeboard-show', 'noticeboard-edit',
                 'tenant-list', 'tenant-create', 'tenant-show', 'tenant-edit',
+                'payment-list', 'payment-create', 'payment-show', 'payment-edit',
             ];
             $pgManagerPermissions = Permission::whereIn('name', $pgManagerPermissionNames)->pluck('id')->toArray();
             $pgManagerRole->syncPermissions($pgManagerPermissions);
@@ -601,6 +633,7 @@ class PermissionTableSeeder extends Seeder
                 'room-show',
                 'subscription-list', 'subscription-show',
                 'tenant-list', 'tenant-show',
+                'payment-list', 'payment-show',
             ];
             $tenantPermissions = Permission::whereIn('name', $tenantPermissionNames)->pluck('id')->toArray();
             $tenantRole->syncPermissions($tenantPermissions);

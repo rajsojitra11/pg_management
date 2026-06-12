@@ -342,6 +342,20 @@ class MenuMasterDatabaseSeeder extends Seeder
                 'created_by' => 1,
                 'updated_by' => 1,
             ],
+            [
+                'id' => 702,
+                'menu_icon' => 'fa-solid fa-money-bill-wave',
+                'menu_title' => 'payment::message.payments',
+                'menu_route' => 'payment.index',
+                'is_main_menu' => 0,
+                'parent_id' => 7,
+                'module_name' => 'Payment',
+                'order_display' => '001.007.002',
+                'display_order' => '1.7.2',
+                'if_can' => 'payment-list',
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
 
             // ── Parent: General Master (id 2) ──────────────────────────
             [

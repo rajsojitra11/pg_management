@@ -11,6 +11,7 @@ use Modules\Country\Models\Country;
 use Modules\Currency\Models\Currency;
 use Modules\PgManagement\Models\PgManagement;
 use Modules\Room\Models\Room;
+use Modules\Tenant\Models\Tenant;
 use Modules\State\Models\State;
 use Modules\Unit\Models\Unit;
 use Modules\User\Models\User;
@@ -212,6 +213,27 @@ class LookupController extends Controller
             ->limit($this->limit($request))
             ->get()
             ->map(fn($r) => ['value' => (string) $r->id, 'label' => $r->room_no]);
+
+        return response()->json($rows);
+    }
+
+    public function tenantList(Request $request): JsonResponse
+    {
+        $user = auth()->user();
+
+        $rows = Tenant::select('id', 'name', 'phone')
+            ->where('status', 'active')
+            ->when($request->filled('pg_id'), fn($q) => $q->where('pg_id', $request->input('pg_id')))
+            ->when($user->hasRole('Pg_Admin'), fn($q) => $q->whereHas('pg', fn($sq) => $sq->where('owner_id', $user->id)))
+            ->when($request->filled('q'), fn($q) => $q->where(function ($qq) use ($request) {
+                $term = $request->input('q');
+                $qq->where('name', 'like', '%' . $term . '%')
+                    ->orWhere('phone', 'like', '%' . $term . '%');
+            }))
+            ->orderBy('name')
+            ->limit($this->limit($request))
+            ->get()
+            ->map(fn($t) => ['value' => (string) $t->id, 'label' => $t->name . ' (' . $t->phone . ')']);
 
         return response()->json($rows);
     }

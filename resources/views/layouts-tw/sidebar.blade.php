@@ -134,15 +134,15 @@
     class="erp-sidebar fixed top-0 left-0 z-50 h-screen w-64 border-r border-zinc-200 flex flex-col overflow-hidden">
 
     {{-- Logo row --}}
-    <div class="erp-sidebar-header flex items-center h-14 border-b border-zinc-200 shrink-0">
+    <div class="erp-sidebar-header flex items-center h-20 border-b border-zinc-200 shrink-0">
         {{-- Expanded state --}}
         <div id="sidebar-expanded-header" class="flex items-center w-full px-4">
             <a href="{{ route('dashboard') }}" class="flex items-center min-w-0">
                 <span class="erp-logo-wrap erp-logo-wrap--sidebar">
                     @if (setting()->logo != '')
-                        <img src="{{ asset('setting/logo/' . setting()->logo) }}" class="h-8 object-contain shrink-0 erp-logo" alt="{{ config('app.name') }}">
+                        <img src="{{ asset('setting/logo/' . setting()->logo) }}" class="h-12 object-contain shrink-0 erp-logo" alt="{{ config('app.name') }}">
                     @else
-                        <img src="{{ asset('assets-tw/img/logo.png') }}" class="h-8 object-contain shrink-0 erp-logo" style="max-width: 160px;" alt="{{ config('app.name') }}">
+                        <img src="{{ asset('assets-tw/img/logo.png') }}" class="h-12 object-contain shrink-0 erp-logo" style="max-width: 240px;" alt="{{ config('app.name') }}">
                     @endif
                 </span>
             </a>
@@ -157,9 +157,9 @@
             <a href="{{ route('dashboard') }}" class="shrink-0">
                 <span class="erp-logo-wrap erp-logo-wrap--sidebar-sm">
                     @if (setting()->logo != '')
-                        <img src="{{ asset('setting/logo/' . setting()->logo) }}" class="h-7 w-7 object-contain erp-logo" alt="{{ config('app.name') }}">
+                        <img src="{{ asset('setting/logo/' . setting()->logo) }}" class="h-11 w-11 object-contain erp-logo" alt="{{ config('app.name') }}">
                     @else
-                        <img src="{{ asset('assets-tw/img/favicon.png') }}" class="h-7 w-7 object-contain erp-logo" alt="{{ config('app.name') }}">
+                        <img src="{{ asset('assets-tw/img/favicon.png') }}" class="h-11 w-11 object-contain erp-logo" alt="{{ config('app.name') }}">
                     @endif
                 </span>
             </a>

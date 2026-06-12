@@ -18,6 +18,7 @@ use Modules\Role\Database\Seeders\RoleDatabaseSeeder;
 use Modules\Setting\Database\Seeders\SettingDatabaseSeeder;
 use Modules\State\Database\Seeders\StateDatabaseSeeder;
 use Modules\Subscription\Database\Seeders\SubscriptionDatabaseSeeder;
+use Modules\Payment\Database\Seeders\PaymentDatabaseSeeder;
 use Modules\Tenant\Database\Seeders\TenantDatabaseSeeder;
 use Modules\Unit\Database\Seeders\UnitDatabaseSeeder;
 use Modules\User\Database\Seeders\UserDatabaseSeeder;
@@ -55,6 +56,7 @@ class DatabaseSeeder extends Seeder
             CurrencyDatabaseSeeder::class,
             SubscriptionDatabaseSeeder::class,
             NoticeboardDatabaseSeeder::class,
+            PaymentDatabaseSeeder::class,
             TenantDatabaseSeeder::class,
             UnitDatabaseSeeder::class,
             YearDatabaseSeeder::class,
