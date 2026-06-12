@@ -51,7 +51,7 @@
             $sessionYearId = getSessionYearId();
             $currentYearDisplay = '';
             if ($sessionYearId) {
-                $currentYear = \Modules\Year\Models\Year::find($sessionYearId);
+                $currentYear = getYearList(true)->firstWhere('id', $sessionYearId);
                 $currentYearDisplay = $currentYear ? getFormattedYear($currentYear) : session()->get('year');
             } else {
                 $currentYearDisplay = session()->get('year');

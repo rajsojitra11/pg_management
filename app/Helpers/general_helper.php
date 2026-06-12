@@ -237,56 +237,51 @@ if (! function_exists('defaultMigration')) {
     }
 }
 
+if (! function_exists('getYearList')) {
+    function getYearList($loadAll = false)
+    {
+        $cacheKey = 'year_list_' . ($loadAll ? 'all' : 'limited');
+
+        return Cache::remember($cacheKey, 300, function () use ($loadAll) {
+            if ($loadAll) {
+                return Year::select('id', 'name', 'full_short', 'short_full', 'short_short', 'full_full', 'short', 'full', 'set_default')
+                    ->orderBy('full', 'desc')
+                    ->get();
+            }
+
+            $currentFY = getCurrentFiscalYear();
+            $nextFY = getFiscalYearRange($currentFY, 2);
+            $maxYearName = end($nextFY);
+
+            $years = Year::select('id', 'name', 'full_short', 'short_full', 'short_short', 'full_full', 'short', 'full', 'set_default')
+                ->where('name', '<=', $maxYearName)
+                ->orderBy('full', 'asc')
+                ->get();
+
+            if ($years->isEmpty()) {
+                $years = Year::select('id', 'name', 'full_short', 'short_full', 'short_short', 'full_full', 'short', 'full', 'set_default')
+                    ->orderBy('full', 'desc')
+                    ->limit(5)
+                    ->get();
+            }
+
+            return $years;
+        });
+    }
+}
+
 if (! function_exists('getYear')) {
-    /**
-     * Get year dropdown HTML with fiscal year optimization and formatted display
-     * Uses caching for better performance
-     *
-     * @param  bool  $loadAll  Whether to load all years or use fiscal year optimization
-     * @return string HTML for year dropdown
-     */
     function getYear($loadAll = false, $includeSearch = true)
     {
-        // Don't cache the HTML with active states - it causes year persistence issues
-        // The active state needs to reflect the current session, not a cached state
         $html = '';
 
         try {
-            if ($loadAll) {
-                // Load all years for search or admin purposes
-                $years = Year::select('id', 'name', 'full_short', 'short_full', 'short_short', 'full_full', 'short', 'full', 'set_default')
-                    ->orderBy('full', 'desc');
-            } else {
-                // Load all old years + current FY + 1 future year
-                $currentFY = getCurrentFiscalYear();
-                $nextFY = getFiscalYearRange($currentFY, 2); // current + next
-                $maxYearName = end($nextFY); // e.g., "2027-28"
+            $allYears = getYearList($loadAll);
 
-                $years = Year::select('id', 'name', 'full_short', 'short_full', 'short_short', 'full_full', 'short', 'full', 'set_default')
-                    ->where('name', '<=', $maxYearName)
-                    ->orderBy('full', 'asc');
-            }
-
-            // Filter by role year access
             $allowedIds = getUserAllowedYearIds();
-            if (is_array($allowedIds)) {
-                $years->whereIn('id', $allowedIds);
-            }
-
-            $years = $years->get();
-
-            // If no years found with filters, get all available
-            if ($years->isEmpty() && ! $loadAll) {
-                $years = Year::select('id', 'name', 'full_short', 'short_full', 'short_short', 'full_full', 'short', 'full', 'set_default')
-                    ->orderBy('full', 'desc')
-                    ->limit(5);
-
-                if (is_array($allowedIds)) {
-                    $years->whereIn('id', $allowedIds);
-                }
-
-                $years = $years->get();
-            }
+            $years = is_array($allowedIds)
+                ? $allYears->whereIn('id', $allowedIds)
+                : $allYears;
 
             if ($years->isNotEmpty()) {
                 $sessionYearId = getSessionYearId();
@@ -323,10 +318,8 @@ if (! function_exists('getYear')) {
                               </div>';
             }
         } catch (Exception $e) {
-
-            // Fallback to simple year list
-            $years = Year::select('id', 'name', 'set_default')->limit(5)->get();
-            foreach ($years as $year) {
+            $fallbackYears = getYearList(true)->take(5);
+            foreach ($fallbackYears as $year) {
                 $class = $year->set_default == 1 ? 'active' : '';
                 $html .= '<a class="dropdown-item m-0 p-2 year-change '.$class.'" data-value="'.$year->id.'">'.$year->name.'</a>';
             }
@@ -345,50 +338,42 @@ if (! function_exists('getSelectedYear')) {
      */
     function getSelectedYear($ensureFallback = true)
     {
-        // First try to get year ID from session directly
         $sessionYearId = getSessionYearId();
         if ($sessionYearId) {
-            // Validate that the year still exists in database
-            $year = Year::find($sessionYearId);
+            $year = getYearList(true)->firstWhere('id', $sessionYearId);
             if ($year) {
                 return $sessionYearId;
             }
         }
 
-        // Try to get year by session name (for backward compatibility)
         $sessionYearName = session('year');
         if ($sessionYearName) {
-            $year = Year::select('id', 'name')->where('name', $sessionYearName)->first();
+            $year = getYearList(true)->firstWhere('name', $sessionYearName);
             if ($year) {
-                // Update session to use ID-based storage
                 setSessionYear($year->id);
 
                 return $year->id;
             }
         }
 
-        // Only apply fallback if requested
         if (! $ensureFallback) {
             return null;
         }
 
-        // Fallback: Get default year from DB
-        $defaultYear = Year::select('id', 'name', 'set_default')->where('set_default', 1)->first();
+        $defaultYear = getYearList(true)->firstWhere('set_default', 1);
         if ($defaultYear) {
             setSessionYear($defaultYear->id);
 
             return $defaultYear->id;
         }
 
-        // Last resort: Get any available year
-        $anyYear = Year::select('id')->orderBy('name', 'desc')->first();
+        $anyYear = getYearList(true)->sortByDesc('full')->first();
         if ($anyYear) {
             setSessionYear($anyYear->id);
 
             return $anyYear->id;
         }
 
-        // If no years exist, return null (this should trigger year creation)
         return null;
     }
 }
@@ -441,16 +426,18 @@ if (! function_exists('allowedYearIds')) {
         }
 
         // Restricted: current FY + N previous FYs (largest window across roles).
-        $current = Year::where('set_default', 1)->first(['id', 'full']);
+        $allYears = getYearList(true);
+        $current = $allYears->firstWhere('set_default', 1);
         if (! $current) {
             return $cache[$key] = []; // no current FY — fail-closed
         }
 
         $n = (int) $accesses->max('allowed_year'); // null => 0
 
-        $ids = Year::where('full', '<=', $current->full)
-            ->orderByDesc('full')
-            ->limit($n + 1) // current + N previous
+        $ids = $allYears
+            ->where('full', '<=', $current->full)
+            ->sortByDesc('full')
+            ->take($n + 1) // current + N previous
             ->pluck('id')
             ->all();
 
@@ -714,13 +701,13 @@ if (! function_exists('setSessionYear')) {
      */
     function setSessionYear($yearId)
     {
-        $year = Year::find($yearId);
+        $year = getYearList(true)->firstWhere('id', $yearId);
         if (! $year) {
             return false;
         }
 
         session(['year_id' => $yearId, 'year' => $year->name]);
-        session()->save(); // Force save to database session driver
+        session()->save();
 
         return true;
     }
@@ -749,29 +736,25 @@ if (! function_exists('validateSessionYear')) {
     {
         $sessionYearId = getSessionYearId();
 
-        // Check if session year exists and is valid
         if ($sessionYearId) {
-            $year = Year::find($sessionYearId);
+            $year = getYearList(true)->firstWhere('id', $sessionYearId);
             if ($year) {
                 return $sessionYearId;
             }
         }
 
-        // Only apply fallback if explicitly requested
         if (! $autoFallback) {
             return null;
         }
 
-        // Fallback to default year
-        $defaultYear = Year::where('set_default', 1)->first();
+        $defaultYear = getYearList(true)->firstWhere('set_default', 1);
         if ($defaultYear) {
             setSessionYear($defaultYear->id);
 
             return $defaultYear->id;
         }
 
-        // Ultimate fallback to first available year
-        $firstYear = Year::orderBy('name', 'desc')->first();
+        $firstYear = getYearList(true)->sortByDesc('full')->first();
         if ($firstYear) {
             setSessionYear($firstYear->id);
 

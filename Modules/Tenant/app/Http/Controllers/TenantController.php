@@ -3,6 +3,7 @@
 namespace Modules\Tenant\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -176,37 +177,43 @@ class TenantController extends Controller
 
     public function show($id)
     {
-        try {
-            $tenant = Tenant::with('user', 'pg', 'room')->byAnyKey($id)->first();
-            if (! is_null($tenant)) {
-                return response()->json(['status_code' => 200, 'message' => 'View Tenant', 'result' => $tenant]);
-            }
-
-            return response()->json(['status_code' => 404, 'message' => 'Tenant not found.']);
-        } catch (Exception $e) {
-            return response()->json(['status_code' => 500, 'message' => 'Something went wrong. Please try again.']);
+        $user = auth()->user();
+        $query = Tenant::with('user', 'pg', 'room', 'permanentState', 'permanentCity', 'createdBy', 'updatedBy')
+            ->byAnyKey($id);
+        if ($user->hasRole('Pg_Admin')) {
+            $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
         }
+        $tenant = $query->firstOrFail();
+
+        return view('tenant::show', compact('tenant'));
     }
 
     public function edit($id)
     {
-        try {
-            $tenant = Tenant::with('user')->byAnyKey($id)->first();
-            if (! is_null($tenant)) {
-                return response()->json(['status_code' => 200, 'message' => 'Edit Tenant', 'result' => $tenant]);
-            }
-
-            return response()->json(['status_code' => 404, 'message' => 'Tenant not found.']);
-        } catch (Exception $e) {
-            return response()->json(['status_code' => 500, 'message' => 'Something went wrong. Please try again.']);
+        $user = auth()->user();
+        $query = Tenant::with('user', 'pg', 'room')->byAnyKey($id);
+        if ($user->hasRole('Pg_Admin')) {
+            $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
         }
+        $tenant = $query->firstOrFail();
+
+        $tenant->formatted_date_of_birth = $tenant->date_of_birth ? Carbon::parse($tenant->date_of_birth)->format('d-m-Y') : '';
+        $tenant->formatted_checkin_date = $tenant->checkin_date ? Carbon::parse($tenant->checkin_date)->format('d-m-Y') : '';
+        $tenant->formatted_expected_checkout_date = $tenant->expected_checkout_date ? Carbon::parse($tenant->expected_checkout_date)->format('d-m-Y') : '';
+
+        return view('tenant::edit', compact('tenant'));
     }
 
     public function update(UpdateTenantRequest $request, $id)
     {
         DB::beginTransaction();
         try {
-            $tenant = Tenant::findByAnyKeyOrFail($id);
+            $user = auth()->user();
+            $query = Tenant::byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+            }
+            $tenant = $query->firstOrFail();
             $data = $request->validated();
             $data['updated_by'] = auth()->id();
             $tenant->update($data);
@@ -224,7 +231,12 @@ class TenantController extends Controller
     public function destroy(DeleteTenantRequest $request, $id)
     {
         try {
-            $tenant = Tenant::findByAnyKeyOrFail($id);
+            $user = auth()->user();
+            $query = Tenant::byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+            }
+            $tenant = $query->firstOrFail();
             $data = $request->validated();
             $data['deleted_by'] = auth()->id();
 

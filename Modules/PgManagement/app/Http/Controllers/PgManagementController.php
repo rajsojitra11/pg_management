@@ -73,7 +73,12 @@ class PgManagementController extends Controller
     public function show($id)
     {
         try {
-            $pgManagement = PgManagement::byAnyKey($id)->first();
+            $user = auth()->user();
+            $query = PgManagement::byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->where('owner_id', $user->id);
+            }
+            $pgManagement = $query->first();
             if (! is_null($pgManagement)) {
                 return response()->json(['status_code' => 200, 'message' => 'View PG', 'result' => $pgManagement]);
             } else {
@@ -105,7 +110,12 @@ class PgManagementController extends Controller
     public function edit($id)
     {
         try {
-            $pgManagement = PgManagement::byAnyKey($id)->first();
+            $user = auth()->user();
+            $query = PgManagement::byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->where('owner_id', $user->id);
+            }
+            $pgManagement = $query->first();
             if (! is_null($pgManagement)) {
                 return response()->json(['status_code' => 200, 'message' => 'Edit PG', 'result' => $pgManagement]);
             } else {
@@ -120,7 +130,12 @@ class PgManagementController extends Controller
     {
         DB::beginTransaction();
         try {
-            $pgManagement = PgManagement::findByAnyKeyOrFail($id);
+            $user = auth()->user();
+            $query = PgManagement::byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->where('owner_id', $user->id);
+            }
+            $pgManagement = $query->firstOrFail();
             $data = $request->validated();
             $data['updated_by'] = auth()->id();
             $pgManagement->update($data);
@@ -138,7 +153,12 @@ class PgManagementController extends Controller
     public function destroy(DeletePgManagementRequest $request, $id)
     {
         try {
-            $pgManagement = PgManagement::findByAnyKeyOrFail($id);
+            $user = auth()->user();
+            $query = PgManagement::byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->where('owner_id', $user->id);
+            }
+            $pgManagement = $query->firstOrFail();
             $data = $request->validated();
             $data['deleted_by'] = auth()->id();
 

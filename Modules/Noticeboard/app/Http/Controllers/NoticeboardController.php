@@ -72,7 +72,12 @@ class NoticeboardController extends Controller
     public function show($id)
     {
         try {
-            $noticeboard = Noticeboard::with('pg', 'user')->byAnyKey($id)->first();
+            $user = auth()->user();
+            $query = Noticeboard::with('pg', 'user')->byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+            }
+            $noticeboard = $query->first();
             if (! is_null($noticeboard)) {
                 return response()->json(['status_code' => 200, 'message' => 'View notice', 'result' => $noticeboard]);
             } else {
@@ -110,7 +115,12 @@ class NoticeboardController extends Controller
     public function edit($id)
     {
         try {
-            $noticeboard = Noticeboard::with('pg', 'user')->byAnyKey($id)->first();
+            $user = auth()->user();
+            $query = Noticeboard::with('pg', 'user')->byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+            }
+            $noticeboard = $query->first();
             if (! is_null($noticeboard)) {
                 return response()->json(['status_code' => 200, 'message' => 'Edit notice', 'result' => $noticeboard]);
             } else {
@@ -125,7 +135,12 @@ class NoticeboardController extends Controller
     {
         DB::beginTransaction();
         try {
-            $noticeboard = Noticeboard::findByAnyKeyOrFail($id);
+            $user = auth()->user();
+            $query = Noticeboard::byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+            }
+            $noticeboard = $query->firstOrFail();
             $data = $request->validated();
             $data['updated_by'] = auth()->id();
 
@@ -151,7 +166,12 @@ class NoticeboardController extends Controller
     public function destroy(DeleteNoticeboardRequest $request, $id)
     {
         try {
-            $noticeboard = Noticeboard::findByAnyKeyOrFail($id);
+            $user = auth()->user();
+            $query = Noticeboard::byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+            }
+            $noticeboard = $query->firstOrFail();
             $data = $request->validated();
             $data['deleted_by'] = auth()->id();
 

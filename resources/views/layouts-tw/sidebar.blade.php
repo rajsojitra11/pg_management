@@ -1,31 +1,44 @@
 @php
+    use Illuminate\Support\Facades\Cache;
+    use Illuminate\Support\Facades\Route;
     use Modules\MenuMaster\Models\MenuMaster;
     use Nwidart\Modules\Facades\Module;
 
     $showConverted = config('business.show_converted_modules') == 1;
     $convertedModules = $showConverted ? array_map('strtolower', config('business.converted_modules', [])) : [];
 
-    $menus = MenuMaster::parentMenus()
-        ->with('children.children')
-        ->orderBy('order_display', 'ASC')
-        ->orderBy('menu_title', 'ASC')
-        ->orderBy('id', 'ASC')
-        ->get();
+    // Cache the menu tree DB query — invalidated automatically by MenuMaster::booted()
+    $menus = Cache::remember('menu_tree', 3600, function () {
+        return MenuMaster::parentMenus()
+            ->with('children.children')
+            ->orderBy('order_display', 'ASC')
+            ->orderBy('menu_title', 'ASC')
+            ->orderBy('id', 'ASC')
+            ->get();
+    });
 
-    // How specifically a menu's route matches the CURRENT route (higher = more specific).
-    // An exact route-name match always beats a broad "{base}.*" match, so on
-    // /orderforms/create the dedicated "Create New Order Form" item wins over the
-    // "Manage Order Form" (orderform.index) item instead of both lighting up.
+    // Pre-compute all registered route names once (avoids Route::has() per item)
+    $allRouteNames = collect(Route::getRoutes()->getRoutesByName())->keys()->flip();
+
+    // Pre-load current user permissions once (avoids canany() DB query per menu item)
+    $currentUser = auth()->user();
+    $userPermissions = $currentUser ? $currentUser->getAllPermissions()->pluck('name') : collect();
+    $userIsSuperAdmin = $currentUser ? $currentUser->hasRole('Super_Admin') : false;
+
+    // Pre-compute module statuses (avoids Module::isEnabled() filesystem checks per item)
+    $enabledModules = collect(Module::getOrdered())->mapWithKeys(fn ($m) => [
+        strtolower($m->getName()) => Module::isEnabled(strtolower($m->getName())),
+    ]);
+
     $currentRouteName = request()->route()?->getName() ?? '';
+
     $routeMatchScore = function ($menuRoute) use ($currentRouteName) {
         if ($currentRouteName === '' || empty($menuRoute) || $menuRoute === 'javascript:void(0)') {
             return 0;
         }
         if ($currentRouteName === $menuRoute) {
-            return strlen($menuRoute) + 1000; // exact match wins
+            return strlen($menuRoute) + 1000;
         }
-        // A listing item ("…​.index") also covers its record pages (show/edit/…),
-        // but NOT sibling actions that have their own menu entry (e.g. create).
         $base = preg_replace('/\.index$/', '', $menuRoute);
         if ($base !== $menuRoute && ($currentRouteName === $base || str_starts_with($currentRouteName, $base . '.'))) {
             return strlen($base);
@@ -36,7 +49,6 @@
         return 0;
     };
 
-    // Best (most specific) match across the whole tree — only the winner lights up.
     $bestRouteScore = 0;
     $scanBestRoute = function ($items) use (&$scanBestRoute, $routeMatchScore, &$bestRouteScore) {
         foreach ($items as $item) {
@@ -68,33 +80,29 @@
         return false;
     };
 
-    $isMenuEnabled = function ($menu, $isChild = false) {
+    $isMenuEnabled = function ($menu, $isChild = false) use ($enabledModules) {
         if (empty($menu->module_name)) {
             return true;
         }
-        $moduleExists = $menu->module_name ? Module::collections()->has(strtolower($menu->module_name)) : false;
-        if (!$moduleExists) {
+        $exists = $enabledModules->has(strtolower($menu->module_name));
+        if (!$exists) {
             return $isChild ? false : true;
-        } else {
-            return Module::isEnabled(strtolower($menu->module_name));
         }
+        return $enabledModules[strtolower($menu->module_name)];
     };
 
-    // Resolve a menu row's if_can against the current user. if_can may be a single
-    // permission name, a comma-separated list (parent rows), or the special token
-    // 'system-administration-access' (Super_Admin only).
-    $canForMenu = function ($menu) {
+    $canForMenu = function ($menu) use ($userPermissions, $userIsSuperAdmin) {
         if (empty($menu->if_can)) {
             return true;
         }
         if ($menu->if_can === 'system-administration-access') {
-            return auth()->user()->hasRole('Super_Admin');
+            return $userIsSuperAdmin;
         }
         $abilities = array_values(array_filter(array_map('trim', explode(',', $menu->if_can))));
         if (empty($abilities)) {
             return true;
         }
-        return auth()->user()->canany($abilities);
+        return $userPermissions->intersect($abilities)->isNotEmpty();
     };
 
     $hasPermissionForAnyChild = function ($menu) use (&$hasPermissionForAnyChild, $isMenuEnabled, $canForMenu) {
@@ -192,7 +200,7 @@
                     !is_null($menu->menu_route) &&
                     $menu->menu_route != ''
                 ) {
-                    if (Route::has($menu->menu_route)) {
+                    if ($allRouteNames->has($menu->menu_route)) {
                         $menuUrlActive = true;
                     }
                 } else {
@@ -265,7 +273,7 @@
                                         $child->menu_route !== null &&
                                         $child->menu_route !== ''
                                     ) {
-                                        if (Route::has($child->menu_route)) {
+                                        if ($allRouteNames->has($child->menu_route)) {
                                             $menuChildUrlActive = true;
                                         }
                                     } else {
@@ -312,7 +320,7 @@
                                                             $grandchild->menu_route !== null &&
                                                             $grandchild->menu_route !== ''
                                                         ) {
-                                                            if (Route::has($grandchild->menu_route)) {
+                                                            if ($allRouteNames->has($grandchild->menu_route)) {
                                                                 $menuGrandChildUrlActive = true;
                                                             }
                                                         } else {

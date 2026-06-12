@@ -111,7 +111,12 @@ class PaymentController extends Controller
     public function show($id)
     {
         try {
-            $payment = Payment::with('tenant', 'pg', 'room')->byAnyKey($id)->first();
+            $user = auth()->user();
+            $query = Payment::with('tenant', 'pg', 'room')->byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+            }
+            $payment = $query->first();
             if (! is_null($payment)) {
                 return response()->json(['status_code' => 200, 'message' => 'View Payment', 'result' => $payment]);
             }
@@ -125,7 +130,12 @@ class PaymentController extends Controller
     public function edit($id)
     {
         try {
-            $payment = Payment::byAnyKey($id)->first();
+            $user = auth()->user();
+            $query = Payment::byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+            }
+            $payment = $query->first();
             if (! is_null($payment)) {
                 return response()->json(['status_code' => 200, 'message' => 'Edit Payment', 'result' => $payment]);
             }
@@ -140,7 +150,12 @@ class PaymentController extends Controller
     {
         DB::beginTransaction();
         try {
-            $payment = Payment::findByAnyKeyOrFail($id);
+            $user = auth()->user();
+            $query = Payment::byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+            }
+            $payment = $query->firstOrFail();
             $data = $request->validated();
             $data['updated_by'] = auth()->id();
             $payment->update($data);
@@ -158,7 +173,12 @@ class PaymentController extends Controller
     public function destroy(DeletePaymentRequest $request, $id)
     {
         try {
-            $payment = Payment::findByAnyKeyOrFail($id);
+            $user = auth()->user();
+            $query = Payment::byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+            }
+            $payment = $query->firstOrFail();
             $data = $request->validated();
             $data['deleted_by'] = auth()->id();
 

@@ -7,109 +7,85 @@ namespace Modules\Dashbord\Services;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
-/**
- * Real-data provider for the print-shop dashboard.
- *
- * Everything is scoped to a financial year (year_id) and, optionally, a date
- * range on order_date / delivery_date. Order "stage" is derived from the
- * presence of downstream documents — the same highest-wins logic as
- * Modules\OrderForm\Services\OrderFormStatusResolver — so counts never rely on
- * the possibly-stale order_forms.status column. DB::table is used throughout to
- * avoid cross-module model imports.
- */
 class PrintDashboardService
 {
-    /** Canonical pipeline stages, lowest → highest. */
-    private const STAGES = ['Pending', 'Plate', 'Printed', 'Post-Process', 'Delivered'];
-
-    /**
-     * SQL CASE expression that resolves an order's stage. $o is the order_forms
-     * table alias in the surrounding query. Mirrors OrderFormStatusResolver.
-     */
-    private function stageCaseSql(string $o): string
+    private function pgFilter(): ?array
     {
-        return "CASE
-            WHEN EXISTS (SELECT 1 FROM delivery_challans dc WHERE dc.order_form_id = $o.id AND dc.deleted_at IS NULL) THEN 'Delivered'
-            WHEN EXISTS (SELECT 1 FROM lamination_orders lo WHERE lo.order_form_id = $o.id AND lo.deleted_at IS NULL)
-             AND EXISTS (SELECT 1 FROM uv_orders uo WHERE uo.order_form_id = $o.id AND uo.deleted_at IS NULL) THEN 'Post-Process'
-            WHEN EXISTS (SELECT 1 FROM printing_job_details pj WHERE pj.order_form_id = $o.id AND pj.deleted_at IS NULL) THEN 'Printed'
-            WHEN EXISTS (SELECT 1 FROM plate_detail_forms pdf WHERE pdf.order_form_id = $o.id AND pdf.deleted_at IS NULL) THEN 'Plate'
-            ELSE 'Pending'
-        END";
-    }
-
-    /** Base order_forms query scoped to FY + optional order_date range. */
-    private function ordersInScope(int $yearId, ?string $sDate, ?string $eDate)
-    {
-        return DB::table('order_forms as o')
-            ->whereNull('o.deleted_at')
-            ->where('o.year_id', $yearId)
-            ->when($sDate, fn ($q) => $q->whereDate('o.order_date', '>=', $sDate))
-            ->when($eDate, fn ($q) => $q->whereDate('o.order_date', '<=', $eDate));
-    }
-
-    /** Mutually-exclusive stage → count map (every stage key present). */
-    private function stageBuckets(int $yearId, ?string $sDate, ?string $eDate): array
-    {
-        $counts = $this->ordersInScope($yearId, $sDate, $eDate)
-            ->selectRaw($this->stageCaseSql('o').' AS stage, COUNT(*) AS total')
-            ->groupByRaw('stage')
-            ->pluck('total', 'stage');
-
-        $buckets = array_fill_keys(self::STAGES, 0);
-        foreach ($counts as $stage => $total) {
-            $buckets[$stage] = (int) $total;
+        $user = auth()->user();
+        if (! $user || ! $user->hasRole('Pg_Admin')) {
+            return null;
         }
-
-        return $buckets;
+        return DB::table('pg_management')
+            ->whereNull('deleted_at')
+            ->where('owner_id', $user->id)
+            ->pluck('id')
+            ->all();
     }
 
-    /** KPI stat cards. */
     public function kpis(int $yearId, ?string $sDate = null, ?string $eDate = null): array
     {
-        $buckets = $this->stageBuckets($yearId, $sDate, $eDate);
-        $totalOrders = array_sum($buckets);
+        $pgIds = $this->pgFilter();
 
-        $challans = DB::table('delivery_challans')
-            ->whereNull('deleted_at')
-            ->where('year_id', $yearId)
-            ->when($sDate, fn ($q) => $q->whereDate('delivery_date', '>=', $sDate))
-            ->when($eDate, fn ($q) => $q->whereDate('delivery_date', '<=', $eDate))
+        $totalPg = (int) DB::table('pg_management')->whereNull('deleted_at')->where('status', 'active')
+            ->when($pgIds, fn ($q) => $q->whereIn('id', $pgIds))
             ->count();
 
-        $activeClients = (int) $this->ordersInScope($yearId, $sDate, $eDate)
-            ->distinct()
-            ->count('o.client_id');
+        $totalRooms = (int) DB::table('pg_rooms')->whereNull('deleted_at')->where('status', 'active')
+            ->when($pgIds, fn ($q) => $q->whereIn('pg_id', $pgIds))
+            ->count();
 
-        $machinesTotal = (int) DB::table('machines')->whereNull('deleted_at')->count();
-        $machinesOnline = (int) DB::table('machines')->whereNull('deleted_at')->where('status', 'Active')->count();
+        $occupiedRooms = (int) DB::table('tenants')
+            ->whereNull('deleted_at')
+            ->where('status', 'active')
+            ->whereNotNull('room_id')
+            ->when($pgIds, fn ($q) => $q->whereIn('pg_id', $pgIds))
+            ->distinct('room_id')
+            ->count('room_id');
+
+        $vacantRooms = max(0, $totalRooms - $occupiedRooms);
+
+        $activeTenants = (int) DB::table('tenants')
+            ->whereNull('deleted_at')
+            ->where('status', 'active')
+            ->when($pgIds, fn ($q) => $q->whereIn('pg_id', $pgIds))
+            ->count();
+
+        $revenueQuery = DB::table('payments')
+            ->whereNull('deleted_at')
+            ->where('status', 'paid')
+            ->when($pgIds, fn ($q) => $q->whereIn('pg_id', $pgIds));
+
+        if ($sDate && $eDate) {
+            $revenueQuery->whereDate('payment_date', '>=', $sDate)
+                ->whereDate('payment_date', '<=', $eDate);
+        }
+
+        $monthlyRevenue = (float) $revenueQuery->sum('amount');
 
         return [
-            'pending_form' => $buckets['Pending'],
-            'pending_delivery' => $totalOrders - $buckets['Delivered'],
-            'delivery_challans' => $challans,
-            'in_printing' => $buckets['Printed'],
-            'active_clients' => $activeClients,
-            'machines_online' => $machinesOnline,
-            'machines_total' => $machinesTotal,
+            'total_pg' => $totalPg,
+            'total_rooms' => $totalRooms,
+            'occupied_rooms' => $occupiedRooms,
+            'vacant_rooms' => $vacantRooms,
+            'active_tenants' => $activeTenants,
+            'monthly_revenue' => $monthlyRevenue,
         ];
     }
 
-    /** Chart payloads (labels + data) ready for erpChart(). */
     public function charts(int $yearId, ?string $sDate = null, ?string $eDate = null): array
     {
         return [
-            'orders_by_month' => $this->ordersByMonth(),
-            'status_distribution' => $this->statusDistribution($yearId, $sDate, $eDate),
-            'top_clients' => $this->topClients($yearId, $sDate, $eDate),
-            'production_by_machine' => $this->productionByMachine($yearId, $sDate, $eDate),
-            'post_press_mix' => $this->postPressMix($yearId, $sDate, $eDate),
+            'revenue_by_month' => $this->revenueByMonth($sDate, $eDate),
+            'occupancy_rate' => $this->occupancyRate(),
+            'top_pg_tenants' => $this->topPgTenants(),
+            'payment_methods' => $this->paymentMethods($sDate, $eDate),
+            'room_category_dist' => $this->roomCategoryDist(),
         ];
     }
 
-    /** Rolling last-12-months order volume (by order_date, across FYs). */
-    private function ordersByMonth(): array
+    private function revenueByMonth(?string $sDate, ?string $eDate): array
     {
+        $pgIds = $this->pgFilter();
         $start = Carbon::now()->startOfMonth()->subMonths(11);
 
         $buckets = [];
@@ -119,16 +95,20 @@ class PrintDashboardService
             $cursor->addMonth();
         }
 
-        $rows = DB::table('order_forms')
+        $rows = DB::table('payments')
             ->whereNull('deleted_at')
-            ->whereDate('order_date', '>=', $start->toDateString())
-            ->selectRaw("DATE_FORMAT(order_date, '%Y-%m') AS ym, COUNT(*) AS total")
+            ->where('status', 'paid')
+            ->whereDate('payment_date', '>=', $start->toDateString())
+            ->when($pgIds, fn ($q) => $q->whereIn('pg_id', $pgIds))
+            ->when($sDate, fn ($q) => $q->whereDate('payment_date', '>=', $sDate))
+            ->when($eDate, fn ($q) => $q->whereDate('payment_date', '<=', $eDate))
+            ->selectRaw("DATE_FORMAT(payment_date, '%Y-%m') AS ym, COALESCE(SUM(amount), 0) AS total")
             ->groupBy('ym')
             ->pluck('total', 'ym');
 
         foreach ($rows as $ym => $total) {
             if (array_key_exists($ym, $buckets)) {
-                $buckets[$ym] = (int) $total;
+                $buckets[$ym] = (float) $total;
             }
         }
 
@@ -138,24 +118,42 @@ class PrintDashboardService
         ];
     }
 
-    /** 5-stage distribution for the status doughnut. */
-    private function statusDistribution(int $yearId, ?string $sDate, ?string $eDate): array
+    private function occupancyRate(): array
     {
-        $buckets = $this->stageBuckets($yearId, $sDate, $eDate);
+        $pgIds = $this->pgFilter();
+
+        $totalRooms = (int) DB::table('pg_rooms')->whereNull('deleted_at')->where('status', 'active')
+            ->when($pgIds, fn ($q) => $q->whereIn('pg_id', $pgIds))
+            ->count();
+
+        $occupied = (int) DB::table('tenants')
+            ->whereNull('deleted_at')
+            ->where('status', 'active')
+            ->whereNotNull('room_id')
+            ->when($pgIds, fn ($q) => $q->whereIn('pg_id', $pgIds))
+            ->distinct('room_id')
+            ->count('room_id');
+
+        $vacant = max(0, $totalRooms - $occupied);
 
         return [
-            'labels' => array_keys($buckets),
-            'data' => array_values($buckets),
+            'labels' => ['Occupied', 'Vacant'],
+            'data' => [$occupied, $vacant],
         ];
     }
 
-    /** Top 5 clients by order count. */
-    private function topClients(int $yearId, ?string $sDate, ?string $eDate): array
+    private function topPgTenants(): array
     {
-        $rows = $this->ordersInScope($yearId, $sDate, $eDate)
-            ->join('clients as c', 'c.id', '=', 'o.client_id')
-            ->selectRaw('c.name AS name, COUNT(*) AS total')
-            ->groupBy('o.client_id', 'c.name')
+        $pgIds = $this->pgFilter();
+
+        $rows = DB::table('tenants')
+            ->join('pg_management as pg', 'pg.id', '=', 'tenants.pg_id')
+            ->whereNull('tenants.deleted_at')
+            ->whereNull('pg.deleted_at')
+            ->where('tenants.status', 'active')
+            ->when($pgIds, fn ($q) => $q->whereIn('tenants.pg_id', $pgIds))
+            ->selectRaw('pg.pg_name AS name, COUNT(*) AS total')
+            ->groupBy('tenants.pg_id', 'pg.pg_name')
             ->orderByDesc('total')
             ->limit(5)
             ->get();
@@ -166,24 +164,38 @@ class PrintDashboardService
         ];
     }
 
-    /** Sheets printed per machine. */
-    private function productionByMachine(int $yearId, ?string $sDate, ?string $eDate): array
+    private function paymentMethods(?string $sDate, ?string $eDate): array
     {
-        // A printing job carries machine_id only on multi-machine orders. Single-
-        // machine orders leave jobs untagged, so fall back to the order's lone
-        // machine (order_form_machines) — same rule as the plate-detail prefill.
-        $machineExpr = 'COALESCE(j.machine_id, (SELECT MIN(ofm.machine_id) FROM order_form_machines ofm WHERE ofm.order_form_id = o.id AND ofm.deleted_at IS NULL HAVING COUNT(*) = 1))';
+        $pgIds = $this->pgFilter();
 
-        $rows = DB::table('order_form_printing_jobs as j')
-            ->join('order_forms as o', 'o.id', '=', 'j.order_form_id')
-            ->join('machines as m', 'm.id', '=', DB::raw($machineExpr))
-            ->whereNull('j.deleted_at')
-            ->whereNull('o.deleted_at')
-            ->where('o.year_id', $yearId)
-            ->when($sDate, fn ($q) => $q->whereDate('o.order_date', '>=', $sDate))
-            ->when($eDate, fn ($q) => $q->whereDate('o.order_date', '<=', $eDate))
-            ->selectRaw('m.name AS name, COALESCE(SUM(j.total_sheets), 0) AS total')
-            ->groupBy('m.id', 'm.name')
+        $rows = DB::table('payments')
+            ->whereNull('deleted_at')
+            ->when($pgIds, fn ($q) => $q->whereIn('pg_id', $pgIds))
+            ->when($sDate, fn ($q) => $q->whereDate('payment_date', '>=', $sDate))
+            ->when($eDate, fn ($q) => $q->whereDate('payment_date', '<=', $eDate))
+            ->selectRaw('payment_method, COUNT(*) AS total')
+            ->groupBy('payment_method')
+            ->orderByDesc('total')
+            ->get();
+
+        return [
+            'labels' => $rows->pluck('payment_method')->all(),
+            'data' => $rows->pluck('total')->map(fn ($v) => (int) $v)->all(),
+        ];
+    }
+
+    private function roomCategoryDist(): array
+    {
+        $pgIds = $this->pgFilter();
+
+        $rows = DB::table('pg_rooms as r')
+            ->join('pg_room_categories as c', 'c.id', '=', 'r.category_id')
+            ->whereNull('r.deleted_at')
+            ->whereNull('c.deleted_at')
+            ->where('r.status', 'active')
+            ->when($pgIds, fn ($q) => $q->whereIn('r.pg_id', $pgIds))
+            ->selectRaw('c.category_name AS name, COUNT(*) AS total')
+            ->groupBy('r.category_id', 'c.category_name')
             ->orderByDesc('total')
             ->get();
 
@@ -193,66 +205,52 @@ class PrintDashboardService
         ];
     }
 
-    /** Post-press selections grouped by category (lamination / uv / …). */
-    private function postPressMix(int $yearId, ?string $sDate, ?string $eDate): array
+    public function recentTenants(int $yearId, int $limit = 8): array
     {
-        $rows = DB::table('order_form_post_press_items as i')
-            ->join('order_forms as o', 'o.id', '=', 'i.order_form_id')
-            ->join('post_press_categories as c', 'c.id', '=', 'i.post_press_category_id')
-            ->whereNull('i.deleted_at')
-            ->whereNull('o.deleted_at')
-            ->where('o.year_id', $yearId)
-            ->when($sDate, fn ($q) => $q->whereDate('o.order_date', '>=', $sDate))
-            ->when($eDate, fn ($q) => $q->whereDate('o.order_date', '<=', $eDate))
-            ->selectRaw('c.name AS name, COUNT(*) AS total')
-            ->groupBy('i.post_press_category_id', 'c.name')
-            ->orderByDesc('total')
-            ->get();
+        $pgIds = $this->pgFilter();
 
-        return [
-            'labels' => $rows->pluck('name')->all(),
-            'data' => $rows->pluck('total')->map(fn ($v) => (int) $v)->all(),
-        ];
-    }
-
-    /** Latest job cards with client + resolved stage. */
-    public function recentJobCards(int $yearId, int $limit = 8): array
-    {
-        return DB::table('order_forms as o')
-            ->leftJoin('clients as c', 'c.id', '=', 'o.client_id')
-            ->whereNull('o.deleted_at')
-            ->where('o.year_id', $yearId)
-            ->orderByDesc('o.id')
+        return DB::table('tenants as t')
+            ->leftJoin('pg_management as pg', 'pg.id', '=', 't.pg_id')
+            ->leftJoin('pg_rooms as r', 'r.id', '=', 't.room_id')
+            ->whereNull('t.deleted_at')
+            ->when($pgIds, fn ($q) => $q->whereIn('t.pg_id', $pgIds))
+            ->orderByDesc('t.id')
             ->limit($limit)
-            ->selectRaw('o.order_no, o.job_name, o.order_date, c.name AS client_name, '.$this->stageCaseSql('o').' AS status')
+            ->selectRaw('t.name, t.email, t.phone, t.status, pg.pg_name, r.room_no, t.checkin_date')
             ->get()
             ->map(fn ($r) => [
-                'no' => $r->order_no,
-                'client' => $r->client_name,
-                'title' => $r->job_name,
-                'issue' => $r->order_date ? Carbon::parse($r->order_date)->format('d/m/Y') : '',
+                'name' => $r->name,
+                'email' => $r->email ?? '',
+                'phone' => $r->phone ?? '',
                 'status' => $r->status,
+                'pg_name' => $r->pg_name ?? '',
+                'room_no' => $r->room_no ?? '',
+                'checkin_date' => $r->checkin_date ? Carbon::parse($r->checkin_date)->format('d/m/Y') : '',
             ])
             ->all();
     }
 
-    /** Latest delivery challans with client + parent order no. */
-    public function recentChallans(int $yearId, int $limit = 5): array
+    public function recentPayments(int $yearId, int $limit = 5): array
     {
-        return DB::table('delivery_challans as d')
-            ->join('order_forms as o', 'o.id', '=', 'd.order_form_id')
-            ->leftJoin('clients as c', 'c.id', '=', 'o.client_id')
-            ->whereNull('d.deleted_at')
-            ->where('d.year_id', $yearId)
-            ->orderByDesc('d.id')
+        $pgIds = $this->pgFilter();
+
+        return DB::table('payments as p')
+            ->join('tenants as t', 't.id', '=', 'p.tenant_id')
+            ->leftJoin('pg_management as pg', 'pg.id', '=', 'p.pg_id')
+            ->whereNull('p.deleted_at')
+            ->when($pgIds, fn ($q) => $q->whereIn('p.pg_id', $pgIds))
+            ->orderByDesc('p.id')
             ->limit($limit)
-            ->selectRaw('d.challan_no, o.order_no, c.name AS client_name, d.delivery_date')
+            ->selectRaw('p.reference_no, p.amount, p.payment_method, p.payment_date, p.status, t.name AS tenant_name, pg.pg_name')
             ->get()
             ->map(fn ($r) => [
-                'no' => $r->challan_no,
-                'client' => $r->client_name,
-                'job' => $r->order_no,
-                'date' => $r->delivery_date ? Carbon::parse($r->delivery_date)->format('d/m/Y') : '',
+                'ref_no' => $r->reference_no,
+                'tenant' => $r->tenant_name,
+                'pg' => $r->pg_name ?? '',
+                'amount' => number_format((float) $r->amount, 2),
+                'method' => $r->payment_method,
+                'date' => $r->payment_date ? Carbon::parse($r->payment_date)->format('d/m/Y') : '',
+                'status' => $r->status,
             ])
             ->all();
     }

@@ -67,7 +67,12 @@ class RoomCategoryController extends Controller
     public function show($id)
     {
         try {
-            $category = RoomCategory::byAnyKey($id)->first();
+            $user = auth()->user();
+            $query = RoomCategory::byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+            }
+            $category = $query->first();
             if (! is_null($category)) {
                 return response()->json(['status_code' => 200, 'message' => 'View category', 'result' => $category]);
             } else {
@@ -99,7 +104,12 @@ class RoomCategoryController extends Controller
     public function edit($id)
     {
         try {
-            $category = RoomCategory::byAnyKey($id)->first();
+            $user = auth()->user();
+            $query = RoomCategory::byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+            }
+            $category = $query->first();
             if (! is_null($category)) {
                 return response()->json(['status_code' => 200, 'message' => 'Edit category', 'result' => $category]);
             } else {
@@ -114,7 +124,12 @@ class RoomCategoryController extends Controller
     {
         DB::beginTransaction();
         try {
-            $category = RoomCategory::findByAnyKeyOrFail($id);
+            $user = auth()->user();
+            $query = RoomCategory::byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+            }
+            $category = $query->firstOrFail();
             $data = $request->validated();
             $data['updated_by'] = auth()->id();
             $category->update($data);
@@ -132,7 +147,12 @@ class RoomCategoryController extends Controller
     public function destroy(DeleteRoomCategoryRequest $request, $id)
     {
         try {
-            $category = RoomCategory::findByAnyKeyOrFail($id);
+            $user = auth()->user();
+            $query = RoomCategory::byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+            }
+            $category = $query->firstOrFail();
             $data = $request->validated();
             $data['deleted_by'] = auth()->id();
 

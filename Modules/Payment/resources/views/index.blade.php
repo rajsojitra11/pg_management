@@ -165,7 +165,7 @@
                 { data: 'tenant_name', name: 'tenant_name', orderable: false, searchable: false },
                 { data: 'pg_name', name: 'pg_name', orderable: false, searchable: false },
                 { data: 'room_no', name: 'room_no', orderable: false, searchable: false },
-                { data: 'payment_date', name: 'payment_date', render: function(data) { return data || '-'; } },
+                { data: 'payment_date', name: 'payment_date', render: function(data) { return window.erpDate ? window.erpDate(data) : (data || '-'); } },
                 { data: 'amount', name: 'amount', render: function(data) { return data ? '₹' + parseFloat(data).toFixed(2) : '-'; } },
                 { data: 'payment_method', name: 'payment_method', render: function(data) { return data || '-'; } },
                 { data: 'status', name: 'status' },
@@ -209,7 +209,7 @@
                     $('#view_tenant').text(d.tenant ? d.tenant.name : '-');
                     $('#view_pg').text(d.pg ? d.pg.pg_name : '-');
                     $('#view_room').text(d.room ? d.room.room_no : '-');
-                    $('#view_payment_date').text(d.payment_date || '-');
+                    $('#view_payment_date').text(window.erpDate ? window.erpDate(d.payment_date) : (d.payment_date || '-'));
                     $('#view_amount').text(d.amount ? '₹' + parseFloat(d.amount).toFixed(2) : '-');
                     $('#view_payment_method').text(d.payment_method || '-');
                     $('#view_reference_no').text(d.reference_no || '-');
@@ -223,8 +223,8 @@
                         $('#view_status').text(d.status ? d.status.charAt(0).toUpperCase() + d.status.slice(1) : '-');
                     }
                     $('#view_remarks').text(d.remarks || '-');
-                    $('#view_created_at').text(d.created_at || '-');
-                    $('#view_updated_at').text(d.updated_at || '-');
+                    $('#view_created_at').text(window.erpDate ? window.erpDate(d.created_at) : (d.created_at || '-'));
+                    $('#view_updated_at').text(window.erpDate ? window.erpDate(d.updated_at) : (d.updated_at || '-'));
                     $('#viewModal').removeClass('hidden');
                 } else {
                     erpToast({ title: 'Error', message: response.message || 'Something went wrong', type: 'error' });

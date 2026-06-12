@@ -1,12 +1,8 @@
 'use strict';
 
-// Dashboard driver — pulls real print-shop data from the /dashboard AJAX
-// endpoints (kpi-data, chart-data, table-data/{type}) and renders the KPI cards,
-// 5 Chart.js charts (via erpChart) and 2 DataTables (via initErpTable). Wires the
-// date-range filter, the Refresh button, and the Auto-refresh polling toggle.
 (function () {
-    var charts = {};   // canvasId -> Chart instance (destroyed before re-draw)
-    var tables = {};   // selector -> DataTable instance (cleared+refilled on re-poll)
+    var charts = {};
+    var tables = {};
     var refreshTimer = null;
     var REFRESH_MS = 30000;
     var fpS = null;
@@ -26,7 +22,6 @@
         return $('#dashboard-date-preset').val() || 'current_quarter';
     }
 
-    // Set the preset without firing its onChange (caller decides what to reload).
     function setPreset(val) {
         if (presetInst) { presetInst.setValue(val, true); } else { $('#dashboard-date-preset').val(val); }
     }
@@ -43,22 +38,24 @@
         if (el) el.textContent = val;
     }
 
-    // ── KPI cards ──
-    function renderKpis(d) {
-        d = d || {};
-        setText('kpi-pending-form', d.pending_form || 0);
-        setText('kpi-pending-delivery', d.pending_delivery || 0);
-        setText('kpi-delivery-challans', d.delivery_challans || 0);
-        setText('kpi-in-printing', d.in_printing || 0);
-        setText('kpi-active-clients', d.active_clients || 0);
-        setText('kpi-machines-online', d.machines_online || 0);
-        setText('kpi-machines-total', d.machines_total != null ? '/' + d.machines_total : '');
+    function formatCurrency(val) {
+        var num = parseFloat(val) || 0;
+        return '\u20B9' + num.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
     }
 
-    // ── Charts ──
+    function renderKpis(d) {
+        d = d || {};
+        setText('kpi-total-pg', d.total_pg || 0);
+        setText('kpi-total-rooms', d.total_rooms || 0);
+        setText('kpi-occupied-rooms', d.occupied_rooms || 0);
+        setText('kpi-vacant-rooms', d.vacant_rooms || 0);
+        setText('kpi-active-tenants', d.active_tenants || 0);
+        setText('kpi-monthly-revenue', formatCurrency(d.monthly_revenue));
+    }
+
     function drawChart(id, type, data, opts) {
         if (charts[id]) {
-            try { charts[id].destroy(); } catch (e) { /* noop */ }
+            try { charts[id].destroy(); } catch (e) { }
             charts[id] = null;
         }
         if (typeof erpChart === 'function') {
@@ -69,47 +66,46 @@
     function renderCharts(c) {
         c = c || {};
 
-        var om = c.orders_by_month || { labels: [], data: [] };
-        drawChart('ordersChart', 'bar', {
-            labels: om.labels,
-            datasets: [{ label: 'Order Forms', data: om.data, borderRadius: 6 }],
+        var rm = c.revenue_by_month || { labels: [], data: [] };
+        drawChart('revenueChart', 'bar', {
+            labels: rm.labels,
+            datasets: [{ label: 'Revenue (' + '\u20B9)', data: rm.data, borderRadius: 6 }],
         });
 
-        var sd = c.status_distribution || { labels: [], data: [] };
-        drawChart('statusChart', 'doughnut', {
-            labels: sd.labels,
-            datasets: [{ data: sd.data }],
+        var or = c.occupancy_rate || { labels: [], data: [] };
+        drawChart('occupancyChart', 'doughnut', {
+            labels: or.labels,
+            datasets: [{ data: or.data }],
         }, { plugins: { legend: { display: true, position: 'bottom' } }, cutout: '65%' });
 
-        var tc = c.top_clients || { labels: [], data: [] };
-        drawChart('clientsChart', 'bar', {
-            labels: tc.labels,
-            datasets: [{ label: 'Orders', data: tc.data, borderRadius: 6 }],
+        var tp = c.top_pg_tenants || { labels: [], data: [] };
+        drawChart('topPgChart', 'bar', {
+            labels: tp.labels,
+            datasets: [{ label: 'Tenants', data: tp.data, borderRadius: 6 }],
         }, { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } });
 
-        var pm = c.production_by_machine || { labels: [], data: [] };
-        drawChart('machineChart', 'doughnut', {
+        var pm = c.payment_methods || { labels: [], data: [] };
+        drawChart('paymentMethodChart', 'doughnut', {
             labels: pm.labels,
             datasets: [{ data: pm.data }],
         }, { plugins: { legend: { display: true, position: 'bottom' } }, cutout: '65%' });
 
-        var pp = c.post_press_mix || { labels: [], data: [] };
-        drawChart('postPressChart', 'bar', {
-            labels: pp.labels,
-            datasets: [{ label: 'Jobs', data: pp.data, borderRadius: 6 }],
+        var rc = c.room_category_dist || { labels: [], data: [] };
+        drawChart('categoryChart', 'bar', {
+            labels: rc.labels,
+            datasets: [{ label: 'Rooms', data: rc.data, borderRadius: 6 }],
         }, { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } });
     }
 
-    // ── Tables ──
     function renderStatusPill(d) {
         var map = {
-            'Pending': 'background:var(--erp-warning-bg);border-color:var(--erp-warning-border);color:var(--erp-warning-text);',
-            'Plate': 'background:var(--erp-accent-bg);border-color:var(--erp-accent-border);color:var(--erp-accent-text);',
-            'Printed': 'background:var(--erp-info-bg);border-color:var(--erp-info-border);color:var(--erp-info-text);',
-            'Post-Process': 'background:var(--erp-accent-bg);border-color:var(--erp-accent-border);color:var(--erp-accent-text);',
-            'Delivered': 'background:var(--erp-success-bg);border-color:var(--erp-success-border);color:var(--erp-success-text);',
+            'active': 'background:var(--erp-success-bg);border-color:var(--erp-success-border);color:var(--erp-success-text);',
+            'inactive': 'background:var(--erp-warning-bg);border-color:var(--erp-warning-border);color:var(--erp-warning-text);',
+            'paid': 'background:var(--erp-success-bg);border-color:var(--erp-success-border);color:var(--erp-success-text);',
+            'pending': 'background:var(--erp-warning-bg);border-color:var(--erp-warning-border);color:var(--erp-warning-text);',
+            'refunded': 'background:var(--erp-info-bg);border-color:var(--erp-info-border);color:var(--erp-info-text);',
         };
-        var s = map[d] || 'background:var(--erp-bg-muted);border-color:var(--erp-border);color:var(--erp-text-secondary);';
+        var s = map[d ? d.toLowerCase() : ''] || 'background:var(--erp-bg-muted);border-color:var(--erp-border);color:var(--erp-text-secondary);';
         return '<span class="dashboard-status" style="' + s + '">' + (d || '') + '</span>';
     }
 
@@ -117,7 +113,7 @@
         return '<code class="erp-code-badge">' + (d || '') + '</code>';
     }
 
-    function renderClientCell(d) {
+    function renderAvatarCell(d) {
         return '<div class="flex items-center gap-2">' +
             '<div class="dashboard-avatar"><i class="fa-solid fa-user" style="font-size:11px;"></i></div>' +
             '<span class="dashboard-client">' + (d || '') + '</span>' +
@@ -128,21 +124,25 @@
         return { data: null, render: function (d, t, r, m) { return m.row + 1; }, orderable: false, width: '50px' };
     }
 
-    var jobColumns = [
+    var tenantColumns = [
         serialColumn(),
-        { data: 'no', render: renderCodeBadge },
-        { data: 'client', render: renderClientCell },
-        { data: 'title' },
-        { data: 'issue' },
+        { data: 'name', render: renderAvatarCell },
+        { data: 'pg_name', render: renderCodeBadge },
+        { data: 'room_no', render: renderCodeBadge },
+        { data: 'phone' },
+        { data: 'checkin_date' },
         { data: 'status', render: renderStatusPill },
     ];
 
-    var challanColumns = [
+    var paymentColumns = [
         serialColumn(),
-        { data: 'no', render: renderCodeBadge },
-        { data: 'client', render: renderClientCell },
-        { data: 'job', render: renderCodeBadge },
+        { data: 'ref_no', render: renderCodeBadge },
+        { data: 'tenant', render: renderAvatarCell },
+        { data: 'pg', render: renderCodeBadge },
+        { data: 'amount' },
+        { data: 'method' },
         { data: 'date' },
+        { data: 'status', render: renderStatusPill },
     ];
 
     function loadTable(selector, url, columns) {
@@ -160,16 +160,14 @@
         });
     }
 
-    // ── Orchestration ──
     function loadDashboard() {
         var p = dateParams();
         $.get('/dashboard/kpi-data', p).done(renderKpis);
         $.get('/dashboard/chart-data', p).done(renderCharts);
-        loadTable('#recentJobsTable', '/dashboard/table-data/recent-job-cards', jobColumns);
-        loadTable('#recentChallansTable', '/dashboard/table-data/recent-delivery-challans', challanColumns);
+        loadTable('#recentTenantsTable', '/dashboard/table-data/recent-tenants', tenantColumns);
+        loadTable('#recentPaymentsTable', '/dashboard/table-data/recent-payments', paymentColumns);
     }
 
-    // ── Date presets ──
     function fmt(dt) {
         var m = ('0' + (dt.getMonth() + 1)).slice(-2);
         var day = ('0' + dt.getDate()).slice(-2);
@@ -192,7 +190,7 @@
         else if (preset === 'current_year') { s = new Date(y, 0, 1); e = new Date(y, 11, 31); }
         else if (preset === 'current_quarter') { q = Math.floor(m / 3); s = new Date(y, q * 3, 1); e = new Date(y, q * 3 + 3, 0); }
         else if (preset === 'last_quarter') { lq = Math.floor(m / 3) - 1; ly = y; if (lq < 0) { lq = 3; ly = y - 1; } s = new Date(ly, lq * 3, 1); e = new Date(ly, lq * 3 + 3, 0); }
-        else { return; } // custom — leave the user's dates untouched
+        else { return; }
 
         setRange(s, e);
     }
@@ -202,17 +200,14 @@
 
     $(function () {
         if (typeof flatpickr === 'function') {
-            // Show d-m-Y to the user (altInput); keep the real value as Y-m-d for the backend.
             fpS = flatpickr('#dashboard-s-date', { altInput: true, altFormat: 'd-m-Y', dateFormat: 'Y-m-d' });
             fpE = flatpickr('#dashboard-e-date', { altInput: true, altFormat: 'd-m-Y', dateFormat: 'Y-m-d' });
         }
 
-        // Searchable Quick Select (erpSearchSelect) — falls back to the native
-        // <select>'s change event if the component isn't available.
         if (typeof erpSearchSelect === 'function') {
             presetInst = erpSearchSelect('#dashboard-date-preset', {
                 options: PRESET_OPTIONS,
-                placeholder: 'Select…',
+                placeholder: 'Select\u2026',
                 onChange: function (val) { applyPreset(val || 'current_quarter'); },
             });
             setPreset('current_quarter');

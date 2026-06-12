@@ -272,8 +272,8 @@
                     $('#view_category_name').text(d.category_name || '-');
                     $('#view_pg_name').text(d.pg_id || '-');
                     $('#view_status').text(d.status ? d.status.charAt(0).toUpperCase() + d.status.slice(1) : '-');
-                    $('#view_created_at').text(d.created_at || '-');
-                    $('#view_updated_at').text(d.updated_at || '-');
+                    $('#view_created_at').text(window.erpDate ? window.erpDate(d.created_at) : (d.created_at || '-'));
+                    $('#view_updated_at').text(window.erpDate ? window.erpDate(d.updated_at) : (d.updated_at || '-'));
                     $('#viewModal').removeClass('hidden');
                 } else if (response.status_code == 201 || response.status_code == 404) {
                     toastr.warning(response.message, "Warning");

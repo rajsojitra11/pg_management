@@ -2,6 +2,7 @@
 
 return [
     'tenant' => 'Tenant',
+    'detail' => 'Tenant Details',
     'manage_tenant' => 'Manage Tenant',
     'tenant_master' => 'Tenant Management Master',
     'tenant_registration' => 'Tenant Registration',
@@ -23,6 +24,7 @@ return [
     'add' => 'Add Tenant',
     'edit' => 'Edit Tenant',
     'create_new_tenant' => 'Create a new tenant account',
+    'edit_tenant' => 'Edit tenant information',
 
     'step_pg_personal' => 'PG & Personal',
     'step_stay_payment' => 'Stay & Payment',

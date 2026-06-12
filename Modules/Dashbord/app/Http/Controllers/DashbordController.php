@@ -95,8 +95,8 @@ class DashbordController extends Controller
         $yearId = getSelectedYear();
 
         $data = match ($type) {
-            'recent-job-cards' => $this->dashboardService->recentJobCards($yearId),
-            'recent-delivery-challans' => $this->dashboardService->recentChallans($yearId),
+            'recent-tenants' => $this->dashboardService->recentTenants($yearId),
+            'recent-payments' => $this->dashboardService->recentPayments($yearId),
             default => null,
         };
 

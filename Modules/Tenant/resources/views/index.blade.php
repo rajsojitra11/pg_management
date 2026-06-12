@@ -189,7 +189,7 @@
                 { data: 'id', render: function(data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; }, orderable: false, width: '50px' },
                 { data: 'pg_name', name: 'pg_name', orderable: false, searchable: false },
                 { data: 'room_no', name: 'room_no', orderable: false, searchable: false },
-                { data: 'checkin_date', name: 'checkin_date', render: function(data) { return data || '-'; } },
+                { data: 'checkin_date', name: 'checkin_date', render: function(data) { return window.erpDate ? window.erpDate(data) : (data || '-'); } },
                 { data: 'monthly_rent', name: 'monthly_rent', render: function(data) { return data ? '₹' + data : '-'; } },
                 { data: 'phone', name: 'phone' },
                 { data: 'status', name: 'status', render: function(data) { return data ? data.charAt(0).toUpperCase() + data.slice(1) : '-'; } },
@@ -236,20 +236,20 @@
                     $('#view_pg').text(d.pg ? d.pg.pg_name : '-');
                     $('#view_room').text(d.room ? d.room.room_no : '-');
                     $('#view_bed_no').text(d.bed_no || '-');
-                    $('#view_checkin').text(d.checkin_date || '-');
-                    $('#view_checkout').text(d.expected_checkout_date || '-');
+                    $('#view_checkin').text(window.erpDate ? window.erpDate(d.checkin_date) : (d.checkin_date || '-'));
+                    $('#view_checkout').text(window.erpDate ? window.erpDate(d.expected_checkout_date) : (d.expected_checkout_date || '-'));
                     $('#view_rent').text(d.monthly_rent ? '₹' + d.monthly_rent : '-');
                     $('#view_deposit').text(d.security_deposit ? '₹' + d.security_deposit : '-');
                     $('#view_payment_method').text(d.payment_method || '-');
                     $('#view_id_proof_type').text(d.id_proof_type || '-');
                     $('#view_id_proof_number').text(d.id_proof_number || '-');
                     $('#view_gender').text(d.gender || '-');
-                    $('#view_dob').text(d.date_of_birth || '-');
+                    $('#view_dob').text(window.erpDate ? window.erpDate(d.date_of_birth) : (d.date_of_birth || '-'));
                     $('#view_occupation').text(d.occupation || '-');
                     $('#view_address').text(d.permanent_address || '-');
                     $('#view_notes').text(d.additional_notes || '-');
                     $('#view_status').text(d.status ? d.status.charAt(0).toUpperCase() + d.status.slice(1) : '-');
-                    $('#view_created_at').text(d.created_at || '-');
+                    $('#view_created_at').text(window.erpDate ? window.erpDate(d.created_at) : (d.created_at || '-'));
                     $('#viewModal').removeClass('hidden');
                 } else {
                     erpToast({ title: 'Error', message: response.message || 'Something went wrong', type: 'error' });

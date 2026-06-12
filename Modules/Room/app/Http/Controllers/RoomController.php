@@ -76,6 +76,14 @@ class RoomController extends Controller
             return response()->json([]);
         }
 
+        $user = auth()->user();
+        if ($user->hasRole('Pg_Admin')) {
+            $owned = PgManagement::where('owner_id', $user->id)->where('id', $pgId)->exists();
+            if (! $owned) {
+                return response()->json([]);
+            }
+        }
+
         $categories = RoomCategory::where('pg_id', $pgId)->where('status', 'active')
             ->orderBy('category_name')
             ->get(['id', 'category_name']);
@@ -86,7 +94,12 @@ class RoomController extends Controller
     public function show($id)
     {
         try {
-            $room = Room::byAnyKey($id)->first();
+            $user = auth()->user();
+            $query = Room::byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+            }
+            $room = $query->first();
             if (! is_null($room)) {
                 return response()->json(['status_code' => 200, 'message' => 'View room', 'result' => $room]);
             } else {
@@ -118,7 +131,12 @@ class RoomController extends Controller
     public function edit($id)
     {
         try {
-            $room = Room::byAnyKey($id)->first();
+            $user = auth()->user();
+            $query = Room::byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+            }
+            $room = $query->first();
             if (! is_null($room)) {
                 return response()->json(['status_code' => 200, 'message' => 'Edit room', 'result' => $room]);
             } else {
@@ -133,7 +151,12 @@ class RoomController extends Controller
     {
         DB::beginTransaction();
         try {
-            $room = Room::findByAnyKeyOrFail($id);
+            $user = auth()->user();
+            $query = Room::byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+            }
+            $room = $query->firstOrFail();
             $data = $request->validated();
             $data['updated_by'] = auth()->id();
             $room->update($data);
@@ -151,7 +174,12 @@ class RoomController extends Controller
     public function destroy(DeleteRoomRequest $request, $id)
     {
         try {
-            $room = Room::findByAnyKeyOrFail($id);
+            $user = auth()->user();
+            $query = Room::byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+            }
+            $room = $query->firstOrFail();
             $data = $request->validated();
             $data['deleted_by'] = auth()->id();
 

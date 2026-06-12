@@ -226,11 +226,15 @@
     return html;
   };
 
-  /** Date formatter */
+  /** Date formatter (dd-mm-yyyy) */
   window.erpDate = function(dateStr) {
     if (!dateStr) return '';
     var d = new Date(dateStr);
-    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    if (isNaN(d.getTime())) return dateStr;
+    var day = ('0' + d.getDate()).slice(-2);
+    var month = ('0' + (d.getMonth() + 1)).slice(-2);
+    var year = d.getFullYear();
+    return day + '-' + month + '-' + year;
   };
 
 })();

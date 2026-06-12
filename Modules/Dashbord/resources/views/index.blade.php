@@ -6,10 +6,6 @@
 
 @section('pagecss')
 <style>
-    /* Recent-table cells inherit the global `table.dataTable` theme (erp-overrides.css)
-       so they match every other listing; only the custom cell-content styles live here. */
-
-    /* Client name avatar (tiny rounded square with user icon) */
     .dashboard-avatar {
         height: 1.75rem;
         width: 1.75rem;
@@ -27,7 +23,6 @@
         color: var(--erp-text);
     }
 
-    /* Status pill — base shape; per-status colors are applied via inline style */
     .dashboard-status {
         display: inline-flex;
         align-items: center;
@@ -49,11 +44,10 @@
         <div>
             <h1 class="text-xl sm:text-2xl font-bold text-zinc-900">Dashboard</h1>
             <p class="text-sm text-zinc-500 mt-1">
-                Welcome back, {{ Auth::user()->name }}. Print production at a glance.
+                Welcome back, {{ Auth::user()->name }}. PG accommodation at a glance.
             </p>
         </div>
         <div class="flex flex-wrap items-center gap-2">
-            {{-- Auto-refresh toggle --}}
             <label class="erp-switch">
                 <input type="checkbox" id="auto-refresh-toggle" class="erp-switch-input"
                     {{ $autoRefresh ? 'checked' : '' }}>
@@ -61,55 +55,44 @@
                 <span class="text-sm text-zinc-600">Auto-refresh</span>
             </label>
 
-            {{-- Refresh button --}}
             <button id="btn-refresh-dashboard"
                 class="h-9 px-3 sm:px-4 rounded-md border border-zinc-200 bg-white text-sm font-medium text-zinc-700 hover:bg-zinc-50 whitespace-nowrap inline-flex items-center transition-colors">
                 <i class="fa-solid fa-arrows-rotate mr-1.5 text-xs" id="btn-refresh-icon"></i>
                 <span class="hidden sm:inline">Refresh</span>
             </button>
-
-            @if (Route::has('orderform.create'))
-                <a href="{{ route('orderform.create') }}"
-                    class="h-9 px-6 rounded-md text-white text-sm font-medium inline-flex items-center justify-center shadow-sm whitespace-nowrap transition-colors"
-                    style="background:#3D52A0; border:1px solid #3D52A0; min-width:180px;"
-                    onmouseover="this.style.background='#324690';this.style.borderColor='#324690';"
-                    onmouseout="this.style.background='#3D52A0';this.style.borderColor='#3D52A0';">
-                    <i class="fa-solid fa-plus mr-1.5 text-xs"></i> New Order Form
-                </a>
-            @endif
         </div>
     </div>
 
-    {{-- Quick Actions — single row of small buttons --}}
+    {{-- Quick Actions --}}
     <div class="flex flex-wrap items-center gap-2 mb-4">
-        @if (Route::has('deliverychallan.index'))
-            <a href="{{ route('deliverychallan.index') }}"
+        @if (Route::has('pgmanagement.index'))
+            <a href="{{ route('pgmanagement.index') }}"
                 class="h-9 px-3 rounded-md border border-zinc-200 bg-white text-sm font-medium text-zinc-700 hover:bg-zinc-50 inline-flex items-center whitespace-nowrap">
-                <i class="fa-solid fa-truck mr-1.5 text-xs text-emerald-600"></i> Delivery Challan
+                <i class="fa-solid fa-building mr-1.5 text-xs text-blue-600"></i> PG Management
             </a>
         @endif
-        @if (Route::has('client.index'))
-            <a href="{{ route('client.index') }}"
+        @if (Route::has('room.index'))
+            <a href="{{ route('room.index') }}"
                 class="h-9 px-3 rounded-md border border-zinc-200 bg-white text-sm font-medium text-zinc-700 hover:bg-zinc-50 inline-flex items-center whitespace-nowrap">
-                <i class="fa-solid fa-user-group mr-1.5 text-xs text-purple-600"></i> Clients
+                <i class="fa-solid fa-door-open mr-1.5 text-xs text-purple-600"></i> Rooms
             </a>
         @endif
-        @if (Route::has('vendor.index'))
-            <a href="{{ route('vendor.index') }}"
+        @if (Route::has('tenant.index'))
+            <a href="{{ route('tenant.index') }}"
                 class="h-9 px-3 rounded-md border border-zinc-200 bg-white text-sm font-medium text-zinc-700 hover:bg-zinc-50 inline-flex items-center whitespace-nowrap">
-                <i class="fa-solid fa-handshake mr-1.5 text-xs text-amber-600"></i> Vendors
+                <i class="fa-solid fa-users mr-1.5 text-xs text-emerald-600"></i> Tenants
             </a>
         @endif
-        @if (Route::has('orderform.index'))
-            <a href="{{ route('orderform.index') }}"
+        @if (Route::has('payment.index'))
+            <a href="{{ route('payment.index') }}"
                 class="h-9 px-3 rounded-md border border-zinc-200 bg-white text-sm font-medium text-zinc-700 hover:bg-zinc-50 inline-flex items-center whitespace-nowrap">
-                <i class="fa-solid fa-chart-line mr-1.5 text-xs text-rose-600"></i> Job Report
+                <i class="fa-solid fa-credit-card mr-1.5 text-xs text-amber-600"></i> Payments
             </a>
         @endif
-        @if (Route::has('machine.index'))
-            <a href="{{ route('machine.index') }}"
+        @if (Route::has('noticeboard.index'))
+            <a href="{{ route('noticeboard.index') }}"
                 class="h-9 px-3 rounded-md border border-zinc-200 bg-white text-sm font-medium text-zinc-700 hover:bg-zinc-50 inline-flex items-center whitespace-nowrap">
-                <i class="fa-solid fa-industry mr-1.5 text-xs text-cyan-600"></i> Machines
+                <i class="fa-solid fa-bullhorn mr-1.5 text-xs text-rose-600"></i> Noticeboard
             </a>
         @endif
     </div>
@@ -163,96 +146,92 @@
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 mb-6">
         <div class="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm">
             <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-medium text-blue-600 uppercase tracking-wide">Pending Form</span>
+                <span class="text-xs font-medium text-blue-600 uppercase tracking-wide">Total PG Properties</span>
                 <div class="h-8 w-8 rounded-md bg-blue-50 flex items-center justify-center">
-                    <i class="fa-solid fa-hourglass-half text-blue-600 text-sm"></i>
+                    <i class="fa-solid fa-building text-blue-600 text-sm"></i>
                 </div>
             </div>
-            <p class="text-2xl font-bold text-zinc-900" id="kpi-pending-form">—</p>
-            <p class="text-xs text-blue-600 mt-1">Awaiting form fill</p>
+            <p class="text-2xl font-bold text-zinc-900" id="kpi-total-pg">—</p>
+            <p class="text-xs text-blue-600 mt-1">Active PG properties</p>
         </div>
 
         <div class="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm">
             <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-medium text-amber-600 uppercase tracking-wide">Pending Delivery</span>
-                <div class="h-8 w-8 rounded-md bg-amber-50 flex items-center justify-center">
-                    <i class="fa-solid fa-truck-fast text-amber-600 text-sm"></i>
-                </div>
-            </div>
-            <p class="text-2xl font-bold text-zinc-900" id="kpi-pending-delivery">—</p>
-            <p class="text-xs text-amber-600 mt-1">Ready to dispatch</p>
-        </div>
-
-        <div class="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm">
-            <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-medium text-emerald-600 uppercase tracking-wide">Delivery Challan</span>
-                <div class="h-8 w-8 rounded-md bg-emerald-50 flex items-center justify-center">
-                    <i class="fa-solid fa-truck text-emerald-600 text-sm"></i>
-                </div>
-            </div>
-            <p class="text-2xl font-bold text-zinc-900" id="kpi-delivery-challans">—</p>
-            <p class="text-xs text-emerald-600 mt-1">Issued this FY</p>
-        </div>
-
-        <div class="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm">
-            <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-medium text-purple-600 uppercase tracking-wide">In Printing</span>
+                <span class="text-xs font-medium text-purple-600 uppercase tracking-wide">Total Rooms</span>
                 <div class="h-8 w-8 rounded-md bg-purple-50 flex items-center justify-center">
-                    <i class="fa-solid fa-print text-purple-600 text-sm"></i>
+                    <i class="fa-solid fa-door-open text-purple-600 text-sm"></i>
                 </div>
             </div>
-            <p class="text-2xl font-bold text-zinc-900" id="kpi-in-printing">—</p>
-            <p class="text-xs text-purple-600 mt-1">On machines now</p>
+            <p class="text-2xl font-bold text-zinc-900" id="kpi-total-rooms">—</p>
+            <p class="text-xs text-purple-600 mt-1">Active rooms</p>
         </div>
 
         <div class="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm">
             <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-medium text-rose-600 uppercase tracking-wide">Active Clients</span>
+                <span class="text-xs font-medium text-emerald-600 uppercase tracking-wide">Occupied Rooms</span>
+                <div class="h-8 w-8 rounded-md bg-emerald-50 flex items-center justify-center">
+                    <i class="fa-solid fa-user-check text-emerald-600 text-sm"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-zinc-900" id="kpi-occupied-rooms">—</p>
+            <p class="text-xs text-emerald-600 mt-1">Currently occupied</p>
+        </div>
+
+        <div class="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-medium text-amber-600 uppercase tracking-wide">Vacant Rooms</span>
+                <div class="h-8 w-8 rounded-md bg-amber-50 flex items-center justify-center">
+                    <i class="fa-solid fa-door-closed text-amber-600 text-sm"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-zinc-900" id="kpi-vacant-rooms">—</p>
+            <p class="text-xs text-amber-600 mt-1">Available to rent</p>
+        </div>
+
+        <div class="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-medium text-rose-600 uppercase tracking-wide">Active Tenants</span>
                 <div class="h-8 w-8 rounded-md bg-rose-50 flex items-center justify-center">
-                    <i class="fa-solid fa-user-group text-rose-600 text-sm"></i>
+                    <i class="fa-solid fa-users text-rose-600 text-sm"></i>
                 </div>
             </div>
-            <p class="text-2xl font-bold text-zinc-900" id="kpi-active-clients">—</p>
-            <p class="text-xs text-rose-600 mt-1">This financial year</p>
+            <p class="text-2xl font-bold text-zinc-900" id="kpi-active-tenants">—</p>
+            <p class="text-xs text-rose-600 mt-1">Currently staying</p>
         </div>
 
         <div class="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm">
             <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-medium text-cyan-600 uppercase tracking-wide">Machines</span>
+                <span class="text-xs font-medium text-cyan-600 uppercase tracking-wide">Revenue</span>
                 <div class="h-8 w-8 rounded-md bg-cyan-50 flex items-center justify-center">
-                    <i class="fa-solid fa-industry text-cyan-600 text-sm"></i>
+                    <i class="fa-solid fa-indian-rupee-sign text-cyan-600 text-sm"></i>
                 </div>
             </div>
-            <p class="text-2xl font-bold text-zinc-900"><span id="kpi-machines-online">—</span><span class="text-base text-zinc-400" id="kpi-machines-total"></span></p>
-            <p class="text-xs text-cyan-600 mt-1">All online</p>
+            <p class="text-2xl font-bold text-zinc-900" id="kpi-monthly-revenue">—</p>
+            <p class="text-xs text-cyan-600 mt-1">Selected period</p>
         </div>
     </div>
 
-    {{-- Charts Row — Monthly Orders + Job Card Status --}}
+    {{-- Charts Row --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
         <div class="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
             <div class="flex items-center justify-between mb-4">
                 <div>
-                    <h3 class="text-base font-semibold text-zinc-900">Monthly Order Volume</h3>
-                    <p class="text-xs text-zinc-500 mt-0.5">Order forms created over the last 12 months</p>
+                    <h3 class="text-base font-semibold text-zinc-900">Monthly Revenue</h3>
+                    <p class="text-xs text-zinc-500 mt-0.5">Revenue over the last 12 months</p>
                 </div>
-                <span
-                    class="inline-flex items-center text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">
-                    <i class="fa-solid fa-arrow-up mr-1" style="font-size:10px;"></i> 12.4%
-                </span>
             </div>
             <div style="height: 16rem;">
-                <canvas id="ordersChart"></canvas>
+                <canvas id="revenueChart"></canvas>
             </div>
         </div>
 
         <div class="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
             <div class="mb-4">
-                <h3 class="text-base font-semibold text-zinc-900">Job Card Status</h3>
-                <p class="text-xs text-zinc-500 mt-0.5">Distribution across stages</p>
+                <h3 class="text-base font-semibold text-zinc-900">Occupancy Rate</h3>
+                <p class="text-xs text-zinc-500 mt-0.5">Occupied vs Vacant rooms</p>
             </div>
             <div style="height: 16rem;">
-                <canvas id="statusChart"></canvas>
+                <canvas id="occupancyChart"></canvas>
             </div>
         </div>
     </div>
@@ -261,55 +240,56 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <div class="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
             <div class="mb-4">
-                <h3 class="text-base font-semibold text-zinc-900">Top Clients (FY)</h3>
-                <p class="text-xs text-zinc-500 mt-0.5">By order volume</p>
+                <h3 class="text-base font-semibold text-zinc-900">Top PGs by Tenants</h3>
+                <p class="text-xs text-zinc-500 mt-0.5">Active tenant count per PG</p>
             </div>
             <div style="height: 16rem;">
-                <canvas id="clientsChart"></canvas>
+                <canvas id="topPgChart"></canvas>
             </div>
         </div>
 
         <div class="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
             <div class="mb-4">
-                <h3 class="text-base font-semibold text-zinc-900">Production by Machine</h3>
-                <p class="text-xs text-zinc-500 mt-0.5">Sheets printed this month</p>
+                <h3 class="text-base font-semibold text-zinc-900">Payment Methods</h3>
+                <p class="text-xs text-zinc-500 mt-0.5">Distribution of payment types</p>
             </div>
             <div style="height: 16rem;">
-                <canvas id="machineChart"></canvas>
+                <canvas id="paymentMethodChart"></canvas>
             </div>
         </div>
 
         <div class="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
             <div class="mb-4">
-                <h3 class="text-base font-semibold text-zinc-900">Post-Press Mix</h3>
-                <p class="text-xs text-zinc-500 mt-0.5">Lamination · UV · Other</p>
+                <h3 class="text-base font-semibold text-zinc-900">Room Categories</h3>
+                <p class="text-xs text-zinc-500 mt-0.5">Distribution by category</p>
             </div>
             <div style="height: 16rem;">
-                <canvas id="postPressChart"></canvas>
+                <canvas id="categoryChart"></canvas>
             </div>
         </div>
     </div>
 
-    {{-- Recent Job Cards --}}
+    {{-- Recent Tenants --}}
     <div class="rounded-lg border border-zinc-200 bg-white shadow-sm mb-6">
         <div class="flex items-center justify-between p-4 border-b border-zinc-200">
-            <h3 class="text-base font-semibold text-zinc-900">Recent Job Cards</h3>
-            @if (Route::has('orderform.index'))
-                <a href="{{ route('orderform.index') }}"
+            <h3 class="text-base font-semibold text-zinc-900">Recent Tenants</h3>
+            @if (Route::has('tenant.index'))
+                <a href="{{ route('tenant.index') }}"
                     class="text-sm font-medium text-zinc-700 hover:text-zinc-900">
                     View all <i class="fa-solid fa-arrow-right text-xs ml-1"></i>
                 </a>
             @endif
         </div>
         <div class="p-4 overflow-x-auto">
-            <table id="recentJobsTable" class="w-full">
+            <table id="recentTenantsTable" class="w-full">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Order No.</th>
-                        <th>Client</th>
-                        <th>Job Title</th>
-                        <th>Issue</th>
+                        <th>Name</th>
+                        <th>PG</th>
+                        <th>Room</th>
+                        <th>Phone</th>
+                        <th>Check-in</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -318,26 +298,29 @@
         </div>
     </div>
 
-    {{-- Recent Delivery Challans --}}
+    {{-- Recent Payments --}}
     <div class="rounded-lg border border-zinc-200 bg-white shadow-sm">
         <div class="flex items-center justify-between p-4 border-b border-zinc-200">
-            <h3 class="text-base font-semibold text-zinc-900">Recent Delivery Challans</h3>
-            @if (Route::has('deliverychallan.index'))
-                <a href="{{ route('deliverychallan.index') }}"
+            <h3 class="text-base font-semibold text-zinc-900">Recent Payments</h3>
+            @if (Route::has('payment.index'))
+                <a href="{{ route('payment.index') }}"
                     class="text-sm font-medium text-zinc-700 hover:text-zinc-900">
                     View all <i class="fa-solid fa-arrow-right text-xs ml-1"></i>
                 </a>
             @endif
         </div>
         <div class="p-4 overflow-x-auto">
-            <table id="recentChallansTable" class="w-full">
+            <table id="recentPaymentsTable" class="w-full">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Delivery No.</th>
-                        <th>Client</th>
-                        <th>Job Card No.</th>
+                        <th>Ref No.</th>
+                        <th>Tenant</th>
+                        <th>PG</th>
+                        <th>Amount</th>
+                        <th>Method</th>
                         <th>Date</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody></tbody>

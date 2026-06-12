@@ -320,8 +320,8 @@
                 { data: 'id', render: function(data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; }, orderable: false, width: '50px' },
                 { data: 'subscriber_name', name: 'subscriber_name' },
                 { data: 'email', name: 'email' },
-                { data: 'start_date', name: 'start_date' },
-                { data: 'end_date', name: 'end_date' },
+                { data: 'start_date', name: 'start_date', render: function(data) { return window.erpDate ? window.erpDate(data) : (data || '-'); } },
+                { data: 'end_date', name: 'end_date', render: function(data) { return window.erpDate ? window.erpDate(data) : (data || '-'); } },
                 { data: 'status', name: 'status' },
                 { data: 'payment_status', name: 'payment_status' },
                 { data: 'action', name: 'action', orderable: false, sortable: false, width: '160px' }
@@ -410,8 +410,8 @@
                     $('#view_email').text(d.email || '-');
                     $('#view_phone').text(d.phone || '-');
                     $('#view_plan_type').text(d.plan_type ? d.plan_type.charAt(0).toUpperCase() + d.plan_type.slice(1) : '-');
-                    $('#view_start_date').text(d.start_date || '-');
-                    $('#view_end_date').text(d.end_date || '-');
+                    $('#view_start_date').text(window.erpDate ? window.erpDate(d.start_date) : (d.start_date || '-'));
+                    $('#view_end_date').text(window.erpDate ? window.erpDate(d.end_date) : (d.end_date || '-'));
                     if (d.status === 'active') {
                         $('#view_status').html('<span class="inline-flex items-center rounded-md bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700 border border-green-200">Active</span>');
                     } else {
@@ -419,8 +419,8 @@
                     }
                     $('#view_amount').text(d.amount ? '$' + parseFloat(d.amount).toFixed(2) : '-');
                     $('#view_payment_status').text(d.payment_status ? d.payment_status.charAt(0).toUpperCase() + d.payment_status.slice(1) : '-');
-                    $('#view_created_at').text(d.created_at || '-');
-                    $('#view_updated_at').text(d.updated_at || '-');
+                    $('#view_created_at').text(window.erpDate ? window.erpDate(d.created_at) : (d.created_at || '-'));
+                    $('#view_updated_at').text(window.erpDate ? window.erpDate(d.updated_at) : (d.updated_at || '-'));
                     $('#viewModal').removeClass('hidden');
                 } else if (response.status_code == 201 || response.status_code == 404) {
                     toastr.warning(response.message, "Warning");

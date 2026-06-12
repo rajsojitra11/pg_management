@@ -92,38 +92,37 @@
     @include('partials-tw.delete-modal')
     @include('partials-tw.logout-modal')
 
-    {{-- Core JS --}}
+    {{-- Core JS — defer all non-blocking scripts --}}
     <script src="{{ asset('assets-tw/vendor/js/jquery-3.7.1.min.js') }}"></script>
-    <script src="{{ asset('assets-tw/js/erp-layout-laravel.js') }}?v={{ config('app.version', time()) }}"></script>
-    <script src="{{ asset('assets-tw/js/erp-components.js') }}?v={{ config('app.version', time()) }}"></script>
-    <script src="{{ asset('assets-tw/js/erp-cascade.js') }}?v={{ config('app.version', time()) }}"></script>
+    <script src="{{ asset('assets-tw/js/erp-layout-laravel.js') }}?v={{ config('app.version', time()) }}" defer></script>
+    <script src="{{ asset('assets-tw/js/erp-components.js') }}?v={{ config('app.version', time()) }}" defer></script>
+    <script src="{{ asset('assets-tw/js/erp-cascade.js') }}?v={{ config('app.version', time()) }}" defer></script>
 
     {{-- Vendor JS --}}
-    <script src="{{ asset('assets-tw/vendor/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('assets-tw/vendor/js/dataTables.responsive.min.js') }}"></script>
-    <script src="{{ asset('assets-tw/vendor/js/flatpickr.min.js') }}"></script>
-    <script src="{{ asset('assets-tw/vendor/js/jquery.validate.min.js') }}"></script>
-    <script src="{{ asset('assets/js/jquery.repeater.min.js') }}"></script>
-    <script src="{{ asset('assets-tw/vendor/js/select2.min.js') }}"></script>
-    <script src="{{ asset('assets-tw/js/erp-datatable.js') }}?v={{ config('app.version', time()) }}"></script>
+    <script src="{{ asset('assets-tw/vendor/js/jquery.dataTables.min.js') }}" defer></script>
+    <script src="{{ asset('assets-tw/vendor/js/dataTables.responsive.min.js') }}" defer></script>
+    <script src="{{ asset('assets-tw/vendor/js/flatpickr.min.js') }}" defer></script>
+    <script src="{{ asset('assets-tw/vendor/js/jquery.validate.min.js') }}" defer></script>
+    <script src="{{ asset('assets/js/jquery.repeater.min.js') }}" defer></script>
+    <script src="{{ asset('assets-tw/vendor/js/select2.min.js') }}" defer></script>
+    <script src="{{ asset('assets-tw/js/erp-datatable.js') }}?v={{ config('app.version', time()) }}" defer></script>
 
     {{-- Page-specific scripts --}}
     @yield('pagescript')
 
-    {{-- Custom JS (existing CRUD helpers — loaded from old path during transition) --}}
-    <script src="{{ asset('assets/custom/dynamic-validation.js') }}?v={{ config('app.version', time()) }}"></script>
-    <script src="{{ asset('assets/custom/edit-loader.js') }}?v={{ config('app.version', time()) }}"></script>
-    <script src="{{ asset('assets/custom/password.js') }}?v={{ config('app.version', time()) }}"></script>
-    {{-- changelayout.js removed — new theme uses vertical sidebar only --}}
-    <script src="{{ asset('assets/custom/filter.js') }}?v={{ config('app.version', time()) }}"></script>
-    <script src="{{ asset('assets/custom/logout.js') }}?v={{ config('app.version', time()) }}"></script>
+    {{-- Custom JS — defer for faster initial render --}}
+    <script src="{{ asset('assets/custom/dynamic-validation.js') }}?v={{ config('app.version', time()) }}" defer></script>
+    <script src="{{ asset('assets/custom/edit-loader.js') }}?v={{ config('app.version', time()) }}" defer></script>
+    <script src="{{ asset('assets/custom/password.js') }}?v={{ config('app.version', time()) }}" defer></script>
+    <script src="{{ asset('assets/custom/filter.js') }}?v={{ config('app.version', time()) }}" defer></script>
+    <script src="{{ asset('assets/custom/logout.js') }}?v={{ config('app.version', time()) }}" defer></script>
     {{-- Must be defined BEFORE session-monitor.js loads — it captures this into a const at load time --}}
     <script>window.SESSION_LIFETIME_MINUTES = {{ config('session.lifetime', 120) }};</script>
-    <script src="{{ asset('assets/custom/session-monitor.js') }}?v={{ config('app.version', time()) }}"></script>
-    <script src="{{ asset('assets/custom/save.js') }}?v={{ config('app.version', time()) }}"></script>
-    <script src="{{ asset('assets/custom/update.js') }}?v={{ config('app.version', time()) }}"></script>
-    <script src="{{ asset('assets/custom/delete.js') }}?v={{ config('app.version', time()) }}"></script>
-    <script src="{{ asset('assets/custom/impersonate.js') }}?v={{ config('app.version', time()) }}"></script>
+    <script src="{{ asset('assets/custom/session-monitor.js') }}?v={{ config('app.version', time()) }}" defer></script>
+    <script src="{{ asset('assets/custom/save.js') }}?v={{ config('app.version', time()) }}" defer></script>
+    <script src="{{ asset('assets/custom/update.js') }}?v={{ config('app.version', time()) }}" defer></script>
+    <script src="{{ asset('assets/custom/delete.js') }}?v={{ config('app.version', time()) }}" defer></script>
+    <script src="{{ asset('assets/custom/impersonate.js') }}?v={{ config('app.version', time()) }}" defer></script>
 
     {{-- Compatibility shim: toastr → erpToast, BlockUI → opacity toggle --}}
     <script>
