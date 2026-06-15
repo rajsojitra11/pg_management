@@ -33,6 +33,8 @@ return [
     // Error messages
     'login_failed' => 'Login failed. Please check your credentials.',
     'session_expired' => 'Your session has expired. Please login again.',
+    'web_access_denied' => 'Web access is not allowed for this account. Please use the mobile application.',
+    'subscription_expired' => 'Your subscription has expired. Please contact the administrator to renew.',
 
     // Hero panel (left side on desktop, top banner on mobile)
     'hero_brand' => 'PG Management',

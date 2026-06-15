@@ -104,6 +104,13 @@
     @endisset
 @endif
 
+{{-- Payment History --}}
+@if (!empty($paymentHistoryURL))
+    <button data-id="{{ $row->public_id ?? $row->id }}" class="p-1.5 rounded-md text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 inline-flex items-center payment-history" title="Payment History">
+        <i class="fa-solid fa-receipt text-xs"></i>
+    </button>
+@endif
+
 {{-- Extra Buttons --}}
 @if (isset($extraBtn) && count($extraBtn) > 0)
     @foreach ($extraBtn as $extra)

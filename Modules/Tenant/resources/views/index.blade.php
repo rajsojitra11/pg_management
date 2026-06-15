@@ -160,6 +160,62 @@
         </div>
     </div>
 </div>
+{{-- Payment History Modal --}}
+<div id="paymentHistoryModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/50 ph-modal-close"></div>
+    <div class="relative flex items-center justify-center min-h-screen p-4">
+        <div class="relative w-full max-w-4xl rounded-lg border border-zinc-200 bg-white shadow-xl">
+            <div class="flex items-center justify-between p-4 border-b border-zinc-200">
+                <h3 class="text-lg font-semibold text-zinc-900" id="phModalTitle">Payment History</h3>
+                <button type="button" class="text-zinc-400 hover:text-zinc-600 ph-modal-close">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="p-5 max-h-[70vh] overflow-y-auto">
+                <div class="mb-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div>
+                        <p class="text-xs font-medium text-zinc-500">Tenant</p>
+                        <p class="text-sm font-semibold text-zinc-900" id="ph_tenant_name">-</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-zinc-500">PG</p>
+                        <p class="text-sm text-zinc-900" id="ph_pg_name">-</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-zinc-500">Room</p>
+                        <p class="text-sm text-zinc-900" id="ph_room_no">-</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-zinc-500">Total Payments</p>
+                        <p class="text-sm font-semibold text-zinc-900" id="ph_total">-</p>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-zinc-200">
+                                <th class="text-left text-xs font-medium text-zinc-500 pb-2">#</th>
+                                <th class="text-left text-xs font-medium text-zinc-500 pb-2">Date</th>
+                                <th class="text-right text-xs font-medium text-zinc-500 pb-2">Amount</th>
+                                <th class="text-left text-xs font-medium text-zinc-500 pb-2">Method</th>
+                                <th class="text-left text-xs font-medium text-zinc-500 pb-2">Ref No</th>
+                                <th class="text-left text-xs font-medium text-zinc-500 pb-2">Status</th>
+                                <th class="text-left text-xs font-medium text-zinc-500 pb-2">Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ph_body"></tbody>
+                    </table>
+                    <div id="ph_empty" class="hidden text-center py-8 text-zinc-400 text-sm">No payment records found.</div>
+                </div>
+            </div>
+            <div class="flex items-center justify-end gap-2 p-4 border-t border-zinc-200">
+                <button type="button" class="h-9 px-4 rounded-md border border-zinc-200 bg-white text-sm font-medium text-zinc-700 hover:bg-zinc-50 whitespace-nowrap inline-flex items-center ph-modal-close">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('pagescript')
@@ -256,6 +312,63 @@
                 }
             }
         });
+    });
+
+    $(document).on('click', '.payment-history', function(e) {
+        e.preventDefault();
+        var id = $(this).attr('data-id');
+        var url = "{{ route('tenant.payments', ':id') }}".replace(':id', id);
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: 'json',
+            success: function(response) {
+                if (response.status_code == 200) {
+                    var tenant = response.tenant;
+                    var payments = response.payments;
+                    $('#ph_tenant_name').text(tenant.name || '-');
+                    $('#ph_pg_name').text(tenant.pg ? tenant.pg.pg_name : '-');
+                    $('#ph_room_no').text(tenant.room ? tenant.room.room_no : '-');
+                    $('#ph_total').text(payments.length);
+
+                    var tbody = $('#ph_body');
+                    tbody.empty();
+                    if (payments.length === 0) {
+                        $('#ph_empty').removeClass('hidden');
+                    } else {
+                        $('#ph_empty').addClass('hidden');
+                        $.each(payments, function(i, p) {
+                            var statusHtml = p.status;
+                            if (p.status === 'paid') {
+                                statusHtml = '<span class="inline-flex items-center rounded-md bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700 border border-green-200">Paid</span>';
+                            } else if (p.status === 'pending') {
+                                statusHtml = '<span class="inline-flex items-center rounded-md bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 border border-amber-200">Pending</span>';
+                            } else if (p.status === 'refunded') {
+                                statusHtml = '<span class="inline-flex items-center rounded-md bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700 border border-red-200">Refunded</span>';
+                            }
+                            var row = '<tr class="border-b border-zinc-100 hover:bg-zinc-50">' +
+                                '<td class="py-2.5 pr-3 text-zinc-400">' + (i + 1) + '</td>' +
+                                '<td class="py-2.5 pr-3 text-zinc-900">' + (window.erpDate ? window.erpDate(p.payment_date) : (p.payment_date || '-')) + '</td>' +
+                                '<td class="py-2.5 pr-3 text-right text-zinc-900 font-medium">' + (p.amount ? '₹' + parseFloat(p.amount).toFixed(2) : '-') + '</td>' +
+                                '<td class="py-2.5 pr-3 text-zinc-700">' + (p.payment_method || '-') + '</td>' +
+                                '<td class="py-2.5 pr-3 text-zinc-700">' + (p.reference_no || '-') + '</td>' +
+                                '<td class="py-2.5 pr-3">' + statusHtml + '</td>' +
+                                '<td class="py-2.5 text-zinc-500">' + (p.remarks || '-') + '</td>' +
+                                '</tr>';
+                            tbody.append(row);
+                        });
+                    }
+                    $('#paymentHistoryModal').removeClass('hidden');
+                } else {
+                    erpToast({ title: 'Error', message: response.message || 'Something went wrong', type: 'error' });
+                }
+            }
+        });
+    });
+
+    $(document).on('click', '.ph-modal-close', function(e) {
+        e.preventDefault();
+        $('#paymentHistoryModal').addClass('hidden');
     });
 </script>
 @endsection

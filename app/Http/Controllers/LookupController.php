@@ -206,13 +206,13 @@ class LookupController extends Controller
             return response()->json([]);
         }
 
-        $rows = Room::select('id', 'room_no')
+        $rows = Room::select('id', 'room_no', 'bed_capacity')
             ->where('pg_id', $pgId)
             ->where('status', 'active')
             ->orderBy('room_no')
             ->limit($this->limit($request))
             ->get()
-            ->map(fn($r) => ['value' => (string) $r->id, 'label' => $r->room_no]);
+            ->map(fn($r) => ['value' => (string) $r->id, 'label' => $r->room_no, 'bed_capacity' => $r->bed_capacity]);
 
         return response()->json($rows);
     }

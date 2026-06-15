@@ -401,7 +401,7 @@ if (! function_exists('allowedYearIds')) {
 
         $user = $user ?: auth()->user();
         if (! $user) {
-            return null; // guest — routes already gate access
+            return null;
         }
 
         $key = $user->getKey();
@@ -409,39 +409,44 @@ if (! function_exists('allowedYearIds')) {
             return $cache[$key];
         }
 
+        // Check session cache first to avoid DB query every page load
+        $sessionKey = 'allowed_year_ids_' . $key;
+        if (session()->exists($sessionKey)) {
+            return $cache[$key] = session($sessionKey);
+        }
+
         $roleIds = $user->roles->pluck('id')->all();
         if (empty($roleIds)) {
-            return $cache[$key] = null; // no roles — preserve legacy (unrestricted)
+            $result = null;
+        } else {
+            $accesses = RoleYearAccess::whereIn('role_id', $roleIds)->get(['all_years', 'allowed_year']);
+
+            if ($accesses->isEmpty()) {
+                $result = null;
+            } elseif ($accesses->contains(fn ($a) => $a->all_years === true)) {
+                $result = null;
+            } else {
+                $allYears = getYearList(true);
+                $current = $allYears->firstWhere('set_default', 1);
+                if (! $current) {
+                    $result = [];
+                } else {
+                    $n = (int) $accesses->max('allowed_year');
+                    $ids = $allYears
+                        ->where('full', '<=', $current->full)
+                        ->sortByDesc('full')
+                        ->take($n + 1)
+                        ->pluck('id')
+                        ->all();
+                    $result = $ids;
+                }
+            }
         }
 
-        // Spatie is bound to the base Role model, so $user->roles has no yearAccess()
-        // relation — query the access rows by role id directly.
-        $accesses = RoleYearAccess::whereIn('role_id', $roleIds)->get(['all_years', 'allowed_year']);
+        // Store in session so subsequent page loads skip the DB query
+        session([$sessionKey => $result]);
 
-        if ($accesses->isEmpty()) {
-            return $cache[$key] = null; // unconfigured — unrestricted
-        }
-        if ($accesses->contains(fn ($a) => $a->all_years === true)) {
-            return $cache[$key] = null; // any role grants all years — wins
-        }
-
-        // Restricted: current FY + N previous FYs (largest window across roles).
-        $allYears = getYearList(true);
-        $current = $allYears->firstWhere('set_default', 1);
-        if (! $current) {
-            return $cache[$key] = []; // no current FY — fail-closed
-        }
-
-        $n = (int) $accesses->max('allowed_year'); // null => 0
-
-        $ids = $allYears
-            ->where('full', '<=', $current->full)
-            ->sortByDesc('full')
-            ->take($n + 1) // current + N previous
-            ->pluck('id')
-            ->all();
-
-        return $cache[$key] = $ids;
+        return $cache[$key] = $result;
     }
 }
 

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Modules\Subscription\Models\Subscription;
 use Modules\User\app\Listeners\LogUserAuthentication;
 use Modules\User\Models\User;
 
@@ -74,6 +75,25 @@ class LoginRequest extends FormRequest
             throw ValidationException::withMessages([
                 'login' => __('login::message.account_blocked'),
             ]);
+        }
+
+        if ($user->hasAnyRole(['Tenant', 'Manager'])) {
+            throw ValidationException::withMessages([
+                'login' => __('login::message.web_access_denied'),
+            ]);
+        }
+
+        if ($user->hasRole('Pg_Admin')) {
+            $activeSub = Subscription::where('email', $user->email)
+                ->where('status', 'active')
+                ->whereDate('end_date', '>=', now()->toDateString())
+                ->exists();
+
+            if (! $activeSub) {
+                throw ValidationException::withMessages([
+                    'login' => __('login::message.subscription_expired'),
+                ]);
+            }
         }
 
         if (! Auth::attempt($credentials, $this->boolean('remember'))) {

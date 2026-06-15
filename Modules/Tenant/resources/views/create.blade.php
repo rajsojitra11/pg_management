@@ -85,9 +85,11 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-zinc-700 mb-1.5">{{ __('tenant::message.bed_no') }} <span class="text-red-500">*</span></label>
-                            <input type="text" name="bed_no" id="bed_no" required
-                                   class="h-9 w-full rounded-md border border-zinc-200 bg-transparent px-3 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2"
-                                   placeholder="{{ __('tenant::message.enter_bed_no') }}">
+                            <select name="bed_no" id="bed_no" required
+                                    data-placeholder="— {{ __('message.common.select') }} —"
+                                    class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2">
+                                <option value=""></option>
+                            </select>
                             <div class="mt-1 text-xs text-red-500 erp-field-error" id="error_bed_no"></div>
                         </div>
                     </div>
@@ -644,7 +646,9 @@ $(document).ready(function() {
         var roomText = roomEl ? (roomEl.options[roomEl.selectedIndex] ? roomEl.options[roomEl.selectedIndex].text : '-') : '-';
         document.querySelector('.review-room').textContent = roomText;
 
-        document.querySelector('.review-bed-no').textContent = document.getElementById('bed_no').value || '-';
+        var bedEl = document.getElementById('bed_no');
+        var bedText = bedEl ? (bedEl.options[bedEl.selectedIndex] ? bedEl.options[bedEl.selectedIndex].text : '-') : '-';
+        document.querySelector('.review-bed-no').textContent = bedText;
         document.querySelector('.review-firstname').textContent = document.getElementById('firstname').value || '-';
         document.querySelector('.review-lastname').textContent = document.getElementById('lastname').value || '-';
         document.querySelector('.review-email').textContent = document.getElementById('email').value || '-';
@@ -693,7 +697,38 @@ $(document).ready(function() {
         var $room = $('#room_id');
         if (!$pg.length || !$room.length) return;
 
+        var _pgParam = new URLSearchParams(window.location.search).get('pg_id');
+        var _roomParam = new URLSearchParams(window.location.search).get('room_id');
+        var _bedParam = new URLSearchParams(window.location.search).get('bed_no');
+
         var roomInst = null;
+        var bedInst = null;
+        var _roomsCache = [];
+
+        function populateBeds(roomVal) {
+            if (!roomVal) {
+                if (bedInst) { bedInst.setOptions([]); bedInst.setValue(''); }
+                return;
+            }
+            var room = _roomsCache.find(function(r) { return r.value == roomVal; });
+            var capacity = room ? (parseInt(room.bed_capacity) || 0) : 0;
+            var beds = [];
+            for (var i = 0; i < capacity; i++) {
+                var letter = String.fromCharCode(65 + i);
+                beds.push({ value: letter, label: 'Bed ' + letter });
+            }
+            if (!bedInst) {
+                bedInst = erpSearchSelect('#bed_no', { placeholder: '— {{ __("message.common.select") }} —' });
+            }
+            bedInst.setOptions(beds);
+            if (_bedParam) {
+                bedInst.setValue(_bedParam);
+                _bedParam = null;
+            } else {
+                bedInst.setValue('');
+            }
+        }
+
         var check = setInterval(function() {
             if ($pg.next('.erp-select-wrapper').length) {
                 clearInterval(check);
@@ -701,16 +736,65 @@ $(document).ready(function() {
                     var val = $(this).val();
                     if (!val) {
                         if (roomInst) { roomInst.setOptions([]); roomInst.setValue(''); }
+                        if (bedInst) { bedInst.setOptions([]); bedInst.setValue(''); }
+                        _roomsCache = [];
                         return;
                     }
                     $.get('{{ route("lookup.rooms-by-pg") }}', { pg_id: val, limit: 9999 }, function(data) {
+                        _roomsCache = data || [];
                         if (!roomInst) {
                             roomInst = erpSearchSelect('#room_id', { placeholder: '— {{ __("message.common.select") }} —' });
                         }
-                        roomInst.setOptions(data || []);
-                        roomInst.setValue('');
+                        roomInst.setOptions(_roomsCache);
+                        if (_roomParam) {
+                            var roomVal = _roomParam;
+                            _roomParam = null;
+                            roomInst.setValue(roomVal);
+                            populateBeds(roomVal);
+                        } else {
+                            roomInst.setValue('');
+                            populateBeds('');
+                        }
                     });
                 });
+
+                $room.on('change', function() {
+                    populateBeds($(this).val());
+                });
+
+                // Pre-fill from URL params
+                if (_pgParam) {
+                    (function waitForInst() {
+                        var pgEl = $pg[0];
+                        if (pgEl._erpSelectInst) {
+                            pgEl._erpSelectInst.setValue(_pgParam);
+                            // Native <select> has no matching option yet (fresh-prefetch
+                            // loads lazily on first open), so the PG change handler won't
+                            // fire via native events — fetch rooms directly.
+                            $.get('{{ route("lookup.rooms-by-pg") }}', { pg_id: _pgParam, limit: 9999 }, function(data) {
+                                _roomsCache = data || [];
+                                if (!roomInst) {
+                                    roomInst = erpSearchSelect('#room_id', { placeholder: '— {{ __("message.common.select") }} —' });
+                                }
+                                roomInst.setOptions(_roomsCache);
+                                if (_roomParam) {
+                                    var roomVal = _roomParam;
+                                    _roomParam = null;
+                                    roomInst.setValue(roomVal);
+                                    populateBeds(roomVal);
+                                } else {
+                                    roomInst.setValue('');
+                                    populateBeds('');
+                                }
+                            });
+                            _pgParam = null;
+                        } else {
+                            setTimeout(waitForInst, 100);
+                        }
+                    })();
+                } else if ($pg.val()) {
+                    $pg.trigger('change');
+                }
             }
         }, 100);
     })();

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\PgManagement\Models\PgManagement;
 use Modules\Room\Database\Factories\RoomFactory;
+use Modules\Tenant\Models\Tenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Room extends Model
@@ -70,5 +71,10 @@ class Room extends Model
     public function category()
     {
         return $this->belongsTo(RoomCategory::class, 'category_id');
+    }
+
+    public function tenants()
+    {
+        return $this->hasMany(Tenant::class, 'room_id');
     }
 }

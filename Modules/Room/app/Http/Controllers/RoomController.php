@@ -12,6 +12,7 @@ use Modules\Room\Http\Requests\UpdateRoomRequest;
 use Modules\Room\Http\Requests\DeleteRoomRequest;
 use Modules\Room\Models\Room;
 use Modules\Room\Models\RoomCategory;
+use Modules\Tenant\Models\Tenant;
 use Yajra\DataTables\DataTables;
 
 class RoomController extends Controller
@@ -29,7 +30,11 @@ class RoomController extends Controller
     {
         if (request()->ajax()) {
             $user = auth()->user();
-            $query = Room::with('pg', 'category')->select('id', 'public_id', 'pg_id', 'category_id', 'room_no', 'bed_capacity', 'rent_amount', 'status');
+            $query = Room::with('pg', 'category')
+                ->select('id', 'public_id', 'pg_id', 'category_id', 'room_no', 'bed_capacity', 'rent_amount', 'status')
+                ->withCount(['tenants as occupied_beds_count' => function ($q) {
+                    $q->whereIn('status', ['active', 'Active']);
+                }]);
 
             if ($user->hasRole('Pg_Admin')) {
                 $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
@@ -42,6 +47,11 @@ class RoomController extends Controller
                 })
                 ->addColumn('category_name', function ($row) {
                     return $row->category?->category_name ?? '—';
+                })
+                ->addColumn('available_beds', function ($row) {
+                    $occupied = $row->occupied_beds_count ?? 0;
+                    $capacity = (int) ($row->bed_capacity ?? 0);
+                    return max(0, $capacity - $occupied);
                 })
                 ->addColumn('action', function ($row) {
                     $flag = true;
@@ -95,12 +105,17 @@ class RoomController extends Controller
     {
         try {
             $user = auth()->user();
-            $query = Room::byAnyKey($id);
+            $query = Room::with('pg', 'category')->byAnyKey($id);
             if ($user->hasRole('Pg_Admin')) {
                 $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
             }
             $room = $query->first();
             if (! is_null($room)) {
+                $occupiedBeds = Tenant::where('room_id', $room->id)
+                    ->whereIn('status', ['active', 'Active'])
+                    ->pluck('bed_no')
+                    ->toArray();
+                $room->occupied_beds = $occupiedBeds;
                 return response()->json(['status_code' => 200, 'message' => 'View room', 'result' => $room]);
             } else {
                 return response()->json(['status_code' => 404, 'message' => 'Room not found.']);

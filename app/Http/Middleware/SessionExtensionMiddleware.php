@@ -16,6 +16,13 @@ class SessionExtensionMiddleware
     {
         // Only process for authenticated users
         if (Auth::check()) {
+            // Eager-load profile and roles once so lazy-loads in views become no-ops
+            if (! Auth::user()->relationLoaded('profile')) {
+                Auth::user()->load('profile');
+            }
+            if (! Auth::user()->relationLoaded('roles')) {
+                Auth::user()->load('roles');
+            }
             $this->addSessionMetadata($request);
         }
 
@@ -34,18 +41,26 @@ class SessionExtensionMiddleware
      */
     protected function addSessionMetadata(Request $request): void
     {
-        $sessionLifetime = config('session.lifetime', 120) * 60; // Convert to seconds
+        $sessionLifetime = config('session.lifetime', 120) * 60;
         $currentTime = time();
 
-        // Store session timing data
+        $existing = session('session_meta', []);
+        $lastWrite = $existing['last_write'] ?? 0;
+
+        // Only persist session metadata every 60 seconds to reduce file/DB writes
+        if ($currentTime - $lastWrite < 60 && ! empty($existing)) {
+            return;
+        }
+
         session([
             'session_meta' => [
-                'started_at' => session('session_meta.started_at', $currentTime),
+                'started_at' => $existing['started_at'] ?? $currentTime,
                 'last_activity' => $currentTime,
+                'last_write' => $currentTime,
                 'lifetime_seconds' => $sessionLifetime,
                 'expires_at' => $currentTime + $sessionLifetime,
                 'user_id' => Auth::id(),
-                'extended_count' => session('session_meta.extended_count', 0),
+                'extended_count' => $existing['extended_count'] ?? 0,
             ],
         ]);
     }
@@ -86,6 +101,7 @@ class SessionExtensionMiddleware
             session([
                 'session_meta' => array_merge($currentMeta, [
                     'last_activity' => $currentTime,
+                    'last_write' => $currentTime,
                     'expires_at' => $newExpiryTime,
                     'extended_count' => $extendedCount,
                     'last_extended_at' => $currentTime,

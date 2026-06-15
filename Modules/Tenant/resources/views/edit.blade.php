@@ -70,11 +70,12 @@
                         <div>
                             <label class="block text-sm font-medium text-zinc-700 mb-1.5">{{ __('tenant::message.pg') }} <span class="text-red-500">*</span></label>
                             <select name="pg_id" id="pg_id" required
-                                    data-fresh-prefetch="{{ route('lookup.pg-list') }}"
-                                    data-selected="{{ $tenant->pg_id }}"
                                     data-placeholder="— {{ __('message.common.select') }} —"
                                     class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2">
                                 <option value=""></option>
+                                @foreach ($pgList as $pg)
+                                <option value="{{ $pg->id }}" {{ $tenant->pg_id == $pg->id ? 'selected' : '' }}>{{ $pg->pg_name }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div>
@@ -88,10 +89,11 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-zinc-700 mb-1.5">{{ __('tenant::message.bed_no') }} <span class="text-red-500">*</span></label>
-                            <input type="text" name="bed_no" id="bed_no" required
-                                   value="{{ $tenant->bed_no }}"
-                                   class="h-9 w-full rounded-md border border-zinc-200 bg-transparent px-3 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2"
-                                   placeholder="{{ __('tenant::message.enter_bed_no') }}">
+                            <select name="bed_no" id="bed_no" required
+                                    data-placeholder="— {{ __('message.common.select') }} —"
+                                    class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2">
+                                <option value=""></option>
+                            </select>
                             <div class="mt-1 text-xs text-red-500 erp-field-error" id="error_bed_no"></div>
                         </div>
                     </div>
@@ -670,7 +672,9 @@ $(document).ready(function() {
         var roomText = roomEl ? (roomEl.options[roomEl.selectedIndex] ? roomEl.options[roomEl.selectedIndex].text : '-') : '-';
         document.querySelector('.review-room').textContent = roomText;
 
-        document.querySelector('.review-bed-no').textContent = document.getElementById('bed_no').value || '-';
+        var bedEl = document.getElementById('bed_no');
+        var bedText = bedEl ? (bedEl.options[bedEl.selectedIndex] ? bedEl.options[bedEl.selectedIndex].text : '-') : '-';
+        document.querySelector('.review-bed-no').textContent = bedText;
         document.querySelector('.review-firstname').textContent = document.getElementById('firstname').value || '-';
         document.querySelector('.review-lastname').textContent = document.getElementById('lastname').value || '-';
         document.querySelector('.review-email').textContent = document.getElementById('email').value || '-';
@@ -713,6 +717,14 @@ $(document).ready(function() {
         document.querySelector('.review-notes').textContent = document.getElementById('additional_notes').value || '-';
     }
 
+    // Initialize PG select
+    (function() {
+        var $pg = $('#pg_id');
+        if ($pg.length && !$pg.next('.erp-select-wrapper').length) {
+            initErpSelect('#pg_id', { placeholder: '— {{ __("message.common.select") }} —' });
+        }
+    })();
+
     // PG → Room cascade
     (function() {
         var $pg = $('#pg_id');
@@ -720,7 +732,35 @@ $(document).ready(function() {
         if (!$pg.length || !$room.length) return;
 
         var roomInst = null;
-        var selectedRoom = '{{ $tenant->room_id }}';
+        var bedInst = null;
+        var _roomsCache = [];
+        var _selectedRoom = '{{ $tenant->room_id }}';
+        var _selectedBed = '{{ $tenant->bed_no }}';
+
+        function populateBeds(roomVal) {
+            if (!roomVal) {
+                if (bedInst) { bedInst.setOptions([]); bedInst.setValue(''); }
+                return;
+            }
+            var room = _roomsCache.find(function(r) { return r.value == roomVal; });
+            var capacity = room ? (parseInt(room.bed_capacity) || 0) : 0;
+            var beds = [];
+            for (var i = 0; i < capacity; i++) {
+                var letter = String.fromCharCode(65 + i);
+                beds.push({ value: letter, label: 'Bed ' + letter });
+            }
+            if (!bedInst) {
+                bedInst = erpSearchSelect('#bed_no', { placeholder: '— {{ __("message.common.select") }} —' });
+            }
+            bedInst.setOptions(beds);
+            if (_selectedBed) {
+                bedInst.setValue(_selectedBed);
+                _selectedBed = null;
+            } else {
+                bedInst.setValue('');
+            }
+        }
+
         var check = setInterval(function() {
             if ($pg.next('.erp-select-wrapper').length) {
                 clearInterval(check);
@@ -728,21 +768,31 @@ $(document).ready(function() {
                     var val = $(this).val();
                     if (!val) {
                         if (roomInst) { roomInst.setOptions([]); roomInst.setValue(''); }
+                        if (bedInst) { bedInst.setOptions([]); bedInst.setValue(''); }
+                        _roomsCache = [];
                         return;
                     }
                     $.get('{{ route("lookup.rooms-by-pg") }}', { pg_id: val, limit: 9999 }, function(data) {
+                        _roomsCache = data || [];
                         if (!roomInst) {
                             roomInst = erpSearchSelect('#room_id', { placeholder: '— {{ __("message.common.select") }} —' });
                         }
-                        roomInst.setOptions(data || []);
-                        if (selectedRoom) {
-                            roomInst.setValue(selectedRoom);
-                            selectedRoom = null;
+                        roomInst.setOptions(_roomsCache);
+                        if (_selectedRoom) {
+                            roomInst.setValue(_selectedRoom);
+                            populateBeds(_selectedRoom);
+                            _selectedRoom = null;
                         } else {
                             roomInst.setValue('');
+                            populateBeds('');
                         }
                     });
                 });
+
+                $room.on('change', function() {
+                    populateBeds($(this).val());
+                });
+
                 // Trigger initial load
                 if ($pg.val()) {
                     $pg.trigger('change');

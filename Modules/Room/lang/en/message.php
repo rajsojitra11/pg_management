@@ -31,6 +31,7 @@ return [
     'room_search_placeholder' => 'Search by room number or category',
     'apply' => 'Search',
     'reset' => 'Reset',
+    'available_beds' => 'Available Beds',
     'created' => 'Created successfully',
     'updated' => 'Updated successfully',
     'deleted' => 'Deleted successfully',

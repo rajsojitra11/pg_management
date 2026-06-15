@@ -17,18 +17,27 @@
             ->get();
     });
 
-    // Pre-compute all registered route names once (avoids Route::has() per item)
-    $allRouteNames = collect(Route::getRoutes()->getRoutesByName())->keys()->flip();
+    // Cache all registered route names (avoids Route::getRoutes() per request)
+    $allRouteNames = Cache::remember('route_names', 3600, function () {
+        return collect(Route::getRoutes()->getRoutesByName())->keys()->flip();
+    });
 
     // Pre-load current user permissions once (avoids canany() DB query per menu item)
     $currentUser = auth()->user();
     $userPermissions = $currentUser ? $currentUser->getAllPermissions()->pluck('name') : collect();
     $userIsSuperAdmin = $currentUser ? $currentUser->hasRole('Super_Admin') : false;
 
-    // Pre-compute module statuses (avoids Module::isEnabled() filesystem checks per item)
-    $enabledModules = collect(Module::getOrdered())->mapWithKeys(fn ($m) => [
-        strtolower($m->getName()) => Module::isEnabled(strtolower($m->getName())),
-    ]);
+    // Cache module enabled statuses (avoids Module::isEnabled() filesystem checks per item)
+    $enabledModules = Cache::remember('module_statuses', 3600, function () {
+        return collect(Module::getOrdered())->mapWithKeys(fn ($m) => [
+            strtolower($m->getName()) => Module::isEnabled(strtolower($m->getName())),
+        ]);
+    });
+
+    // Cache installed module names (avoids file_exists() per menu item)
+    $installedModules = Cache::remember('installed_modules', 3600, function () {
+        return collect(Module::getOrdered())->mapWithKeys(fn ($m) => [strtolower($m->getName()) => true]);
+    });
 
     $currentRouteName = request()->route()?->getName() ?? '';
 
@@ -184,11 +193,8 @@
         {{-- Menu Groups --}}
         @foreach ($menus as $menu)
             @php
-                if ($menu->module_name != null) {
-                    $moduleName = Module::getModulePath($menu->module_name);
-                    if (!file_exists($moduleName)) {
-                        continue;
-                    }
+                if ($menu->module_name != null && !($installedModules[strtolower($menu->module_name)] ?? false)) {
+                    continue;
                 }
 
                 $enabled = $isMenuEnabled($menu, false);
@@ -249,11 +255,8 @@
                         <div class="erp-sidebar-submenu pl-4 mt-0.5" {!! $isActive ? '' : 'style="display:none"' !!}>
                             @foreach ($menu->children as $child)
                                 @php
-                                    if ($child->module_name != null) {
-                                        $childmoduleName = Module::getModulePath($child->module_name);
-                                        if (!file_exists($childmoduleName)) {
-                                            continue;
-                                        }
+                                    if ($child->module_name != null && !($installedModules[strtolower($child->module_name)] ?? false)) {
+                                        continue;
                                     }
 
                                     $childEnabled =
@@ -301,13 +304,8 @@
                                             <div class="pl-4 mt-0.5" {!! $childIsActive ? '' : 'style="display:none"' !!}>
                                                 @foreach ($child->children as $grandchild)
                                                     @php
-                                                        if ($grandchild->module_name != null) {
-                                                            $grandchildmoduleName = Module::getModulePath(
-                                                                $grandchild->module_name,
-                                                            );
-                                                            if (!file_exists($grandchildmoduleName)) {
-                                                                continue;
-                                                            }
+                                                        if ($grandchild->module_name != null && !($installedModules[strtolower($grandchild->module_name)] ?? false)) {
+                                                            continue;
                                                         }
                                                         $grandchildEnabled = $isMenuEnabled($grandchild, true);
                                                         $grandchildIsActive =

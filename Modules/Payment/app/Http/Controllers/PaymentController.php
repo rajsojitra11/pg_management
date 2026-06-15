@@ -46,6 +46,10 @@ class PaymentController extends Controller
                 $query->where('status', $status);
             }
 
+            if ($tenantId = request('filter_tenant_id')) {
+                $query->where('tenant_id', $tenantId);
+            }
+
             return DataTables::of($query)
                 ->addIndexColumn()
                 ->addColumn('tenant_name', function ($row) {

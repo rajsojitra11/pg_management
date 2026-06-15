@@ -1,13 +1,16 @@
 @php
     use Modules\MenuMaster\Models\MenuMaster;
     use Nwidart\Modules\Facades\Module;
+    use Illuminate\Support\Facades\Cache;
 
-    $menus = MenuMaster::parentMenus()
-        ->with('children.children')
-        ->orderBy('order_display', 'ASC')
-        ->orderBy('menu_title', 'ASC')
-        ->orderBy('id', 'ASC')
-        ->get();
+    $menus = Cache::remember('menu_tree', 3600, function () {
+        return MenuMaster::parentMenus()
+            ->with('children.children')
+            ->orderBy('order_display', 'ASC')
+            ->orderBy('menu_title', 'ASC')
+            ->orderBy('id', 'ASC')
+            ->get();
+    });
 
     $isMenuActive = function ($menu) use (&$isMenuActive) {
         $route = str_replace('.index', '', $menu->menu_route);

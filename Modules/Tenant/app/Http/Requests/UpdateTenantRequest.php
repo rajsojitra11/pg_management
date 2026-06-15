@@ -19,15 +19,18 @@ class UpdateTenantRequest extends FormRequest
 
         return [
             'name' => [
-                'required',
+                'nullable',
                 'string',
                 'max:255',
                 Rule::unique('tenants')->ignore($id)->whereNull('deleted_at'),
             ],
+            'firstname' => ['nullable', 'string', 'max:255'],
+            'lastname' => ['nullable', 'string', 'max:255'],
             'email' => ['nullable', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:20'],
+            'mobile' => ['nullable', 'string', 'max:20'],
             'address' => ['nullable', 'string'],
-            'status' => ['nullable', 'string', 'in:active,inactive'],
+            'status' => ['nullable', 'string', 'in:active,inactive,Active,Inactive'],
 
             'pg_id' => ['nullable', 'integer', 'exists:pg_management,id'],
             'room_id' => ['nullable', 'integer', 'exists:pg_rooms,id'],
@@ -43,7 +46,9 @@ class UpdateTenantRequest extends FormRequest
             'payment_method' => ['nullable', 'string', 'max:50'],
             'id_proof_type' => ['nullable', 'string', 'max:50'],
             'id_proof_number' => ['nullable', 'string', 'max:100'],
-            'id_proof_file' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
+            'id_proof_file' => $this->hasFile('id_proof_file')
+                ? ['file', 'mimes:jpg,jpeg,png,pdf', 'max:2048']
+                : ['nullable'],
 
             'emergency_contact_name' => ['nullable', 'string', 'max:255'],
             'emergency_relation' => ['nullable', 'string', 'max:100'],

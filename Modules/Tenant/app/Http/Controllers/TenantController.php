@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use Modules\Tenant\Http\Requests\DeleteTenantRequest;
 use Modules\Tenant\Http\Requests\StoreTenantRequest;
 use Modules\Tenant\Http\Requests\UpdateTenantRequest;
+use Modules\Payment\Models\Payment;
 use Modules\Tenant\Models\Tenant;
 use Modules\User\Models\User;
 use Modules\User\Models\UserProfile;
@@ -61,8 +62,9 @@ class TenantController extends Controller
                     $delete = 'tenant-delete';
                     $showURL = route('tenant.show', $row->public_id ?: $row->id);
                     $editURL = route('tenant.edit', $row->public_id ?: $row->id);
+                    $paymentHistoryURL = route('payment.index', ['filter_tenant_id' => $row->id]);
 
-                    return view('layouts-tw.action', compact('row', 'show', 'edit', 'delete', 'showURL', 'editURL'));
+                    return view('layouts-tw.action', compact('row', 'show', 'edit', 'delete', 'showURL', 'editURL', 'paymentHistoryURL'));
                 })
                 ->escapeColumns([])
                 ->make(true);
@@ -188,6 +190,31 @@ class TenantController extends Controller
         return view('tenant::show', compact('tenant'));
     }
 
+    public function payments($id)
+    {
+        try {
+            $user = auth()->user();
+            $tenant = Tenant::with('pg', 'room')->byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $tenant->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+            }
+            $tenant = $tenant->firstOrFail();
+
+            $payments = Payment::with('pg', 'room')
+                ->where('tenant_id', $tenant->id)
+                ->orderBy('payment_date', 'desc')
+                ->get(['id', 'public_id', 'payment_date', 'amount', 'payment_method', 'reference_no', 'status', 'remarks']);
+
+            return response()->json([
+                'status_code' => 200,
+                'tenant' => $tenant,
+                'payments' => $payments,
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['status_code' => 500, 'message' => 'Something went wrong.']);
+        }
+    }
+
     public function edit($id)
     {
         $user = auth()->user();
@@ -201,7 +228,12 @@ class TenantController extends Controller
         $tenant->formatted_checkin_date = $tenant->checkin_date ? Carbon::parse($tenant->checkin_date)->format('d-m-Y') : '';
         $tenant->formatted_expected_checkout_date = $tenant->expected_checkout_date ? Carbon::parse($tenant->expected_checkout_date)->format('d-m-Y') : '';
 
-        return view('tenant::edit', compact('tenant'));
+        $pgList = \Modules\PgManagement\Models\PgManagement::select('id', 'pg_name')
+            ->where('status', 'active')
+            ->orderBy('pg_name')
+            ->get();
+
+        return view('tenant::edit', compact('tenant', 'pgList'));
     }
 
     public function update(UpdateTenantRequest $request, $id)
@@ -215,6 +247,14 @@ class TenantController extends Controller
             }
             $tenant = $query->firstOrFail();
             $data = $request->validated();
+            if (empty($data['name']) && !empty($data['firstname'])) {
+                $data['name'] = ucwords($data['firstname']) . ' ' . ucwords($data['lastname'] ?? '');
+            }
+            unset($data['firstname'], $data['lastname']);
+            if (!empty($data['mobile']) && empty($data['phone'])) {
+                $data['phone'] = $data['mobile'];
+            }
+            unset($data['mobile']);
             $data['updated_by'] = auth()->id();
             $tenant->update($data);
 

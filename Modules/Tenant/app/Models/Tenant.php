@@ -98,6 +98,11 @@ class Tenant extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function payments()
+    {
+        return $this->hasMany(\Modules\Payment\Models\Payment::class, 'tenant_id');
+    }
+
     public function pg()
     {
         return $this->belongsTo(PgManagement::class, 'pg_id');

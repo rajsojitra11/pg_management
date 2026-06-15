@@ -45,6 +45,7 @@
                     <th>{{ __('room::message.pg') }}</th>
                     <th>{{ __('room::message.category') }}</th>
                     <th>{{ __('room::message.bed_capacity') }}</th>
+                    <th>{{ __('room::message.available_beds') }}</th>
                     <th>{{ __('room::message.rent_amount') }}</th>
                     <th>{{ __('message.common.status') }}</th>
                     <th>{{ __('message.common.action') }}</th>
@@ -166,7 +167,7 @@
 <div id="viewModal" class="fixed inset-0 z-50 hidden">
     <div class="absolute inset-0 bg-black/50 erp-inline-modal-close"></div>
     <div class="relative flex items-center justify-center min-h-screen p-4">
-        <div class="relative w-full max-w-lg rounded-lg border border-zinc-200 bg-white shadow-xl">
+        <div class="relative w-full max-w-2xl rounded-lg border border-zinc-200 bg-white shadow-xl">
             <div class="flex items-center justify-between p-4 border-b border-zinc-200">
                 <h3 class="text-lg font-semibold text-zinc-900" id="viewModalTitle">{{ __('room::message.view_room') }}</h3>
                 <button type="button" class="text-zinc-400 hover:text-zinc-600 erp-inline-modal-close">
@@ -174,9 +175,12 @@
                 </button>
             </div>
 
-            <div class="p-6">
-                <p class="text-sm font-medium text-zinc-500 mb-4 text-center">{{ __('room::message.bed_capacity') }}</p>
-                <div class="flex flex-wrap justify-center gap-4" id="view_bed_capacity">-</div>
+            <div class="p-6 space-y-6">
+                <p class="text-lg font-semibold text-zinc-900 text-center" id="view_room_no">-</p>
+                <div>
+                    <p class="text-sm font-medium text-zinc-500 mb-4 text-center">{{ __('room::message.bed_capacity') }}</p>
+                    <div class="flex flex-wrap justify-center gap-4" id="view_bed_capacity">-</div>
+                </div>
             </div>
 
             <div class="flex items-center justify-end gap-2 p-4 border-t border-zinc-200">
@@ -222,6 +226,7 @@
                 { data: 'pg_name', name: 'pg_name', orderable: false, searchable: false },
                 { data: 'category_name', name: 'category_name', orderable: false, searchable: false },
                 { data: 'bed_capacity', name: 'bed_capacity' },
+                { data: 'available_beds', name: 'available_beds', orderable: false, searchable: false },
                 { data: 'rent_amount', name: 'rent_amount' },
                 { data: 'status', name: 'status', render: function(data) { return data ? data.charAt(0).toUpperCase() + data.slice(1) : '-'; } },
                 { data: 'action', name: 'action', orderable: false, sortable: false, width: '160px' }
@@ -326,10 +331,24 @@
             success: function(response) {
                 if (response.status_code == 200) {
                     var d = response.result;
+                    $('#viewModal').data('pg-id', d.pg_id).data('room-id', d.id);
+                    $('#view_room_no').text('Room ' + (d.room_no || '-'));
+                    var occupied = d.occupied_beds || [];
                     var bedHtml = '';
                     if (d.bed_capacity) {
                         for (var i = 0; i < d.bed_capacity; i++) {
-                            bedHtml += '<button type="button" class="bed-select p-3 rounded-lg border-2 border-zinc-200 text-zinc-400 hover:border-zinc-400 hover:text-zinc-600 transition-colors"><i class="fa-solid fa-bed text-3xl"></i></button>';
+                            var letter = String.fromCharCode(65 + i);
+                            var isOccupied = occupied.indexOf(letter) !== -1;
+                            var btnClass = isOccupied
+                                ? 'bed-select p-3 rounded-lg border-2 border-zinc-900 bg-zinc-900 text-white'
+                                : 'bed-select p-3 rounded-lg border-2 border-emerald-500 text-emerald-500';
+                            var labelClass = isOccupied ? 'text-xs font-medium text-zinc-900' : 'text-xs font-medium text-emerald-600';
+                            bedHtml += '<div class="flex flex-col items-center gap-1.5">' +
+                                '<button type="button" class="' + btnClass + '">' +
+                                '<i class="fa-solid fa-bed text-2xl"></i>' +
+                                '</button>' +
+                                '<span class="' + labelClass + '">' + letter + '</span>' +
+                                '</div>';
                         }
                     } else {
                         bedHtml = '-';
@@ -346,7 +365,16 @@
     });
 
     $(document).on('click', '.bed-select', function() {
-        $(this).toggleClass('border-zinc-900 bg-zinc-100 text-zinc-900');
+        var $btn = $(this);
+        var isOccupied = $btn.hasClass('bg-zinc-900');
+        if (isOccupied) return;
+        var letter = $btn.closest('.flex.flex-col').find('span').text().trim();
+        if (!letter) return;
+        var pgId = $('#viewModal').data('pg-id');
+        var roomId = $('#viewModal').data('room-id');
+        if (!pgId || !roomId) return;
+        var url = "{{ route('tenant.create') }}" + '?pg_id=' + pgId + '&room_id=' + roomId + '&bed_no=' + encodeURIComponent(letter);
+        window.location.href = url;
     });
 
     $(document).on('click', '.edit', function(e) {

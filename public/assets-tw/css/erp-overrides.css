@@ -455,11 +455,6 @@ svg circle[stroke-dasharray] {
     border-top: 1px solid var(--erp-border);
 }
 
-/* UV / Lamination row: cap the type-select column at 360px (grows/shrinks responsively). */
-.erp-uv-select-col {
-    max-width: 360px;
-}
-
 /* Client-side validation: highlight an invalid field (works on inputs and select wrappers). */
 .erp-invalid,
 .erp-invalid .erp-select-trigger {
@@ -475,21 +470,6 @@ svg circle[stroke-dasharray] {
     left: 0;
     margin-top: 2px;
     white-space: nowrap;
-}
-
-/* Lamination/UV row — Size 1 / Size 2 / Qty inputs exactly match the type-select height. */
-.lo-row .row-size-1,
-.lo-row .row-size-2,
-.lo-row .row-qty,
-.lo-row .erp-select-wrapper > div:first-child {
-    height: 2.25rem !important;
-    box-sizing: border-box !important;
-}
-
-/* Plate Detail form — Details section inputs all share a uniform 36px height. */
-.pdf-block input:not([type="hidden"]) {
-    height: 2.25rem !important;
-    box-sizing: border-box !important;
 }
 
 /* Avatar: subtle ring */
