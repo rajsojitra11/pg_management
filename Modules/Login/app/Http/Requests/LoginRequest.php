@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Modules\Subscription\Models\Subscription;
-use Modules\User\app\Listeners\LogUserAuthentication;
+use Modules\User\Listeners\LogUserAuthentication;
 use Modules\User\Models\User;
 
 class LoginRequest extends FormRequest

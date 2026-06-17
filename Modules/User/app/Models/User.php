@@ -11,7 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Lab404\Impersonate\Models\Impersonate as ImpersonateTrait;
 use Laravel\Sanctum\HasApiTokens;
-use Modules\User\app\Listeners\LogUserAuthentication;
+use Modules\User\Listeners\LogUserAuthentication;
 use Modules\User\Database\Factories\UserFactory;
 use Spatie\Permission\Traits\HasRoles;
 

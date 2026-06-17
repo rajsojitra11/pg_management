@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Jenssegers\Agent\Agent;
-use Modules\User\app\Listeners\LogUserAuthentication;
+use Modules\User\Listeners\LogUserAuthentication;
 use Modules\User\Models\User;
 use Modules\User\Models\UserActivityLog;
 use Symfony\Component\HttpFoundation\Response;

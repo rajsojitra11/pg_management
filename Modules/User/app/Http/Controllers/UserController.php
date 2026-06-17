@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Modules\User\app\Listeners\LogUserAuthentication;
+use Modules\User\Listeners\LogUserAuthentication;
 use Modules\User\Http\Requests\DeleteUserRequest;
 use Modules\User\Http\Requests\PasswordChangeRequest;
 use Modules\User\Http\Requests\StoreUserRequest;

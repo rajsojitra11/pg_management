@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\User\app\Listeners;
+namespace Modules\User\Listeners;
 
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Login;
