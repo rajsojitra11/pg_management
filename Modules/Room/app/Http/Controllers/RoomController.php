@@ -40,6 +40,13 @@ class RoomController extends Controller
                 $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
 
+            $filterAvailability = request('filter_availability');
+            if ($filterAvailability === 'available') {
+                $query->whereRaw('(SELECT COUNT(*) FROM `tenants` WHERE `pg_rooms`.`id` = `tenants`.`room_id` AND `tenants`.`status` IN (?, ?) AND `tenants`.`deleted_at` IS NULL) < `pg_rooms`.`bed_capacity`', ['active', 'Active']);
+            } elseif ($filterAvailability === 'full') {
+                $query->whereRaw('(SELECT COUNT(*) FROM `tenants` WHERE `pg_rooms`.`id` = `tenants`.`room_id` AND `tenants`.`status` IN (?, ?) AND `tenants`.`deleted_at` IS NULL) >= `pg_rooms`.`bed_capacity`', ['active', 'Active']);
+            }
+
             return DataTables::of($query)
                 ->addIndexColumn()
                 ->addColumn('pg_name', function ($row) {

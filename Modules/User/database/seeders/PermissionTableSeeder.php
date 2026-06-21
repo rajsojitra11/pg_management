@@ -604,6 +604,31 @@ class PermissionTableSeeder extends Seeder
                 'section' => 'General',
             ],
 
+            [
+                'title_tag' => 'Email',
+                'name' => 'email-list',
+                'title' => 'List',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Email',
+                'name' => 'email-create',
+                'title' => 'Create',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Email',
+                'name' => 'email-edit',
+                'title' => 'Edit',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Email',
+                'name' => 'email-delete',
+                'title' => 'Delete',
+                'section' => 'General',
+            ],
+
             // Reports
             [
                 'title_tag' => 'Activity_Log_Report',
@@ -748,6 +773,7 @@ class PermissionTableSeeder extends Seeder
                 'service-list', 'service-create', 'service-show', 'service-edit',
                 'complaint-list', 'complaint-create', 'complaint-show', 'complaint-edit',
                 'maintenance-list', 'maintenance-create', 'maintenance-show', 'maintenance-edit',
+                'email-list', 'email-create', 'email-edit',
             ];
             $pgManagerPermissions = Permission::whereIn('name', $pgManagerPermissionNames)->pluck('id')->toArray();
             $pgManagerRole->syncPermissions($pgManagerPermissions);

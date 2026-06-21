@@ -105,20 +105,45 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-zinc-700 mb-1" for="image">
-                                    {{ __('noticeboard::message.image') }}
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-700 mb-2">{{ __('noticeboard::message.notice_type') }}<span class="text-red-500"> *</span></label>
+                            <div class="flex items-center gap-4">
+                                <label class="inline-flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="notice_type" value="image" checked
+                                           class="rounded-full border-zinc-300 text-zinc-900 focus:ring-zinc-900">
+                                    <span class="text-sm text-zinc-700">{{ __('noticeboard::message.type_image') }}</span>
                                 </label>
-                                <input type="file" accept="image/jpeg,image/png,image/jpg,image/gif,image/webp"
-                                       class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-zinc-100 file:text-sm file:font-medium hover:file:bg-zinc-200 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
-                                       name="image" id="image">
-                                <div id="image_preview" class="mt-2 hidden">
-                                    <img src="" alt="Preview" class="h-32 w-auto rounded-md border border-zinc-200 object-cover">
-                                </div>
-                                <div class="mt-1 text-sm text-red-500" id="error_image"></div>
+                                <label class="inline-flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="notice_type" value="text"
+                                           class="rounded-full border-zinc-300 text-zinc-900 focus:ring-zinc-900">
+                                    <span class="text-sm text-zinc-700">{{ __('noticeboard::message.type_text') }}</span>
+                                </label>
                             </div>
+                        </div>
 
+                        <div id="notice_image_field">
+                            <label class="block text-sm font-medium text-zinc-700 mb-1" for="image">
+                                {{ __('noticeboard::message.image') }}
+                            </label>
+                            <input type="file" accept="image/jpeg,image/png,image/jpg,image/gif,image/webp"
+                                   class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-zinc-100 file:text-sm file:font-medium hover:file:bg-zinc-200 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
+                                   name="image" id="image">
+                            <div id="image_preview" class="mt-2 hidden">
+                                <img src="" alt="Preview" class="h-32 w-auto rounded-md border border-zinc-200 object-cover">
+                            </div>
+                            <div class="mt-1 text-sm text-red-500" id="error_image"></div>
+                        </div>
+
+                        <div id="notice_text_field" class="hidden">
+                            <label class="block text-sm font-medium text-zinc-700 mb-1" for="description">
+                                {{ __('noticeboard::message.description') }}
+                            </label>
+                            <textarea name="description" id="description" class="hidden"></textarea>
+                            <div id="summernote"></div>
+                            <div class="mt-1 text-sm text-red-500" id="error_description"></div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="status">
                                     {{ __('message.common.status') }}
@@ -130,15 +155,6 @@
                                 </select>
                                 <div class="mt-1 text-sm text-red-500" id="error_status"></div>
                             </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-zinc-700 mb-1" for="description">
-                                {{ __('noticeboard::message.description') }}
-                            </label>
-                            <textarea name="description" id="description" class="hidden"></textarea>
-                            <div id="summernote"></div>
-                            <div class="mt-1 text-sm text-red-500" id="error_description"></div>
                         </div>
                     </div>
 
@@ -278,8 +294,23 @@
             }
         });
 
-        // Init Summernote on modal open
-        $('#inlineModal').on('shown.bs.modal', function() {
+        // Radio toggle Image / Text
+        $(document).on('change', 'input[name="notice_type"]', function() {
+            if ($(this).val() === 'image') {
+                $('#notice_image_field').removeClass('hidden');
+                $('#notice_text_field').addClass('hidden');
+                if (summernoteInst && typeof $('#summernote').summernote === 'function') {
+                    $('#summernote').summernote('destroy');
+                    summernoteInst = false;
+                }
+            } else {
+                $('#notice_image_field').addClass('hidden');
+                $('#notice_text_field').removeClass('hidden');
+                initSummernote();
+            }
+        });
+
+        function initSummernote() {
             if (!summernoteInst) {
                 $('#summernote').summernote({
                     height: 200,
@@ -299,6 +330,13 @@
                     }
                 });
                 summernoteInst = true;
+            }
+        }
+
+        // Init Summernote if text is selected on modal open
+        $('#inlineModal').on('shown.bs.modal', function() {
+            if ($('input[name="notice_type"]:checked').val() === 'text') {
+                initSummernote();
             }
         });
     });
@@ -320,6 +358,13 @@
             $('#summernote').summernote('reset');
         }
         $('#description').val('');
+        $('input[name="notice_type"][value="image"]').prop('checked', true);
+        $('#notice_image_field').removeClass('hidden');
+        $('#notice_text_field').addClass('hidden');
+        if (summernoteInst && typeof $('#summernote').summernote === 'function') {
+            $('#summernote').summernote('destroy');
+            summernoteInst = false;
+        }
         $('#inlineModal').find('.erp-btn-locked').each(function() {
             $(this).css({ opacity: '', pointerEvents: '' }).removeClass('erp-btn-locked').removeData('erp-original-pointer');
         });
@@ -398,10 +443,22 @@
                     $("#status").val(response.result.status);
                     $("#id").val(id);
                     if (response.result.description) {
+                        $('input[name="notice_type"][value="text"]').prop('checked', true);
+                        $('#notice_image_field').addClass('hidden');
+                        $('#notice_text_field').removeClass('hidden');
+                        initSummernote();
                         if (summernoteInst && typeof $('#summernote').summernote === 'function') {
                             $('#summernote').summernote('code', response.result.description);
                         }
                         $('#description').val(response.result.description);
+                    } else {
+                        $('input[name="notice_type"][value="image"]').prop('checked', true);
+                        $('#notice_image_field').removeClass('hidden');
+                        $('#notice_text_field').addClass('hidden');
+                        if (summernoteInst && typeof $('#summernote').summernote === 'function') {
+                            $('#summernote').summernote('destroy');
+                            summernoteInst = false;
+                        }
                     }
                     if (response.result.image) {
                         var imgUrl = "{{ Storage::url('') }}" + response.result.image;

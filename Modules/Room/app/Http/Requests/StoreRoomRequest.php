@@ -23,7 +23,7 @@ class StoreRoomRequest extends FormRequest
                 'max:50',
                 Rule::unique('pg_rooms')->whereNull('deleted_at'),
             ],
-            'bed_capacity' => ['nullable', 'integer', 'min:0'],
+            'bed_capacity' => ['required', 'integer', 'min:1'],
             'rent_amount' => ['nullable', 'numeric', 'min:0'],
             'status' => ['nullable', 'string', 'in:active,inactive'],
         ];
@@ -47,6 +47,8 @@ class StoreRoomRequest extends FormRequest
             'category_id.required' => __('room::message.select_category'),
             'room_no.required' => __('room::message.enter_room_no'),
             'room_no.unique' => __('room::message.room_no_taken'),
+            'bed_capacity.required' => __('room::message.enter_bed_capacity'),
+            'bed_capacity.min' => __('room::message.bed_capacity_min'),
         ];
     }
 }

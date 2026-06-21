@@ -25,7 +25,7 @@ class Payment extends Model
         'payment_method',
         'reference_no',
         'remarks',
-        'status',
+        'verified',
         'created_by',
         'updated_by',
         'deleted_by',

@@ -100,24 +100,14 @@
                 </div>
             </div>
 
-            {{-- Row 3: Reference, Status --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+            {{-- Row 3: Reference --}}
+            <div class="grid grid-cols-1 md:grid-cols-1 gap-4 sm:gap-6">
                 <div>
                     <label class="block text-sm font-medium text-zinc-700 mb-1.5">{{ __('payment::message.reference_no') }}</label>
                     <input type="text" name="reference_no" id="reference_no"
                            class="h-9 w-full rounded-md border border-zinc-200 bg-transparent px-3 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2"
                            placeholder="{{ __('payment::message.enter_reference_no') }}">
                     <div class="mt-1 text-xs text-red-500 erp-field-error" id="error_reference_no"></div>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-zinc-700 mb-1.5">{{ __('payment::message.status') }} <span class="text-red-500">*</span></label>
-                    <select name="status" id="status" required
-                            class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2">
-                        <option value="paid">{{ __('payment::message.paid') }}</option>
-                        <option value="pending">{{ __('payment::message.pending') }}</option>
-                        <option value="refunded">{{ __('payment::message.refunded') }}</option>
-                    </select>
-                    <div class="mt-1 text-xs text-red-500 erp-field-error" id="error_status"></div>
                 </div>
             </div>
 

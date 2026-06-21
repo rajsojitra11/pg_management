@@ -92,11 +92,15 @@ class NoticeboardController extends Controller
         DB::beginTransaction();
         try {
             $data = $request->validated();
+            unset($data['notice_type']);
             $data['user_id'] = auth()->id();
             $data['created_by'] = auth()->id();
 
             if ($request->hasFile('image')) {
                 $data['image'] = $request->file('image')->store('noticeboard', 'public');
+            } else {
+                $data['image'] = null;
+                $data['description'] = $data['description'] ?? '';
             }
 
             Noticeboard::create($data);
@@ -141,6 +145,7 @@ class NoticeboardController extends Controller
             }
             $noticeboard = $query->firstOrFail();
             $data = $request->validated();
+            unset($data['notice_type']);
             $data['updated_by'] = auth()->id();
 
             if ($request->hasFile('image')) {
@@ -148,6 +153,11 @@ class NoticeboardController extends Controller
                     Storage::disk('public')->delete($noticeboard->image);
                 }
                 $data['image'] = $request->file('image')->store('noticeboard', 'public');
+            }
+
+            if ($request->input('notice_type') === 'text' && $noticeboard->image) {
+                Storage::disk('public')->delete($noticeboard->image);
+                $data['image'] = null;
             }
 
             $noticeboard->update($data);

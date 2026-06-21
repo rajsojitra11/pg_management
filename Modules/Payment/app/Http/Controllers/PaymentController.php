@@ -27,7 +27,7 @@ class PaymentController extends Controller
         if (request()->ajax()) {
             $user = auth()->user();
             $query = Payment::with('tenant', 'pg', 'room')
-                ->select('id', 'public_id', 'tenant_id', 'pg_id', 'room_id', 'payment_date', 'amount', 'payment_method', 'reference_no', 'status');
+                ->select('id', 'public_id', 'tenant_id', 'pg_id', 'room_id', 'payment_date', 'amount', 'payment_method', 'reference_no', 'verified');
 
             if ($user->hasRole('Pg_Admin')) {
                 $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
@@ -42,8 +42,8 @@ class PaymentController extends Controller
                 });
             }
 
-            if ($status = request('filter_status')) {
-                $query->where('status', $status);
+            if ($verifiedStatus = request('filter_verified')) {
+                $query->where('verified', $verifiedStatus);
             }
 
             if ($tenantId = request('filter_tenant_id')) {
@@ -61,18 +61,16 @@ class PaymentController extends Controller
                 ->addColumn('room_no', function ($row) {
                     return $row->room?->room_no ?? '—';
                 })
-                ->editColumn('status', function ($row) {
-                    if ($row->status === 'paid') {
-                        return '<span class="inline-flex items-center rounded-md bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700 border border-green-200">Paid</span>';
-                    }
-                    if ($row->status === 'pending') {
-                        return '<span class="inline-flex items-center rounded-md bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 border border-amber-200">Pending</span>';
-                    }
-                    if ($row->status === 'refunded') {
-                        return '<span class="inline-flex items-center rounded-md bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700 border border-red-200">Refunded</span>';
-                    }
+                ->editColumn('verified', function ($row) {
+                    $url = route('payment.verified', $row->public_id);
+                    $checked = $row->verified === 'verified' ? 'checked' : '';
+                    $bg = $row->verified === 'verified' ? 'bg-green-100 text-green-800 border-green-200' : 'bg-amber-100 text-amber-800 border-amber-200';
+                    $label = $row->verified === 'verified' ? 'Verified' : 'Pending';
 
-                    return $row->status ? ucfirst($row->status) : '';
+                    return '<label class="inline-flex items-center gap-2 cursor-pointer px-3 py-1 rounded-md text-xs font-medium border '.$bg.'">
+                        <input type="checkbox" class="verified-toggle rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900" data-url="'.$url.'" '.$checked.'>
+                        '.$label.'
+                    </label>';
                 })
                 ->addColumn('action', function ($row) {
                     $show = 'payment-show';
@@ -171,6 +169,32 @@ class PaymentController extends Controller
         } catch (Exception $e) {
             DB::rollback();
 
+            return response()->json(['status_code' => 500, 'message' => 'Something went wrong. Please try again.']);
+        }
+    }
+
+    public function toggleVerified($id)
+    {
+        try {
+            $user = auth()->user();
+            $query = Payment::byAnyKey($id);
+            if ($user->hasRole('Pg_Admin')) {
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
+            }
+            $payment = $query->firstOrFail();
+
+            $payment->verified = $payment->verified === 'verified' ? 'pending' : 'verified';
+            $payment->updated_by = auth()->id();
+            $payment->save();
+
+            return response()->json([
+                'status_code' => 200,
+                'verified' => $payment->verified,
+                'message' => $payment->verified === 'verified'
+                    ? 'Payment marked as verified.'
+                    : 'Payment marked as pending.',
+            ]);
+        } catch (Exception $e) {
             return response()->json(['status_code' => 500, 'message' => 'Something went wrong. Please try again.']);
         }
     }

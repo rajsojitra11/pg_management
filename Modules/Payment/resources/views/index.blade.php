@@ -29,12 +29,11 @@
             </div>
         </div>
         <div class="lg:col-span-3">
-            <label class="block text-xs font-medium text-zinc-500 mb-1">{{ __('payment::message.status') }}</label>
-            <select id="filterStatus" name="filter_status" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-700 focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500">
+            <label class="block text-xs font-medium text-zinc-500 mb-1">{{ __('payment::message.verified') }}</label>
+            <select id="filterVerified" name="filter_verified" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-700 focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500">
                 <option value="">{{ __('message.common.select') }}</option>
-                <option value="paid">{{ __('payment::message.paid') }}</option>
-                <option value="pending">{{ __('payment::message.pending') }}</option>
-                <option value="refunded">{{ __('payment::message.refunded') }}</option>
+                <option value="pending">{{ __('payment::message.verified_pending') }}</option>
+                <option value="verified">{{ __('payment::message.verified_done') }}</option>
             </select>
         </div>
         <div class="lg:col-span-5 flex items-center gap-2 justify-end lg:col-start-8">
@@ -57,7 +56,7 @@
                     <th>{{ __('payment::message.payment_date') }}</th>
                     <th>{{ __('payment::message.amount') }}</th>
                     <th>{{ __('payment::message.payment_method') }}</th>
-                    <th>{{ __('payment::message.status') }}</th>
+                    <th>{{ __('payment::message.verified') }}</th>
                     <th>{{ __('message.common.action') }}</th>
                 </tr>
             </thead>
@@ -109,7 +108,7 @@
                         <p class="text-sm text-zinc-900" id="view_reference_no">-</p>
                     </div>
                     <div>
-                        <p class="text-xs font-medium text-zinc-500 mb-1">{{ __('payment::message.status') }}</p>
+                        <p class="text-xs font-medium text-zinc-500 mb-1">{{ __('payment::message.verified') }}</p>
                         <p class="text-sm" id="view_status">-</p>
                     </div>
                     <div class="col-span-2">
@@ -150,7 +149,7 @@
                 url: window.URL_ROUTE,
                 data: function (d) {
                     d.filter_search = $('#filterSearch').val();
-                    d.filter_status = $('#filterStatus').val();
+                    d.filter_verified = $('#filterVerified').val();
                     d.filter_tenant_id = $('#filterTenantId').val();
                 }
             },
@@ -170,7 +169,7 @@
                 { data: 'payment_date', name: 'payment_date', render: function(data) { return window.erpDate ? window.erpDate(data) : (data || '-'); } },
                 { data: 'amount', name: 'amount', render: function(data) { return data ? '₹' + parseFloat(data).toFixed(2) : '-'; } },
                 { data: 'payment_method', name: 'payment_method', render: function(data) { return data || '-'; } },
-                { data: 'status', name: 'status' },
+                { data: 'verified', name: 'verified' },
                 { data: 'action', name: 'action', orderable: false, sortable: false, width: '160px' }
             ]
         });
@@ -185,6 +184,54 @@
                 if (this._erpSelectInst) this._erpSelectInst.setValue('');
             });
             table.ajax.reload();
+        });
+
+        $(document).on('click', '.verified-toggle', function(e) {
+            e.preventDefault();
+            var checkbox = $(this);
+            var url = checkbox.data('url');
+            var label = checkbox.closest('label');
+            var currentlyVerified = label.hasClass('bg-green-100');
+            var newStatusLabel = currentlyVerified ? '{{ __("payment::message.verified_pending") }}' : '{{ __("payment::message.verified_done") }}';
+
+            erpConfirm({
+                title: '{{ __("payment::message.verified") }}',
+                message: '{{ __("payment::message.confirm_verified") }}'.replace(':status', newStatusLabel.toLowerCase()),
+                confirmText: '{{ __("message.common.yes") }}',
+            }).then(function(confirmed) {
+                if (!confirmed) return;
+
+                checkbox.prop('disabled', true);
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.status_code == 200) {
+                            if (res.verified === 'verified') {
+                                label.removeClass('bg-amber-100 text-amber-800 border-amber-200')
+                                    .addClass('bg-green-100 text-green-800 border-green-200');
+                                checkbox.prop('checked', true);
+                                label.contents().last().replaceWith(' Verified');
+                            } else {
+                                label.removeClass('bg-green-100 text-green-800 border-green-200')
+                                    .addClass('bg-amber-100 text-amber-800 border-amber-200');
+                                checkbox.prop('checked', false);
+                                label.contents().last().replaceWith(' Pending');
+                            }
+                            erpToast({ title: 'Success', message: res.message, type: 'success' });
+                        }
+                        checkbox.prop('disabled', false);
+                    },
+                    error: function() {
+                        checkbox.prop('disabled', false);
+                        erpToast({ title: 'Error', message: 'Failed to update verification status.', type: 'error' });
+                    }
+                });
+            });
         });
     });
 
@@ -215,14 +262,10 @@
                     $('#view_amount').text(d.amount ? '₹' + parseFloat(d.amount).toFixed(2) : '-');
                     $('#view_payment_method').text(d.payment_method || '-');
                     $('#view_reference_no').text(d.reference_no || '-');
-                    if (d.status === 'paid') {
-                        $('#view_status').html('<span class="inline-flex items-center rounded-md bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700 border border-green-200">Paid</span>');
-                    } else if (d.status === 'pending') {
-                        $('#view_status').html('<span class="inline-flex items-center rounded-md bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 border border-amber-200">Pending</span>');
-                    } else if (d.status === 'refunded') {
-                        $('#view_status').html('<span class="inline-flex items-center rounded-md bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700 border border-red-200">Refunded</span>');
+                    if (d.verified === 'verified') {
+                        $('#view_status').html('<span class="inline-flex items-center rounded-md bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800 border border-green-200">Verified</span>');
                     } else {
-                        $('#view_status').text(d.status ? d.status.charAt(0).toUpperCase() + d.status.slice(1) : '-');
+                        $('#view_status').html('<span class="inline-flex items-center rounded-md bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 border border-amber-200">Pending</span>');
                     }
                     $('#view_remarks').text(d.remarks || '-');
                     $('#view_created_at').text(window.erpDate ? window.erpDate(d.created_at) : (d.created_at || '-'));

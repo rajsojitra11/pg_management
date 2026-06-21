@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('payment_method', 50); // Cash, Bank Transfer, Cheque, UPI, Other
             $table->string('reference_no', 100)->nullable();
             $table->text('remarks')->nullable();
-            $table->string('status', 20)->default('paid'); // paid, pending, refunded
+            $table->string('verified', 20)->default('pending'); // pending, verified
 
             $table->foreignId('created_by')->nullable()->constrained('users');
             $table->foreignId('updated_by')->nullable()->constrained('users');

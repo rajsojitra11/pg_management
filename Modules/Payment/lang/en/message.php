@@ -21,7 +21,7 @@ return [
     'payment_method' => 'Payment Method',
     'reference_no' => 'Reference No',
     'remarks' => 'Remarks',
-    'status' => 'Status',
+    'verified' => 'Verified',
 
     // Payment methods
     'cash' => 'Cash',
@@ -30,10 +30,10 @@ return [
     'upi' => 'UPI',
     'other' => 'Other',
 
-    // Statuses
-    'paid' => 'Paid',
-    'pending' => 'Pending',
-    'refunded' => 'Refunded',
+    // Verification
+    'verified_pending' => 'Pending',
+    'verified_done' => 'Verified',
+    'confirm_verified' => 'Are you sure you want to mark this payment as :status?',
 
     // Validation
     'select_tenant' => 'Select Tenant',

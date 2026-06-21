@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\City\Database\Seeders\CityDatabaseSeeder;
 use Modules\Country\Database\Seeders\CountryDatabaseSeeder;
 use Modules\Currency\Database\Seeders\CurrencyDatabaseSeeder;
+use Modules\Email\Database\Seeders\EmailDatabaseSeeder;
 use Modules\EnvVariable\Database\Seeders\EnvVariableDatabaseSeeder;
 use Modules\Login\Database\Seeders\LoginDatabaseSeeder;
 use Modules\MenuMaster\Database\Seeders\MenuMasterDatabaseSeeder;
@@ -52,6 +53,7 @@ class DatabaseSeeder extends Seeder
             RoleDatabaseSeeder::class,
             LoginDatabaseSeeder::class,
             MenuMasterDatabaseSeeder::class,
+            EmailDatabaseSeeder::class,
             EnvVariableDatabaseSeeder::class,
 
             // Lookups — run before SettingSeeder (it queries IN/GJ/Rajkot)

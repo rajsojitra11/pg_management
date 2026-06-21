@@ -20,5 +20,6 @@
     "Payment": true,
     "Service": true,
     "Complaint": true,
-    "Maintenance": true
+    "Maintenance": true,
+    "Email": true
 }

@@ -22,7 +22,6 @@ class UpdatePaymentRequest extends FormRequest
             'payment_method' => ['required', 'string', 'max:50', 'in:Cash,Bank Transfer,Cheque,UPI,Other'],
             'reference_no' => ['nullable', 'string', 'max:100'],
             'remarks' => ['nullable', 'string'],
-            'status' => ['required', 'string', 'max:20', 'in:paid,pending,refunded'],
         ];
     }
 
@@ -37,7 +36,6 @@ class UpdatePaymentRequest extends FormRequest
             'payment_method' => __('payment::message.payment_method'),
             'reference_no' => __('payment::message.reference_no'),
             'remarks' => __('payment::message.remarks'),
-            'status' => __('payment::message.status'),
         ];
     }
 

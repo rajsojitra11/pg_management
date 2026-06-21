@@ -7180,3 +7180,8 @@ html.dark .erp-status-switch input:checked ~ .erp-status-pill {
 }
 a.erp-code-badge { text-decoration: none; transition: opacity 0.15s ease; }
 a.erp-code-badge:hover { opacity: 0.8; }
+
+/* ── Payment Verified Badge ──────────────────────────────────────── */
+.bg-green-100 { background-color: #dcfce7; }
+.text-green-800 { color: #166534; }
+.border-green-200 { border-color: #bbf7d0; }
