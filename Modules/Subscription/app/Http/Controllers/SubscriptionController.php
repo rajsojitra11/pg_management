@@ -69,6 +69,7 @@ class SubscriptionController extends Controller
                     if ($row->status === 'pending') {
                         return '<span class="inline-flex items-center rounded-md bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 border border-amber-200">Pending</span>';
                     }
+
                     return $row->status ? ucfirst($row->status) : '';
                 })
                 ->editColumn('payment_status', function ($row) {
@@ -81,6 +82,7 @@ class SubscriptionController extends Controller
                     if ($row->payment_status === 'pending') {
                         return '<span class="inline-flex items-center rounded-md bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 border border-amber-200">Pending</span>';
                     }
+
                     return $row->payment_status ? ucfirst($row->payment_status) : '';
                 })
                 ->escapeColumns([])

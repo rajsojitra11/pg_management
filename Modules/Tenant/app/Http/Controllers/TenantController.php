@@ -7,12 +7,12 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Modules\Payment\Models\Payment;
+use Modules\PgManagement\Models\PgManagement;
 use Modules\Tenant\Http\Requests\DeleteTenantRequest;
 use Modules\Tenant\Http\Requests\StoreTenantRequest;
 use Modules\Tenant\Http\Requests\UpdateTenantRequest;
-use Modules\Payment\Models\Payment;
 use Modules\Tenant\Models\Tenant;
 use Modules\User\Models\User;
 use Modules\User\Models\UserProfile;
@@ -38,7 +38,7 @@ class TenantController extends Controller
                 ->select('id', 'public_id', 'user_id', 'pg_id', 'room_id', 'email', 'phone', 'checkin_date', 'monthly_rent', 'status');
 
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
 
             if ($search = trim((string) request('filter_search'))) {
@@ -87,7 +87,7 @@ class TenantController extends Controller
             // Generate a random password
             $plainPassword = Str::random(12);
 
-            $fullName = ucwords($data['firstname']) . ' ' . ucwords($data['lastname'] ?? '');
+            $fullName = ucwords($data['firstname']).' '.ucwords($data['lastname'] ?? '');
 
             // Create User
             $user = User::create([
@@ -183,7 +183,7 @@ class TenantController extends Controller
         $query = Tenant::with('user', 'pg', 'room', 'permanentState', 'permanentCity', 'createdBy', 'updatedBy')
             ->byAnyKey($id);
         if ($user->hasRole('Pg_Admin')) {
-            $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+            $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
         }
         $tenant = $query->firstOrFail();
 
@@ -196,7 +196,7 @@ class TenantController extends Controller
             $user = auth()->user();
             $tenant = Tenant::with('pg', 'room')->byAnyKey($id);
             if ($user->hasRole('Pg_Admin')) {
-                $tenant->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $tenant->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
             $tenant = $tenant->firstOrFail();
 
@@ -220,7 +220,7 @@ class TenantController extends Controller
         $user = auth()->user();
         $query = Tenant::with('user', 'pg', 'room')->byAnyKey($id);
         if ($user->hasRole('Pg_Admin')) {
-            $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+            $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
         }
         $tenant = $query->firstOrFail();
 
@@ -228,7 +228,7 @@ class TenantController extends Controller
         $tenant->formatted_checkin_date = $tenant->checkin_date ? Carbon::parse($tenant->checkin_date)->format('d-m-Y') : '';
         $tenant->formatted_expected_checkout_date = $tenant->expected_checkout_date ? Carbon::parse($tenant->expected_checkout_date)->format('d-m-Y') : '';
 
-        $pgList = \Modules\PgManagement\Models\PgManagement::select('id', 'pg_name')
+        $pgList = PgManagement::select('id', 'pg_name')
             ->where('status', 'active')
             ->orderBy('pg_name')
             ->get();
@@ -243,15 +243,15 @@ class TenantController extends Controller
             $user = auth()->user();
             $query = Tenant::byAnyKey($id);
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
             $tenant = $query->firstOrFail();
             $data = $request->validated();
-            if (empty($data['name']) && !empty($data['firstname'])) {
-                $data['name'] = ucwords($data['firstname']) . ' ' . ucwords($data['lastname'] ?? '');
+            if (empty($data['name']) && ! empty($data['firstname'])) {
+                $data['name'] = ucwords($data['firstname']).' '.ucwords($data['lastname'] ?? '');
             }
             unset($data['firstname'], $data['lastname']);
-            if (!empty($data['mobile']) && empty($data['phone'])) {
+            if (! empty($data['mobile']) && empty($data['phone'])) {
                 $data['phone'] = $data['mobile'];
             }
             unset($data['mobile']);
@@ -274,7 +274,7 @@ class TenantController extends Controller
             $user = auth()->user();
             $query = Tenant::byAnyKey($id);
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
             $tenant = $query->firstOrFail();
             $data = $request->validated();

@@ -9,7 +9,5 @@ class TenantDatabaseSeeder extends Seeder
 {
     use SeederLogging;
 
-    public function run(): void
-    {
-    }
+    public function run(): void {}
 }

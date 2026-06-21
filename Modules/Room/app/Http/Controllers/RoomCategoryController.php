@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Modules\PgManagement\Models\PgManagement;
+use Modules\Room\Http\Requests\DeleteRoomCategoryRequest;
 use Modules\Room\Http\Requests\StoreRoomCategoryRequest;
 use Modules\Room\Http\Requests\UpdateRoomCategoryRequest;
-use Modules\Room\Http\Requests\DeleteRoomCategoryRequest;
 use Modules\Room\Models\RoomCategory;
 use Yajra\DataTables\DataTables;
 
@@ -30,7 +30,7 @@ class RoomCategoryController extends Controller
             $query = RoomCategory::with('pg')->select('id', 'public_id', 'pg_id', 'category_name', 'status');
 
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
 
             return DataTables::of($query)
@@ -70,7 +70,7 @@ class RoomCategoryController extends Controller
             $user = auth()->user();
             $query = RoomCategory::byAnyKey($id);
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
             $category = $query->first();
             if (! is_null($category)) {
@@ -107,7 +107,7 @@ class RoomCategoryController extends Controller
             $user = auth()->user();
             $query = RoomCategory::byAnyKey($id);
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
             $category = $query->first();
             if (! is_null($category)) {
@@ -127,7 +127,7 @@ class RoomCategoryController extends Controller
             $user = auth()->user();
             $query = RoomCategory::byAnyKey($id);
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
             $category = $query->firstOrFail();
             $data = $request->validated();
@@ -150,7 +150,7 @@ class RoomCategoryController extends Controller
             $user = auth()->user();
             $query = RoomCategory::byAnyKey($id);
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
             $category = $query->firstOrFail();
             $data = $request->validated();

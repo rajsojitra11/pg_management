@@ -480,6 +480,130 @@ class PermissionTableSeeder extends Seeder
                 'section' => 'General',
             ],
 
+            [
+                'title_tag' => 'Service_Category',
+                'name' => 'service-category-list',
+                'title' => 'List',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Service_Category',
+                'name' => 'service-category-create',
+                'title' => 'Create',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Service_Category',
+                'name' => 'service-category-show',
+                'title' => 'Show',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Service_Category',
+                'name' => 'service-category-edit',
+                'title' => 'Edit',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Service_Category',
+                'name' => 'service-category-delete',
+                'title' => 'Delete',
+                'section' => 'General',
+            ],
+
+            [
+                'title_tag' => 'Service',
+                'name' => 'service-list',
+                'title' => 'List',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Service',
+                'name' => 'service-create',
+                'title' => 'Create',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Service',
+                'name' => 'service-show',
+                'title' => 'Show',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Service',
+                'name' => 'service-edit',
+                'title' => 'Edit',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Service',
+                'name' => 'service-delete',
+                'title' => 'Delete',
+                'section' => 'General',
+            ],
+
+            [
+                'title_tag' => 'Complaint',
+                'name' => 'complaint-list',
+                'title' => 'List',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Complaint',
+                'name' => 'complaint-create',
+                'title' => 'Create',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Complaint',
+                'name' => 'complaint-show',
+                'title' => 'Show',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Complaint',
+                'name' => 'complaint-edit',
+                'title' => 'Edit',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Complaint',
+                'name' => 'complaint-delete',
+                'title' => 'Delete',
+                'section' => 'General',
+            ],
+
+            [
+                'title_tag' => 'Maintenance',
+                'name' => 'maintenance-list',
+                'title' => 'List',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Maintenance',
+                'name' => 'maintenance-create',
+                'title' => 'Create',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Maintenance',
+                'name' => 'maintenance-show',
+                'title' => 'Show',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Maintenance',
+                'name' => 'maintenance-edit',
+                'title' => 'Edit',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'Maintenance',
+                'name' => 'maintenance-delete',
+                'title' => 'Delete',
+                'section' => 'General',
+            ],
+
             // Reports
             [
                 'title_tag' => 'Activity_Log_Report',
@@ -620,6 +744,10 @@ class PermissionTableSeeder extends Seeder
                 'noticeboard-list', 'noticeboard-create', 'noticeboard-show', 'noticeboard-edit',
                 'tenant-list', 'tenant-create', 'tenant-show', 'tenant-edit',
                 'payment-list', 'payment-create', 'payment-show', 'payment-edit',
+                'service-category-list', 'service-category-create', 'service-category-show', 'service-category-edit',
+                'service-list', 'service-create', 'service-show', 'service-edit',
+                'complaint-list', 'complaint-create', 'complaint-show', 'complaint-edit',
+                'maintenance-list', 'maintenance-create', 'maintenance-show', 'maintenance-edit',
             ];
             $pgManagerPermissions = Permission::whereIn('name', $pgManagerPermissionNames)->pluck('id')->toArray();
             $pgManagerRole->syncPermissions($pgManagerPermissions);

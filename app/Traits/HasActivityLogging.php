@@ -199,7 +199,7 @@ trait HasActivityLogging
                 'new_values' => $this->enrichValuesWithFkLabels($newValues),
                 'created_by' => $userId,
                 'ip_address' => $deviceInfo['ip_address'],
-                //'location' => $deviceInfo['location'] ?? 'Unknown',
+                // 'location' => $deviceInfo['location'] ?? 'Unknown',
                 'user_agent' => $deviceInfo['user_agent'],
                 'device' => $deviceInfo['device'],
                 'platform' => $deviceInfo['platform'],

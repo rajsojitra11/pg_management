@@ -30,7 +30,7 @@ class PaymentController extends Controller
                 ->select('id', 'public_id', 'tenant_id', 'pg_id', 'room_id', 'payment_date', 'amount', 'payment_method', 'reference_no', 'status');
 
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
 
             if ($search = trim((string) request('filter_search'))) {
@@ -38,7 +38,7 @@ class PaymentController extends Controller
                     $q->where('amount', 'like', "%{$search}%")
                         ->orWhere('reference_no', 'like', "%{$search}%")
                         ->orWhere('payment_method', 'like', "%{$search}%")
-                        ->orWhereHas('tenant', fn($sq) => $sq->where('name', 'like', "%{$search}%"));
+                        ->orWhereHas('tenant', fn ($sq) => $sq->where('name', 'like', "%{$search}%"));
                 });
             }
 
@@ -71,6 +71,7 @@ class PaymentController extends Controller
                     if ($row->status === 'refunded') {
                         return '<span class="inline-flex items-center rounded-md bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700 border border-red-200">Refunded</span>';
                     }
+
                     return $row->status ? ucfirst($row->status) : '';
                 })
                 ->addColumn('action', function ($row) {
@@ -118,7 +119,7 @@ class PaymentController extends Controller
             $user = auth()->user();
             $query = Payment::with('tenant', 'pg', 'room')->byAnyKey($id);
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
             $payment = $query->first();
             if (! is_null($payment)) {
@@ -137,7 +138,7 @@ class PaymentController extends Controller
             $user = auth()->user();
             $query = Payment::byAnyKey($id);
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
             $payment = $query->first();
             if (! is_null($payment)) {
@@ -157,7 +158,7 @@ class PaymentController extends Controller
             $user = auth()->user();
             $query = Payment::byAnyKey($id);
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
             $payment = $query->firstOrFail();
             $data = $request->validated();
@@ -180,7 +181,7 @@ class PaymentController extends Controller
             $user = auth()->user();
             $query = Payment::byAnyKey($id);
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
             $payment = $query->firstOrFail();
             $data = $request->validated();

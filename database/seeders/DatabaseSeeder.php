@@ -16,8 +16,8 @@ use Modules\MenuMaster\Database\Seeders\MenuMasterDatabaseSeeder;
 use Modules\Noticeboard\Models\Noticeboard;
 use Modules\Payment\Models\Payment;
 use Modules\PgManagement\Database\Seeders\PgManagementDatabaseSeeder;
-use Modules\Room\Database\Seeders\RoomDatabaseSeeder;
 use Modules\Role\Database\Seeders\RoleDatabaseSeeder;
+use Modules\Room\Database\Seeders\RoomDatabaseSeeder;
 use Modules\Setting\Database\Seeders\SettingDatabaseSeeder;
 use Modules\State\Database\Seeders\StateDatabaseSeeder;
 use Modules\Subscription\Database\Seeders\SubscriptionDatabaseSeeder;
@@ -25,6 +25,7 @@ use Modules\Tenant\Models\Tenant;
 use Modules\Unit\Database\Seeders\UnitDatabaseSeeder;
 use Modules\User\Database\Seeders\UserDatabaseSeeder;
 use Modules\Year\Database\Seeders\YearDatabaseSeeder;
+use Symfony\Component\Process\Process;
 
 class DatabaseSeeder extends Seeder
 {
@@ -86,10 +87,10 @@ class DatabaseSeeder extends Seeder
             if ($process->isSuccessful()) {
                 $this->command->info('Autoload regenerated successfully.');
             } else {
-                $this->command->warn('Autoload regeneration failed: ' . $process->getErrorOutput());
+                $this->command->warn('Autoload regeneration failed: '.$process->getErrorOutput());
             }
         } catch (\Throwable $e) {
-            $this->command->warn('Autoload regeneration skipped: ' . $e->getMessage());
+            $this->command->warn('Autoload regeneration skipped: '.$e->getMessage());
             $this->command->warn('If needed, run "composer dump-autoload -o" manually.');
         }
     }
@@ -111,6 +112,7 @@ class DatabaseSeeder extends Seeder
 
         if (! $pg || ! $room || ! $pgAdminUser || ! $tenantUser) {
             $this->command->warn('Required seed records not found. Skipping demo data creation.');
+
             return;
         }
 

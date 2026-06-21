@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\City\Models\City;
+use Modules\Payment\Models\Payment;
 use Modules\PgManagement\Models\PgManagement;
 use Modules\Room\Models\Room;
 use Modules\State\Models\State;
@@ -100,7 +101,7 @@ class Tenant extends Model
 
     public function payments()
     {
-        return $this->hasMany(\Modules\Payment\Models\Payment::class, 'tenant_id');
+        return $this->hasMany(Payment::class, 'tenant_id');
     }
 
     public function pg()

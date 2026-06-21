@@ -17,5 +17,8 @@
     "Room": true,
     "Noticeboard": true,
     "Tenant": true,
-    "Payment": true
+    "Payment": true,
+    "Service": true,
+    "Complaint": true,
+    "Maintenance": true
 }

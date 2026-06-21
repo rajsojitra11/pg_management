@@ -15,6 +15,7 @@ class PrintDashboardService
         if (! $user || ! $user->hasRole('Pg_Admin')) {
             return null;
         }
+
         return DB::table('pg_management')
             ->whereNull('deleted_at')
             ->where('owner_id', $user->id)

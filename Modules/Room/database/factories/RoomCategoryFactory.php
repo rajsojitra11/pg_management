@@ -13,7 +13,7 @@ class RoomCategoryFactory extends Factory
     {
         return [
             'pg_id' => 1,
-            'category_name' => $this->faker->word() . ' Room',
+            'category_name' => $this->faker->word().' Room',
         ];
     }
 }

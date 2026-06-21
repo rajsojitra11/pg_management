@@ -13,11 +13,11 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Modules\User\Listeners\LogUserAuthentication;
 use Modules\User\Http\Requests\DeleteUserRequest;
 use Modules\User\Http\Requests\PasswordChangeRequest;
 use Modules\User\Http\Requests\StoreUserRequest;
 use Modules\User\Http\Requests\UpdateUserRequest;
+use Modules\User\Listeners\LogUserAuthentication;
 use Modules\User\Models\User;
 use Modules\User\Models\UserActivityLog;
 use Modules\User\Models\UserHierarchy;
@@ -113,8 +113,9 @@ class UserController extends Controller
                 ->addColumn('parent_user', function ($row) {
                     $parent = $row->profile?->parentUser;
                     if ($parent) {
-                        return '<span class="text-zinc-700">' . e($parent->email) . '</span>';
+                        return '<span class="text-zinc-700">'.e($parent->email).'</span>';
                     }
+
                     return '<span class="text-zinc-400">—</span>';
                 })
                 ->addColumn('role', function ($row) {
@@ -544,8 +545,6 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Something went wrong. Please try again');
         }
     }
-
-
 
     public function changeTheme(Request $request)
     {

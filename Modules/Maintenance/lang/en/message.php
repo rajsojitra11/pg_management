@@ -1,0 +1,41 @@
+<?php
+
+return [
+    'module_name' => 'Maintenance',
+    'title' => 'Manage Maintenance Records',
+    'detail' => 'Maintenance Detail',
+    'created' => 'Maintenance created successfully.',
+    'updated' => 'Maintenance updated successfully.',
+    'deleted' => 'Maintenance deleted successfully.',
+    'no' => 'Maintenance No',
+    'complaint_no' => 'Complaint No',
+    'cost' => 'Cost',
+    'proof' => 'Proof',
+    'description' => 'Description',
+    'maintenance_date' => 'Maintenance Date',
+    'status' => 'Status',
+    'created_by' => 'Created By',
+    'validation' => [
+        'complaint_required' => 'Please select a complaint.',
+        'cost_required' => 'Please enter the cost.',
+        'cost_invalid' => 'Cost must be a valid number.',
+        'proof_mimes' => 'Proof must be a file of type: jpg, jpeg, png, pdf, doc, docx.',
+        'proof_max' => 'Proof file size must not exceed 5MB.',
+        'date_required' => 'Please select a maintenance date.',
+        'date_invalid' => 'Please enter a valid date.',
+        'status_required' => 'Please select a status.',
+    ],
+    'placeholder' => [
+        'select_complaint' => 'Select Complaint',
+        'enter_cost' => 'Enter Cost',
+        'enter_description' => 'Enter Description',
+        'select_date' => 'Select Date',
+        'select_status' => 'Select Status',
+    ],
+    'status_options' => [
+        'pending' => 'Pending',
+        'in_progress' => 'In Progress',
+        'completed' => 'Completed',
+        'cancelled' => 'Cancelled',
+    ],
+];

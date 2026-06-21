@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 use Modules\Role\Models\RoleYearAccess;
@@ -240,7 +239,7 @@ if (! function_exists('defaultMigration')) {
 if (! function_exists('getYearList')) {
     function getYearList($loadAll = false)
     {
-        $cacheKey = 'year_list_' . ($loadAll ? 'all' : 'limited');
+        $cacheKey = 'year_list_'.($loadAll ? 'all' : 'limited');
 
         return Cache::remember($cacheKey, 300, function () use ($loadAll) {
             if ($loadAll) {
@@ -410,7 +409,7 @@ if (! function_exists('allowedYearIds')) {
         }
 
         // Check session cache first to avoid DB query every page load
-        $sessionKey = 'allowed_year_ids_' . $key;
+        $sessionKey = 'allowed_year_ids_'.$key;
         if (session()->exists($sessionKey)) {
             return $cache[$key] = session($sessionKey);
         }

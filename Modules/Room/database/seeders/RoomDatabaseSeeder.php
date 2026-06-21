@@ -4,8 +4,8 @@ namespace Modules\Room\Database\Seeders;
 
 use App\Traits\SeederLogging;
 use Illuminate\Database\Seeder;
-use Modules\Room\Models\RoomCategory;
 use Modules\Room\Models\Room;
+use Modules\Room\Models\RoomCategory;
 
 class RoomDatabaseSeeder extends Seeder
 {

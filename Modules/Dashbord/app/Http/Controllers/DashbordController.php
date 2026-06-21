@@ -37,11 +37,11 @@ class DashbordController extends Controller
 
             if ($startYear === $endYear) {
                 // Calendar year (Jan-Dec): e.g., "2026-2026"
-                $yearStart = $startYear . '-01-01';
-                $yearEnd = $endYear . '-12-31';
+                $yearStart = $startYear.'-01-01';
+                $yearEnd = $endYear.'-12-31';
             } else {
                 // Fiscal year (e.g., Apr-Mar): e.g., "2026-2027"
-                $yearStart = $startYear . '-' . str_pad($fyStartMonth, 2, '0', STR_PAD_LEFT) . '-01';
+                $yearStart = $startYear.'-'.str_pad($fyStartMonth, 2, '0', STR_PAD_LEFT).'-01';
                 // End date: last day of month before FY start, in end year
                 $endMonth = $fyStartMonth - 1;
                 $endMonthYear = $endYear;
@@ -50,7 +50,7 @@ class DashbordController extends Controller
                     $endMonthYear = $endYear - 1;
                 }
                 $lastDay = cal_days_in_month(CAL_GREGORIAN, $endMonth, $endMonthYear);
-                $yearEnd = $endMonthYear . '-' . str_pad($endMonth, 2, '0', STR_PAD_LEFT) . '-' . str_pad($lastDay, 2, '0', STR_PAD_LEFT);
+                $yearEnd = $endMonthYear.'-'.str_pad($endMonth, 2, '0', STR_PAD_LEFT).'-'.str_pad($lastDay, 2, '0', STR_PAD_LEFT);
             }
         }
 
@@ -152,7 +152,7 @@ class DashbordController extends Controller
 
         // Load existing role configs keyed by "roleId_widgetId"
         $roleConfigs = RoleDashboardConfig::all()
-            ->keyBy(fn($rc) => $rc->role_id . '_' . $rc->widget_id);
+            ->keyBy(fn ($rc) => $rc->role_id.'_'.$rc->widget_id);
 
         $sections = [
             'live_status' => 'Live Status (KPIs)',
@@ -243,7 +243,7 @@ class DashbordController extends Controller
             ->pluck('model_id');
 
         foreach ($userIds as $uid) {
-            Cache::forget('dashboard_widgets_' . $uid);
+            Cache::forget('dashboard_widgets_'.$uid);
         }
     }
 }

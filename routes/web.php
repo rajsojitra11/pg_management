@@ -30,7 +30,7 @@ Route::get('/db-info', function () {
         'domain' => request()->getHost(),
         'database_name' => DB::connection()->getDatabaseName(),
         'connection_name' => config('database.default'),
-        'host' => config('database.connections.' . config('database.default') . '.host'),
+        'host' => config('database.connections.'.config('database.default').'.host'),
     ]);
 });
 Route::get('/clear-cache', function () {
@@ -58,7 +58,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('lookup/pg-list', [LookupController::class, 'pgList'])->name('lookup.pg-list');
     Route::get('lookup/rooms-by-pg', [LookupController::class, 'roomsByPg'])->name('lookup.rooms-by-pg');
     Route::get('lookup/tenant-list', [LookupController::class, 'tenantList'])->name('lookup.tenant-list');
-
+    Route::get('lookup/complaints-by-pg', [LookupController::class, 'complaintsByPg'])->name('lookup.complaints-by-pg');
 
     // Impersonation routes
     Route::impersonate();
@@ -89,4 +89,4 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::redirect('/', '/login');
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

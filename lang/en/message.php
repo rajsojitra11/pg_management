@@ -22,6 +22,7 @@ return [
         'back' => 'Back',
         'add_more' => 'Add More',
         'search' => 'Search',
+        'reset' => 'Reset',
         'select' => '-- Select --',
         'priority' => 'Priority',
         'enter_priority' => 'Enter Priority',

@@ -4,12 +4,11 @@ namespace Modules\Noticeboard\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Modules\Noticeboard\Http\Requests\DeleteNoticeboardRequest;
 use Modules\Noticeboard\Http\Requests\StoreNoticeboardRequest;
 use Modules\Noticeboard\Http\Requests\UpdateNoticeboardRequest;
-use Modules\Noticeboard\Http\Requests\DeleteNoticeboardRequest;
 use Modules\Noticeboard\Models\Noticeboard;
 use Modules\PgManagement\Models\PgManagement;
 use Yajra\DataTables\DataTables;
@@ -32,7 +31,7 @@ class NoticeboardController extends Controller
             $query = Noticeboard::with('pg', 'user')->select('id', 'public_id', 'user_id', 'pg_id', 'title', 'image', 'status', 'created_at');
 
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
 
             return DataTables::of($query)
@@ -75,7 +74,7 @@ class NoticeboardController extends Controller
             $user = auth()->user();
             $query = Noticeboard::with('pg', 'user')->byAnyKey($id);
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
             $noticeboard = $query->first();
             if (! is_null($noticeboard)) {
@@ -118,7 +117,7 @@ class NoticeboardController extends Controller
             $user = auth()->user();
             $query = Noticeboard::with('pg', 'user')->byAnyKey($id);
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
             $noticeboard = $query->first();
             if (! is_null($noticeboard)) {
@@ -138,7 +137,7 @@ class NoticeboardController extends Controller
             $user = auth()->user();
             $query = Noticeboard::byAnyKey($id);
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
             $noticeboard = $query->firstOrFail();
             $data = $request->validated();
@@ -169,7 +168,7 @@ class NoticeboardController extends Controller
             $user = auth()->user();
             $query = Noticeboard::byAnyKey($id);
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
             $noticeboard = $query->firstOrFail();
             $data = $request->validated();

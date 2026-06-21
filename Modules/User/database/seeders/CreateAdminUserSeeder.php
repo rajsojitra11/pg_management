@@ -206,7 +206,7 @@ class CreateAdminUserSeeder extends Seeder
 
             return $user;
         } catch (Exception $e) {
-            $this->command->error("Error creating user {$userData['name']}: " . $e->getMessage());
+            $this->command->error("Error creating user {$userData['name']}: ".$e->getMessage());
 
             return null;
         }

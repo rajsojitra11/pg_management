@@ -3,7 +3,6 @@
 namespace Modules\Tenant\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreTenantRequest extends FormRequest
 {

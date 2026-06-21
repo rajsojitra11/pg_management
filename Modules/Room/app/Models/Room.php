@@ -4,12 +4,12 @@ namespace Modules\Room\Models;
 
 use App\Traits\HasActivityLogging;
 use App\Traits\HasPublicId;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\PgManagement\Models\PgManagement;
 use Modules\Room\Database\Factories\RoomFactory;
 use Modules\Tenant\Models\Tenant;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Room extends Model
 {

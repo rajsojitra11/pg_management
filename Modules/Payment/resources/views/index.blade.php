@@ -40,9 +40,6 @@
         <div class="lg:col-span-5 flex items-center gap-2 justify-end lg:col-start-8">
             <button type="button" class="search h-9 px-4 rounded-md bg-zinc-900 text-white text-sm font-medium hover:bg-zinc-800">{{ __('payment::message.apply') }}</button>
             <button type="button" class="reset h-9 px-3 rounded-md border border-zinc-200 bg-white text-sm text-zinc-500 hover:bg-zinc-50">{{ __('payment::message.reset') }}</button>
-            <a href="{{ route('payment.index') }}" id="clearTenantFilter" class="h-9 px-3 rounded-md border border-zinc-200 bg-white text-sm text-zinc-500 hover:bg-zinc-50 inline-flex items-center hidden">
-                <i class="fa-solid fa-xmark mr-1"></i> Clear Filter
-            </a>
         </div>
     </div>
 </form>
@@ -148,10 +145,6 @@
     var table = '';
 
     $(function() {
-        if ($('#filterTenantId').val()) {
-            $('#clearTenantFilter').removeClass('hidden');
-        }
-
         table = initErpTable('#table', {
             ajax: {
                 url: window.URL_ROUTE,
@@ -187,10 +180,6 @@
         });
 
         $(document).on('click', '#filter_form .reset', function() {
-            if ($('#filterTenantId').val()) {
-                window.location.href = "{{ route('payment.index') }}";
-                return;
-            }
             $('#filter_form')[0].reset();
             $('#filter_form').find('select').each(function () {
                 if (this._erpSelectInst) this._erpSelectInst.setValue('');

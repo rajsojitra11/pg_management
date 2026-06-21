@@ -7,9 +7,9 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Modules\PgManagement\Models\PgManagement;
+use Modules\Room\Http\Requests\DeleteRoomRequest;
 use Modules\Room\Http\Requests\StoreRoomRequest;
 use Modules\Room\Http\Requests\UpdateRoomRequest;
-use Modules\Room\Http\Requests\DeleteRoomRequest;
 use Modules\Room\Models\Room;
 use Modules\Room\Models\RoomCategory;
 use Modules\Tenant\Models\Tenant;
@@ -37,7 +37,7 @@ class RoomController extends Controller
                 }]);
 
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
 
             return DataTables::of($query)
@@ -51,6 +51,7 @@ class RoomController extends Controller
                 ->addColumn('available_beds', function ($row) {
                     $occupied = $row->occupied_beds_count ?? 0;
                     $capacity = (int) ($row->bed_capacity ?? 0);
+
                     return max(0, $capacity - $occupied);
                 })
                 ->addColumn('action', function ($row) {
@@ -107,7 +108,7 @@ class RoomController extends Controller
             $user = auth()->user();
             $query = Room::with('pg', 'category')->byAnyKey($id);
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
             $room = $query->first();
             if (! is_null($room)) {
@@ -116,6 +117,7 @@ class RoomController extends Controller
                     ->pluck('bed_no')
                     ->toArray();
                 $room->occupied_beds = $occupiedBeds;
+
                 return response()->json(['status_code' => 200, 'message' => 'View room', 'result' => $room]);
             } else {
                 return response()->json(['status_code' => 404, 'message' => 'Room not found.']);
@@ -149,7 +151,7 @@ class RoomController extends Controller
             $user = auth()->user();
             $query = Room::byAnyKey($id);
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
             $room = $query->first();
             if (! is_null($room)) {
@@ -169,7 +171,7 @@ class RoomController extends Controller
             $user = auth()->user();
             $query = Room::byAnyKey($id);
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
             $room = $query->firstOrFail();
             $data = $request->validated();
@@ -192,7 +194,7 @@ class RoomController extends Controller
             $user = auth()->user();
             $query = Room::byAnyKey($id);
             if ($user->hasRole('Pg_Admin')) {
-                $query->whereHas('pg', fn($q) => $q->where('owner_id', $user->id));
+                $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
             $room = $query->firstOrFail();
             $data = $request->validated();
