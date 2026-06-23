@@ -34,9 +34,17 @@ fi
 # Ensure storage is writable
 chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true
 
+# Storage link
+php artisan storage:link --no-interaction 2>/dev/null || true
+
 # Run migrations on deploy (only if APP_ENV=production and not disabled)
 if [ "$APP_ENV" = "production" ] && [ "${SKIP_MIGRATIONS:-false}" != "true" ]; then
     php artisan migrate --force --no-interaction 2>&1 | grep -v "Nothing to migrate" || true
+fi
+
+# Seed database (idempotent — seeders check for existing data)
+if [ "$APP_ENV" = "production" ] && [ "${SKIP_SEEDING:-false}" != "true" ]; then
+    php artisan db:seed --force --no-interaction 2>&1 || true
 fi
 
 # Clear and cache config for performance
