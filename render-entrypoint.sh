@@ -37,13 +37,12 @@ chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true
 # Storage link
 php artisan storage:link --no-interaction 2>/dev/null || true
 
-# Run migrations on deploy (only if APP_ENV=production and not disabled)
-if [ "$APP_ENV" = "production" ] && [ "${SKIP_MIGRATIONS:-false}" != "true" ]; then
+# If FRESH_MIGRATIONS=true, drop all tables and re-run everything.
+# Otherwise, run only pending migrations and seed as normal.
+if [ "${FRESH_MIGRATIONS:-false}" = "true" ]; then
+    php artisan migrate:fresh --force --seed --no-interaction 2>&1 || true
+else
     php artisan migrate --force --no-interaction 2>&1 | grep -v "Nothing to migrate" || true
-fi
-
-# Seed database (idempotent — seeders check for existing data)
-if [ "$APP_ENV" = "production" ] && [ "${SKIP_SEEDING:-false}" != "true" ]; then
     php artisan db:seed --force --no-interaction 2>&1 || true
 fi
 
