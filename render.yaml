@@ -21,16 +21,6 @@ services:
           envVarKey: RENDER_EXTERNAL_URL
       - key: DB_CONNECTION
         value: pgsql
-      - key: DB_HOST
-        fromService:
-          type: psql
-          name: pg-management-db
-          property: host
-      - key: DB_PORT
-        fromService:
-          type: psql
-          name: pg-management-db
-          property: port
       - key: DB_SSLMODE
         value: require
       - key: USE_LOCAL_DB
