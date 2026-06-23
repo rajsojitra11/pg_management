@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('display_order', 50)->nullable(); // Human readable: "1.1.1"
             $table->string('if_can')->nullable();
             $table->boolean('is_main_menu')->default(0);
-            $table->string('parent_id')->nullable();
+            $table->unsignedBigInteger('parent_id')->nullable();
             $table->timestamps();
             $table->index('order_display', 'idx_menu_masters_order_display');
             $table->index(['parent_id', 'order_display'], 'idx_menu_masters_parent_order');
