@@ -40,14 +40,25 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Copy application
+# Copy package files first (for Docker caching)
+COPY package.json package-lock.json ./
+
+# Install npm packages so vite is available
+RUN npm ci
+
+# Copy application source
 COPY . .
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Build frontend assets
+RUN npm run build
 
-# Build frontend assets (devDependencies like vite & tailwindcss are needed for build)
-RUN npm ci && npm run build && rm -rf node_modules
+# Remove dev dependencies (not needed at runtime)
+RUN rm -rf node_modules
+
+# Install PHP deps with --no-scripts to prevent post-autoload-dump (which tries npm run build)
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts \
+    && php artisan package:discover --ansi \
+    && php artisan optimize:clear
 
 # Permissions
 RUN chown -R www-data:www-data storage bootstrap/cache public/build \
