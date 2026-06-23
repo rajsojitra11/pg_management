@@ -56,6 +56,11 @@ class MenuMasterDatabaseSeeder extends Seeder
             ]);
         }
 
+        // Sync the sequence so insertGetId below doesn't collide with explicit IDs
+        if (DB::getDriverName() === 'pgsql') {
+            DB::statement("SELECT setval('menu_masters_id_seq', (SELECT MAX(id) FROM menu_masters))");
+        }
+
         // Add System Administration as a separate parent (dynamic ID)
         $this->seedSystemAdminMenu($defaultDate);
 
