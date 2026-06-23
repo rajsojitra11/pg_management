@@ -57,8 +57,8 @@ class CreateAdminUserSeeder extends Seeder
             [
                 'title' => 'Super_Admin',
                 'access_type' => 'web',
-                'created_by' => 1,
-                'updated_by' => 1,
+                'created_by' => $superAdminUser?->id,
+                'updated_by' => $superAdminUser?->id,
                 'created_at' => $migrationDate,
                 'updated_at' => $migrationDate,
             ]
@@ -88,8 +88,8 @@ class CreateAdminUserSeeder extends Seeder
             [
                 'title' => 'Pg_Admin',
                 'access_type' => 'both',
-                'created_by' => 1,
-                'updated_by' => 1,
+                'created_by' => $superAdminUser?->id,
+                'updated_by' => $superAdminUser?->id,
                 'created_at' => $migrationDate,
                 'updated_at' => $migrationDate,
             ]
@@ -119,8 +119,8 @@ class CreateAdminUserSeeder extends Seeder
             [
                 'title' => 'Pg_Manager',
                 'access_type' => 'mobile',
-                'created_by' => 1,
-                'updated_by' => 1,
+                'created_by' => $superAdminUser?->id,
+                'updated_by' => $superAdminUser?->id,
                 'created_at' => $migrationDate,
                 'updated_at' => $migrationDate,
             ]
@@ -150,8 +150,8 @@ class CreateAdminUserSeeder extends Seeder
             [
                 'title' => 'Tenant',
                 'access_type' => 'mobile',
-                'created_by' => 1,
-                'updated_by' => 1,
+                'created_by' => $superAdminUser?->id,
+                'updated_by' => $superAdminUser?->id,
                 'created_at' => $migrationDate,
                 'updated_at' => $migrationDate,
             ]

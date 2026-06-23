@@ -279,7 +279,7 @@ trait SeederLogging
         Schema::disableForeignKeyConstraints();
 
         if (DB::getDriverName() === 'pgsql') {
-            DB::statement('TRUNCATE TABLE "'.$table.'" CASCADE');
+            DB::statement('TRUNCATE TABLE "'.$table.'" RESTART IDENTITY CASCADE');
         } else {
             DB::table($table)->truncate();
         }

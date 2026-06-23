@@ -176,7 +176,7 @@ class DatabaseSeeder extends Seeder
             'payment_method' => 'UPI',
             'reference_no' => 'REF-DEMO-001',
             'remarks' => 'Demo payment for monthly rent',
-            'status' => 'paid',
+            'verified' => 'paid',
             'created_by' => $superAdminId,
             'updated_by' => $superAdminId,
             'created_at' => $migrationDate,

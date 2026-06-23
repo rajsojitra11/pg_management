@@ -8,23 +8,23 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('payments', function (Blueprint $table) {
-            $table->renameColumn('status', 'verified');
-        });
+        if (! Schema::hasColumn('payments', 'status')) {
+            return;
+        }
 
         Schema::table('payments', function (Blueprint $table) {
-            $table->string('verified', 20)->default('pending')->change();
+            $table->renameColumn('status', 'verified');
         });
     }
 
     public function down(): void
     {
-        Schema::table('payments', function (Blueprint $table) {
-            $table->renameColumn('verified', 'status');
-        });
+        if (! Schema::hasColumn('payments', 'verified')) {
+            return;
+        }
 
         Schema::table('payments', function (Blueprint $table) {
-            $table->string('status', 20)->default('paid')->change();
+            $table->renameColumn('verified', 'status');
         });
     }
 };
