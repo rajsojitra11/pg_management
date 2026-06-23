@@ -59,6 +59,13 @@ class AppServiceProvider extends ServiceProvider
             return config('database.connections.mariadb_local');
         }
 
+        // If DB_CONNECTION is explicitly set to a non-mariadb driver (e.g. pgsql on Render),
+        // use that connection directly instead of domain-based switching.
+        $connection = env('DB_CONNECTION');
+        if ($connection && $connection !== 'mariadb' && $connection !== 'mysql') {
+            return config("database.connections.{$connection}");
+        }
+
         // Domain to database mapping - fallback when USE_LOCAL_DB is false
         if ($domain == config('business.live_app_domain')) {
             return config('database.connections.mariadb');

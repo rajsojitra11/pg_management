@@ -18,10 +18,8 @@ class MenuMasterDatabaseSeeder extends Seeder
         if ($existingCount > 0) {
             // Default to true (truncate) for non-interactive mode (e.g. migrate:fresh --seed)
             if ($this->command?->confirm('Do you want to truncate the menu_masters table first?', true) ?? true) {
-                DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-                DB::table('menu_master_logs')->truncate();
-                DB::table('menu_masters')->truncate();
-                DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+                $this->safeTruncate('menu_master_logs');
+                $this->safeTruncate('menu_masters');
             }
         }
 

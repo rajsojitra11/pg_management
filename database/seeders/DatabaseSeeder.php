@@ -7,6 +7,7 @@ namespace Database\Seeders;
 use App\Traits\SeederLogging;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Modules\City\Database\Seeders\CityDatabaseSeeder;
 use Modules\Country\Database\Seeders\CountryDatabaseSeeder;
 use Modules\Currency\Database\Seeders\CurrencyDatabaseSeeder;
@@ -45,7 +46,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        Schema::disableForeignKeyConstraints();
 
         $this->call([
             // Auth core
@@ -78,7 +79,7 @@ class DatabaseSeeder extends Seeder
         // ── Demo data: one record per remaining entity table ──────────────
         $this->seedDemoData();
 
-        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+        Schema::enableForeignKeyConstraints();
 
         $this->command->info('Regenerating optimized autoload...');
         try {

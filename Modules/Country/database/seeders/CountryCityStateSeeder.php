@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Modules\Country\Models\Country;
 use Modules\User\Database\Seeders\UserDatabaseSeeder;
 
@@ -91,9 +92,13 @@ class CountryCityStateSeeder extends Seeder
         if ($existingCount > 0) {
 
             if ($this->command?->confirm("Do you want to truncate the $table table first?", true) ?? true) {
-                DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-                DB::table($table)->truncate();
-                DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+                Schema::disableForeignKeyConstraints();
+                if (DB::getDriverName() === 'pgsql') {
+                    DB::statement('TRUNCATE TABLE "'.$table.'" CASCADE');
+                } else {
+                    DB::table($table)->truncate();
+                }
+                Schema::enableForeignKeyConstraints();
             }
         }
 

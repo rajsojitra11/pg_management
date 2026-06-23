@@ -32,11 +32,9 @@ class CreateAdminUserSeeder extends Seeder
         if ($existingCount > 0) {
             // Default to true (truncate) for non-interactive mode (e.g. migrate:fresh --seed)
             if ($this->command?->confirm('Do you want to truncate the users table first?', true) ?? true) {
-                DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-                DB::table('user_profile')->truncate();
-                DB::table('users')->truncate();
-                DB::table('roles')->truncate();
-                DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+                $this->safeTruncate('user_profile');
+                $this->safeTruncate('users');
+                $this->safeTruncate('roles');
             }
         }
 

@@ -40,9 +40,7 @@ class YearDatabaseSeeder extends Seeder
         if ($existingCount > 0) {
 
             if ($this->command?->confirm('Do you want to truncate the years table first?', true) ?? true) {
-                DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-                DB::table('years')->truncate();
-                DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+                $this->safeTruncate('years');
             }
         }
 

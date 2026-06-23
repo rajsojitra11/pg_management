@@ -4,7 +4,9 @@ namespace App\Traits;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 trait SeederLogging
 {
@@ -263,6 +265,26 @@ trait SeederLogging
         }
 
         return null;
+    }
+
+    /**
+     * Truncate a table safely across MySQL and PostgreSQL.
+     *
+     * Disables FK constraints before truncating and re-enables after.
+     * PostgreSQL requires TRUNCATE … CASCADE when other tables reference
+     * the table being emptied.
+     */
+    protected function safeTruncate(string $table): void
+    {
+        Schema::disableForeignKeyConstraints();
+
+        if (DB::getDriverName() === 'pgsql') {
+            DB::statement('TRUNCATE TABLE "'.$table.'" CASCADE');
+        } else {
+            DB::table($table)->truncate();
+        }
+
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

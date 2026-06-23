@@ -1,0 +1,80 @@
+services:
+  - type: web
+    name: pg-management
+    runtime: php
+    repo: https://github.com/your-username/pg-management
+    plan: free
+    buildCommand: composer install --no-dev --optimize-autoloader && npm ci && npm run build && php artisan storage:link
+    startCommand: php artisan serve --host=0.0.0.0 --port=$PORT
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_NAME
+        value: PG Management
+      - key: APP_URL
+        fromService:
+          type: web
+          name: pg-management
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromService:
+          type: pgsql
+          name: pg-management-db
+          property: host
+      - key: DB_PORT
+        fromService:
+          type: pgsql
+          name: pg-management-db
+          property: port
+      - key: DB_DATABASE
+        fromService:
+          type: pgsql
+          name: pg-management-db
+          property: database
+      - key: DB_USERNAME
+        fromService:
+          type: pgsql
+          name: pg-management-db
+          property: user
+      - key: DB_PASSWORD
+        fromService:
+          type: pgsql
+          name: pg-management-db
+          property: password
+      - key: DB_SSLMODE
+        value: require
+      - key: USE_LOCAL_DB
+        value: false
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: SESSION_DRIVER
+        value: database
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: APP_TIMEZONE
+        value: Asia/Kolkata
+      - key: COMPANY_NAME
+        value: PG Management
+      - key: COMPANY_ADDRESS
+        value: 14/A Lohanagar, Nr. Pavagadhi Estate, B/h Passport Office, Gondal road, Rajkot
+      - key: INSTALL_TYPE
+        value: default
+    disk:
+      name: storage
+      mountPath: /opt/render/project/src/storage
+      sizeGB: 1
+
+databases:
+  - name: pg-management-db
+    databaseName: pg_management
+    user: pg_management
+    plan: free
+    postgresMajorVersion: 16
