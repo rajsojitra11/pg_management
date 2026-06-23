@@ -1,11 +1,10 @@
 services:
   - type: web
     name: pg-management
-    runtime: php
-    repo: https://github.com/your-username/pg-management
+    runtime: docker
+    repo: https://github.com/rajsojitra11/pg_management
     plan: free
-    buildCommand: composer install --no-dev --optimize-autoloader && npm ci && npm run build && php artisan storage:link
-    startCommand: php artisan serve --host=0.0.0.0 --port=$PORT
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: APP_ENV
         value: production
@@ -24,29 +23,14 @@ services:
         value: pgsql
       - key: DB_HOST
         fromService:
-          type: pgsql
+          type: psql
           name: pg-management-db
           property: host
       - key: DB_PORT
         fromService:
-          type: pgsql
+          type: psql
           name: pg-management-db
           property: port
-      - key: DB_DATABASE
-        fromService:
-          type: pgsql
-          name: pg-management-db
-          property: database
-      - key: DB_USERNAME
-        fromService:
-          type: pgsql
-          name: pg-management-db
-          property: user
-      - key: DB_PASSWORD
-        fromService:
-          type: pgsql
-          name: pg-management-db
-          property: password
       - key: DB_SSLMODE
         value: require
       - key: USE_LOCAL_DB
@@ -67,10 +51,6 @@ services:
         value: 14/A Lohanagar, Nr. Pavagadhi Estate, B/h Passport Office, Gondal road, Rajkot
       - key: INSTALL_TYPE
         value: default
-    disk:
-      name: storage
-      mountPath: /opt/render/project/src/storage
-      sizeGB: 1
 
 databases:
   - name: pg-management-db
