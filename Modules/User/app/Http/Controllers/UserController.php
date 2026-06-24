@@ -185,6 +185,14 @@ class UserController extends Controller
             }
             $result = $userProfile->save();
 
+            // Create hierarchy entry so the parent (e.g., Pg_Admin) can see this user in their tree
+            if ($result && $userProfile->parent_id) {
+                UserHierarchy::create([
+                    'parent_id' => $userProfile->parent_id,
+                    'user_id' => $user->id,
+                ]);
+            }
+
             if ($result) {
                 DB::commit();
 
@@ -430,6 +438,18 @@ class UserController extends Controller
                 $userProfile->profile_photo = $request->file('profile_photo')->store('profile-photos', 'public');
             }
             $result = $userProfile->save();
+
+            // Sync hierarchy entry when parent changes
+            if ($result) {
+                if ($newParentId) {
+                    UserHierarchy::updateOrCreate(
+                        ['user_id' => $user->id],
+                        ['parent_id' => $newParentId]
+                    );
+                } else {
+                    UserHierarchy::where('user_id', $user->id)->delete();
+                }
+            }
 
             if ($result) {
                 DB::commit();
