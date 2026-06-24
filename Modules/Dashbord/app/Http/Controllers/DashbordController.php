@@ -5,6 +5,7 @@ namespace Modules\Dashbord\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Modules\Dashbord\Models\DashboardWidget;
@@ -49,7 +50,7 @@ class DashbordController extends Controller
                     $endMonth = 12;
                     $endMonthYear = $endYear - 1;
                 }
-                $lastDay = cal_days_in_month(CAL_GREGORIAN, $endMonth, $endMonthYear);
+                $lastDay = Carbon::create($endMonthYear, $endMonth)->daysInMonth;
                 $yearEnd = $endMonthYear.'-'.str_pad($endMonth, 2, '0', STR_PAD_LEFT).'-'.str_pad($lastDay, 2, '0', STR_PAD_LEFT);
             }
         }
