@@ -237,9 +237,9 @@
                 message: '{{ __('menumaster::message.confirmDeleteMenuItem') }}',
                 confirmText: '{{ __('menumaster::message.delete') }}',
                 type: 'destructive',
-                onConfirm: function() {
-                    deleteMenuItem(itemId);
-                }
+            }).then(function (confirmed) {
+                if (!confirmed) return;
+                deleteMenuItem(itemId);
             });
         });
 
@@ -348,20 +348,20 @@
             title: '{{ __('menumaster::message.menuToolsNormalizeOrders') }}',
             message: '{{ __('menumaster::message.confirmNormalizeOrders') }}',
             confirmText: '{{ __('menumaster::message.menuToolsNormalizeOrders') }}',
-            onConfirm: function() {
-                $.post('menumasters/normalize-orders', {
-                    _token: $('meta[name="csrf-token"]').attr('content')
-                })
-                .done(function(response) {
-                    if (response.success) {
-                        erpToast({ title: 'Success', message: response.message, type: 'success' });
-                        setTimeout(function() { location.reload(); }, 1000);
-                    }
-                })
-                .fail(function() {
-                    erpToast({ title: 'Error', message: '{{ __('menumaster::message.errorNormalizingOrders') }}', type: 'error' });
-                });
-            }
+        }).then(function (confirmed) {
+            if (!confirmed) return;
+            $.post('menumasters/normalize-orders', {
+                _token: $('meta[name="csrf-token"]').attr('content')
+            })
+            .done(function(response) {
+                if (response.success) {
+                    erpToast({ title: 'Success', message: response.message, type: 'success' });
+                    setTimeout(function() { location.reload(); }, 1000);
+                }
+            })
+            .fail(function() {
+                erpToast({ title: 'Error', message: '{{ __('menumaster::message.errorNormalizingOrders') }}', type: 'error' });
+            });
         });
     }
 
@@ -371,20 +371,20 @@
             message: '{{ __('menumaster::message.confirmRebuildHierarchy') }}',
             confirmText: '{{ __('menumaster::message.menuToolsRebuildHierarchy') }}',
             type: 'destructive',
-            onConfirm: function() {
-                $.post('menumasters/rebuild-hierarchy', {
-                    _token: $('meta[name="csrf-token"]').attr('content')
-                })
-                .done(function(response) {
-                    if (response.success) {
-                        erpToast({ title: 'Success', message: response.message, type: 'success' });
-                        setTimeout(function() { location.reload(); }, 1000);
-                    }
-                })
-                .fail(function() {
-                    erpToast({ title: 'Error', message: '{{ __('menumaster::message.errorRebuildingHierarchy') }}', type: 'error' });
-                });
-            }
+        }).then(function (confirmed) {
+            if (!confirmed) return;
+            $.post('menumasters/rebuild-hierarchy', {
+                _token: $('meta[name="csrf-token"]').attr('content')
+            })
+            .done(function(response) {
+                if (response.success) {
+                    erpToast({ title: 'Success', message: response.message, type: 'success' });
+                    setTimeout(function() { location.reload(); }, 1000);
+                }
+            })
+            .fail(function() {
+                erpToast({ title: 'Error', message: '{{ __('menumaster::message.errorRebuildingHierarchy') }}', type: 'error' });
+            });
         });
     }
 

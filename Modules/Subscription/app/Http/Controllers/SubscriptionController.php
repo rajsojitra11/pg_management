@@ -137,7 +137,11 @@ class SubscriptionController extends Controller
         try {
             $subscription = Subscription::byAnyKey($id)->first();
             if (! is_null($subscription)) {
-                return response()->json(['status_code' => 200, 'message' => 'Edit subscription ', 'result' => $subscription]);
+                $data = $subscription->toArray();
+                $data['start_date'] = $subscription->start_date?->format('Y-m-d');
+                $data['end_date'] = $subscription->end_date?->format('Y-m-d');
+
+                return response()->json(['status_code' => 200, 'message' => 'Edit subscription ', 'result' => $data]);
             } else {
                 return response()->json(['status_code' => 404, 'message' => 'Subscription not found.']);
             }

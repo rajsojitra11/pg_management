@@ -87,9 +87,9 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="owner_id">
-                                    {{ __('pgmanagement::message.owner') }}
+                                    {{ __('pgmanagement::message.owner') }}<span class="text-red-500"> *</span>
                                 </label>
-                                <select name="owner_id" id="owner_id" style="width:100%;">
+                                <select name="owner_id" id="owner_id" style="width:100%;" required>
                                     <option value="">{{ __('message.common.select') }}</option>
                                     @foreach ($pgAdminUsers as $user)
                                     <option value="{{ $user->id }}">{{ $user->email }}</option>
@@ -102,9 +102,9 @@
                         <div class="grid grid-cols-3 gap-3">
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="mobile_no">
-                                    {{ __('pgmanagement::message.mobile_no') }}
+                                    {{ __('pgmanagement::message.mobile_no') }}<span class="text-red-500"> *</span>
                                 </label>
-                                <input type="text"
+                                <input type="text" required
                                        class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
                                        name="mobile_no" id="mobile_no"
                                        placeholder="{{ __('pgmanagement::message.enter_mobile_no') }}">
@@ -112,9 +112,9 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="total_block">
-                                    {{ __('pgmanagement::message.total_block') }}
+                                    {{ __('pgmanagement::message.total_block') }}<span class="text-red-500"> *</span>
                                 </label>
-                                <input type="number" min="0"
+                                <input type="number" min="0" required
                                        class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
                                        name="total_block" id="total_block"
                                        placeholder="{{ __('pgmanagement::message.enter_total_block') }}">
@@ -122,9 +122,9 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="total_room">
-                                    {{ __('pgmanagement::message.total_room') }}
+                                    {{ __('pgmanagement::message.total_room') }}<span class="text-red-500"> *</span>
                                 </label>
-                                <input type="number" min="0"
+                                <input type="number" min="0" required
                                        class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
                                        name="total_room" id="total_room"
                                        placeholder="{{ __('pgmanagement::message.enter_total_room') }}">
@@ -135,9 +135,9 @@
                         <div class="grid grid-cols-3 gap-3">
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="country_id">
-                                    {{ __('pgmanagement::message.country') }}
+                                    {{ __('pgmanagement::message.country') }}<span class="text-red-500"> *</span>
                                 </label>
-                                <select name="country_id" id="country_id"
+                                <select name="country_id" id="country_id" required
                                         data-fresh-prefetch="{{ route('lookup.countries') }}"
                                         data-placeholder="— Select —"
                                         class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm">
@@ -147,9 +147,9 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="state_id">
-                                    {{ __('pgmanagement::message.state') }}
+                                    {{ __('pgmanagement::message.state') }}<span class="text-red-500"> *</span>
                                 </label>
-                                <select name="state_id" id="state_id"
+                                <select name="state_id" id="state_id" required
                                         data-placeholder="— Select —"
                                         class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm">
                                     <option value=""></option>
@@ -158,9 +158,9 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="city_id">
-                                    {{ __('pgmanagement::message.city') }}
+                                    {{ __('pgmanagement::message.city') }}<span class="text-red-500"> *</span>
                                 </label>
-                                <select name="city_id" id="city_id"
+                                <select name="city_id" id="city_id" required
                                         data-placeholder="— Select —"
                                         class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm">
                                     <option value=""></option>
@@ -172,9 +172,9 @@
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="pincode">
-                                    {{ __('pgmanagement::message.pincode') }}
+                                    {{ __('pgmanagement::message.pincode') }}<span class="text-red-500"> *</span>
                                 </label>
-                                <input type="text"
+                                <input type="text" required
                                        class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
                                        name="pincode" id="pincode"
                                        placeholder="{{ __('pgmanagement::message.enter_pincode') }}">
@@ -182,9 +182,9 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="status">
-                                    {{ __('message.common.status') }}
+                                    {{ __('message.common.status') }}<span class="text-red-500"> *</span>
                                 </label>
-                                <select name="status" id="status"
+                                <select name="status" id="status" required
                                         class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500">
                                     <option value="active">{{ __('message.common.active') }}</option>
                                     <option value="inactive">{{ __('message.common.inactive') }}</option>
@@ -194,10 +194,10 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-zinc-700 mb-1" for="address">
-                                {{ __('pgmanagement::message.address') }}
-                            </label>
-                            <textarea
+                                <label class="block text-sm font-medium text-zinc-700 mb-1" for="address">
+                                    {{ __('pgmanagement::message.address') }}<span class="text-red-500"> *</span>
+                                </label>
+                                <textarea required
                                    class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
                                    name="address" id="address" rows="3"
                                    placeholder="{{ __('pgmanagement::message.enter_address') }}"></textarea>

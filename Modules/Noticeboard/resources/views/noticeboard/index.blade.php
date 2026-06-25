@@ -442,40 +442,45 @@
                     $("#title").val(response.result.title);
                     $("#status").val(response.result.status);
                     $("#id").val(id);
+                    if (pgSelectInst && typeof pgSelectInst.setValue === 'function') {
+                        pgSelectInst.setValue(response.result.pg_id || '');
+                    } else {
+                        $("#pg_id").val(response.result.pg_id);
+                    }
                     if (response.result.description) {
                         $('input[name="notice_type"][value="text"]').prop('checked', true);
                         $('#notice_image_field').addClass('hidden');
                         $('#notice_text_field').removeClass('hidden');
-                        initSummernote();
-                        if (summernoteInst && typeof $('#summernote').summernote === 'function') {
-                            $('#summernote').summernote('code', response.result.description);
-                        }
                         $('#description').val(response.result.description);
                     } else {
                         $('input[name="notice_type"][value="image"]').prop('checked', true);
                         $('#notice_image_field').removeClass('hidden');
                         $('#notice_text_field').addClass('hidden');
-                        if (summernoteInst && typeof $('#summernote').summernote === 'function') {
-                            $('#summernote').summernote('destroy');
-                            summernoteInst = false;
-                        }
                     }
                     if (response.result.image) {
                         var imgUrl = "{{ Storage::url('') }}" + response.result.image;
                         $('#image_preview img').attr('src', imgUrl);
                         $('#image_preview').removeClass('hidden');
                     }
-                    if (pgSelectInst && typeof pgSelectInst.setValue === 'function') {
-                        pgSelectInst.setValue(response.result.pg_id || '');
-                    } else {
-                        $("#pg_id").val(response.result.pg_id);
-                    }
                     $('#inlineModal').removeClass('hidden');
+                    if (response.result.description) {
+                        initSummernote();
+                        if (summernoteInst && typeof $('#summernote').summernote === 'function') {
+                            $('#summernote').summernote('code', response.result.description);
+                        }
+                    }
                 } else if (response.status_code == 201 || response.status_code == 404) {
                     toastr.warning(response.message, "Warning");
                 } else {
                     toastr.error(response.message, "Error");
                 }
+            },
+            error: function(xhr) {
+                var msg = 'Something went wrong. Please try again.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    msg = xhr.responseJSON.message;
+                }
+                toastr.error(msg, "Error");
             }
         });
     });

@@ -146,6 +146,7 @@ return [
     'enter_valid_number' => 'Enter valid number',
     'enter_valid_mobile' => 'Enter valid 10-15 digit mobile number',
     'enter_valid_email' => 'Enter valid email address',
+    'email_unique' => 'This email is already registered. Please use a different email address.',
     'enter_address' => 'Enter address',
     'enter_10_digits' => 'Enter at least 10 digits',
     'enter_current_password' => 'Enter current password',

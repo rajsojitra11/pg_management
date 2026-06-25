@@ -42,11 +42,7 @@ class StoreServiceRequest extends FormRequest
 
     public function attributes(): array
     {
-        return [
-            'service_category_id' => __('service::message.category'),
-            'service_name' => __('service::message.service_name'),
-            'services.*.service_name' => __('service::message.service_name'),
-        ];
+        return [];
     }
 
     public function messages(): array

@@ -23,7 +23,7 @@ class StoreUserRequest extends FormRequest
         return [
             'name_prefix' => 'nullable|string|max:20',
             'firstname' => 'required|string|max:255',
-            'lastname' => 'required|string|max:255',
+            'lastname' => 'nullable|string|max:255',
             'email' => [
                 'nullable',
                 'email',
@@ -48,7 +48,7 @@ class StoreUserRequest extends FormRequest
             ],
             'password' => 'required_with:confirm_password|min:8|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[@$!%*#?&]/',
             'confirm_password' => 'required|same:password',
-            'parent_id' => 'nullable|integer|exists:users,id',
+            'parent_id' => 'required|integer|exists:users,id',
             'roles' => 'required|array',
             'state_id' => 'nullable|integer|exists:states,id',
             'city_id' => 'nullable|integer|exists:cities,id',
@@ -65,6 +65,7 @@ class StoreUserRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'email.unique' => __('user::message.email_unique'),
             'mobile.required' => __('user::message.enter_mobile'),
             'mobile.numeric' => __('user::message.enter_mobile'),
             'mobile.digits' => __('user::message.enter_10_digits'),
@@ -72,6 +73,7 @@ class StoreUserRequest extends FormRequest
             'username.regex' => __('user::message.username_no_spaces'),
             'password.min' => __('user::message.enter_password_min'),
             'password.regex' => __('user::message.enter_password_regex'),
+            'parent_id.required' => __('user::message.select_parent_user'),
             'parent_id.integer' => __('user::message.select_parent_user'),
             'roles.required' => __('user::message.select_role'),
         ];

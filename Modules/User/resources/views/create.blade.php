@@ -176,8 +176,8 @@
             {{-- Row 4: Parent User | Role | Status --}}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
                 <div>
-                    <label class="block text-sm font-medium text-zinc-700 mb-1.5">{{ __('user::message.parent_user') }}</label>
-                    <select name="parent_id" id="parent_id"
+                    <label class="block text-sm font-medium text-zinc-700 mb-1.5">{{ __('user::message.parent_user') }} <span class="text-red-500">*</span></label>
+                    <select name="parent_id" id="parent_id" required
                             class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2">
                         <option value="">{{ __('message.common.select') }}</option>
                         @foreach ($parentUsers as $pu)

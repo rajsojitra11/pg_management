@@ -322,20 +322,20 @@ function duplicateMenu() {
         title: '{{ __('menumaster::message.menu_item_duplicate') }}',
         message: '{{ __('menumaster::message.confirm_duplicate') }}',
         confirmText: '{{ __('menumaster::message.duplicate') }}',
-        onConfirm: function() {
-            $.post('{{ route('menumasters.duplicate', $menuMaster) }}', {
-                _token: '{{ csrf_token() }}'
-            })
-            .done(function(response) {
-                if (response.success) {
-                    erpToast({ title: 'Success', message: response.message, type: 'success' });
-                    window.location.href = '{{ route('menumasters.index') }}';
-                }
-            })
-            .fail(function() {
-                erpToast({ title: 'Error', message: '{{ __('menumaster::message.error_duplicating') }}', type: 'error' });
-            });
-        }
+    }).then(function (confirmed) {
+        if (!confirmed) return;
+        $.post('{{ route('menumasters.duplicate', $menuMaster) }}', {
+            _token: '{{ csrf_token() }}'
+        })
+        .done(function(response) {
+            if (response.success) {
+                erpToast({ title: 'Success', message: response.message, type: 'success' });
+                window.location.href = '{{ route('menumasters.index') }}';
+            }
+        })
+        .fail(function() {
+            erpToast({ title: 'Error', message: '{{ __('menumaster::message.error_duplicating') }}', type: 'error' });
+        });
     });
 }
 
@@ -350,18 +350,19 @@ function deleteMenu() {
         message: confirmMessage,
         confirmText: '{{ __('menumaster::message.delete') }}',
         type: 'destructive',
-        onConfirm: function() {
-            $.ajax({
-                url: '{{ route('menumasters.destroy', $menuMaster) }}',
-                method: 'DELETE',
-                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
-            })
-            .done(function(response) {
-                if (response.success) {
-                    erpToast({ title: 'Success', message: response.message, type: 'success' });
-                    window.location.href = '{{ route('menumasters.index') }}';
-                }
-            })
+    }).then(function (confirmed) {
+        if (!confirmed) return;
+        $.ajax({
+            url: '{{ route('menumasters.destroy', $menuMaster) }}',
+            method: 'DELETE',
+            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+        })
+        .done(function(response) {
+            if (response.success) {
+                erpToast({ title: 'Success', message: response.message, type: 'success' });
+                window.location.href = '{{ route('menumasters.index') }}';
+            }
+        })
             .fail(function() {
                 erpToast({ title: 'Error', message: '{{ __('menumaster::message.error_deleting') }}', type: 'error' });
             });

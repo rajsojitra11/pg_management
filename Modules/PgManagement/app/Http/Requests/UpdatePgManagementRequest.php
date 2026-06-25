@@ -24,16 +24,16 @@ class UpdatePgManagementRequest extends FormRequest
                 'max:255',
                 Rule::unique('pg_management')->ignore($id)->whereNull('deleted_at'),
             ],
-            'owner_id' => ['nullable', 'exists:users,id'],
-            'mobile_no' => ['nullable', 'string', 'max:20'],
-            'total_block' => ['nullable', 'integer', 'min:0'],
-            'total_room' => ['nullable', 'integer', 'min:0'],
-            'country_id' => ['nullable', 'exists:countries,id'],
-            'state_id' => ['nullable', 'exists:states,id'],
-            'city_id' => ['nullable', 'exists:cities,id'],
-            'pincode' => ['nullable', 'string', 'max:10'],
-            'address' => ['nullable', 'string'],
-            'status' => ['nullable', 'string', 'in:active,inactive'],
+            'owner_id' => ['required', 'exists:users,id'],
+            'mobile_no' => ['required', 'string', 'max:20'],
+            'total_block' => ['required', 'integer', 'min:0'],
+            'total_room' => ['required', 'integer', 'min:0'],
+            'country_id' => ['required', 'exists:countries,id'],
+            'state_id' => ['required', 'exists:states,id'],
+            'city_id' => ['required', 'exists:cities,id'],
+            'pincode' => ['required', 'string', 'max:10'],
+            'address' => ['required', 'string'],
+            'status' => ['required', 'string', 'in:active,inactive'],
         ];
     }
 
@@ -58,7 +58,17 @@ class UpdatePgManagementRequest extends FormRequest
         return [
             'pg_name.required' => __('pgmanagement::message.enter_pg_name'),
             'pg_name.unique' => __('pgmanagement::message.enter_unique_pg_name'),
+            'owner_id.required' => __('pgmanagement::message.enter_owner'),
             'owner_id.exists' => __('pgmanagement::message.enter_valid_owner'),
+            'mobile_no.required' => __('pgmanagement::message.enter_mobile_no'),
+            'total_block.required' => __('pgmanagement::message.enter_total_block'),
+            'total_room.required' => __('pgmanagement::message.enter_total_room'),
+            'country_id.required' => __('pgmanagement::message.enter_country'),
+            'state_id.required' => __('pgmanagement::message.enter_state'),
+            'city_id.required' => __('pgmanagement::message.enter_city'),
+            'pincode.required' => __('pgmanagement::message.enter_pincode'),
+            'address.required' => __('pgmanagement::message.enter_address'),
+            'status.required' => __('pgmanagement::message.enter_status'),
         ];
     }
 }

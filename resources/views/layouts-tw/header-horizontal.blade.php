@@ -216,10 +216,12 @@
                         class="flex items-center gap-2 px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-50">
                         <i class="fa-solid fa-key text-zinc-400 w-4"></i> {{ __('user::message.change_password') }}
                     </a>
-                    <a href="{{ route('menumasters.index') }}"
-                        class="flex items-center gap-2 px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-50">
-                        <i class="fa-solid fa-bars text-zinc-400 w-4"></i> {{ __('menumaster::message.add') }}
-                    </a>
+                    @can('menu-master-list')
+                        <a href="{{ route('menumasters.index') }}"
+                            class="flex items-center gap-2 px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-50">
+                            <i class="fa-solid fa-bars text-zinc-400 w-4"></i> {{ __('menumaster::message.add') }}
+                        </a>
+                    @endcan
                 @endcan
                 <div class="border-t border-zinc-100 my-1"></div>
                 <a href="javascript:void(0);" onclick="$('#globalLogoutModal').removeClass('hidden')"

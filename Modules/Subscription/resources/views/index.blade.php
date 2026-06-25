@@ -104,9 +104,9 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="email">
-                                    {{ __('subscription::message.email') }}
+                                    {{ __('subscription::message.email') }}<span class="text-red-500"> *</span>
                                 </label>
-                                <select name="email" id="email" style="width:100%;">
+                                <select name="email" id="email" style="width:100%;" required>
                                     <option value="">{{ __('message.common.select') }}</option>
                                     @foreach ($pgAdminUsers as $user)
                                     <option value="{{ $user->email }}">{{ $user->email }}</option>
@@ -118,9 +118,9 @@
 
                         <div>
                             <label class="block text-sm font-medium text-zinc-700 mb-1" for="phone">
-                                {{ __('subscription::message.phone') }}
+                                {{ __('subscription::message.phone') }}<span class="text-red-500"> *</span>
                             </label>
-                            <input type="text"
+                            <input type="text" required
                                    class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
                                    name="phone" id="phone"
                                    placeholder="{{ __('subscription::message.enter_phone') }}">
@@ -130,9 +130,9 @@
                         <div class="grid grid-cols-3 gap-3">
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="plan_type">
-                                    {{ __('subscription::message.plan_type') }}
+                                    {{ __('subscription::message.plan_type') }}<span class="text-red-500"> *</span>
                                 </label>
-                                <select
+                                <select required
                                        class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
                                        name="plan_type" id="plan_type">
                                     <option value="">{{ __('message.common.select') }}</option>
@@ -144,18 +144,18 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="start_date">
-                                    {{ __('subscription::message.start_date') }}
+                                    {{ __('subscription::message.start_date') }}<span class="text-red-500"> *</span>
                                 </label>
-                                <input type="date"
+                                <input type="date" required
                                        class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
                                        name="start_date" id="start_date">
                                 <div class="mt-1 text-sm text-red-500" id="error_start_date"></div>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="end_date">
-                                    {{ __('subscription::message.end_date') }}
+                                    {{ __('subscription::message.end_date') }}<span class="text-red-500"> *</span>
                                 </label>
-                                <input type="date"
+                                <input type="date" required
                                        class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
                                        name="end_date" id="end_date">
                                 <div class="mt-1 text-sm text-red-500" id="error_end_date"></div>
@@ -165,9 +165,9 @@
                         <div class="grid grid-cols-3 gap-3">
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="status">
-                                    {{ __('subscription::message.status') }}
+                                    {{ __('subscription::message.status') }}<span class="text-red-500"> *</span>
                                 </label>
-                                <select
+                                <select required
                                        class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
                                        name="status" id="status">
                                     <option value="active">Active</option>
@@ -179,9 +179,9 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="amount">
-                                    {{ __('subscription::message.amount') }}
+                                    {{ __('subscription::message.amount') }}<span class="text-red-500"> *</span>
                                 </label>
-                                <input type="number" step="0.01" min="0"
+                                <input type="number" step="0.01" min="0" required
                                        class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
                                        name="amount" id="amount"
                                        placeholder="{{ __('subscription::message.enter_amount') }}">
@@ -189,9 +189,9 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="payment_status">
-                                    {{ __('subscription::message.payment_status') }}
+                                    {{ __('subscription::message.payment_status') }}<span class="text-red-500"> *</span>
                                 </label>
-                                <select
+                                <select required
                                        class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
                                        name="payment_status" id="payment_status">
                                     <option value="paid">Paid</option>

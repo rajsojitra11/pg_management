@@ -151,19 +151,19 @@ function syncToEnvFile() {
         title: '{{ __('lang.labels.env_variable.sync_with_env') }}',
         message: '{{ __('lang.common.confirm_sync_env') }}',
         confirmText: '{{ __('lang.labels.env_variable.sync_with_env') }}',
-        onConfirm: function() {
-            $.post('{{ route('env-variable.sync-to-env') }}', {
-                _token: '{{ csrf_token() }}'
-            }).done(function(response) {
-                if (response.status_code === 200) {
-                    erpToast({ title: 'Success', message: response.message, type: 'success' });
-                } else {
-                    erpToast({ title: 'Error', message: response.message, type: 'error' });
-                }
-            }).fail(function() {
-                erpToast({ title: 'Error', message: '{{ __('lang.common.something_went_wrong') }}', type: 'error' });
-            });
-        }
+    }).then(function (confirmed) {
+        if (!confirmed) return;
+        $.post('{{ route('env-variable.sync-to-env') }}', {
+            _token: '{{ csrf_token() }}'
+        }).done(function(response) {
+            if (response.status_code === 200) {
+                erpToast({ title: 'Success', message: response.message, type: 'success' });
+            } else {
+                erpToast({ title: 'Error', message: response.message, type: 'error' });
+            }
+        }).fail(function() {
+            erpToast({ title: 'Error', message: '{{ __('lang.common.something_went_wrong') }}', type: 'error' });
+        });
     });
 }
 
@@ -173,19 +173,19 @@ function clearCache() {
         message: '{{ __('lang.common.confirm_clear_cache') }}',
         confirmText: '{{ __('lang.labels.env_variable.clear_cache') }}',
         type: 'destructive',
-        onConfirm: function() {
-            $.post('{{ route('env-variable.clear-cache') }}', {
-                _token: '{{ csrf_token() }}'
-            }).done(function(response) {
-                if (response.status_code === 200) {
-                    erpToast({ title: 'Success', message: response.message, type: 'success' });
-                } else {
-                    erpToast({ title: 'Error', message: response.message, type: 'error' });
-                }
-            }).fail(function() {
-                erpToast({ title: 'Error', message: '{{ __('lang.common.something_went_wrong') }}', type: 'error' });
-            });
-        }
+    }).then(function (confirmed) {
+        if (!confirmed) return;
+        $.post('{{ route('env-variable.clear-cache') }}', {
+            _token: '{{ csrf_token() }}'
+        }).done(function(response) {
+            if (response.status_code === 200) {
+                erpToast({ title: 'Success', message: response.message, type: 'success' });
+            } else {
+                erpToast({ title: 'Error', message: response.message, type: 'error' });
+            }
+        }).fail(function() {
+            erpToast({ title: 'Error', message: '{{ __('lang.common.something_went_wrong') }}', type: 'error' });
+        });
     });
 }
 
@@ -194,19 +194,19 @@ function composerDump() {
         title: '{{ __('lang.labels.env_variable.composer_dump') }}',
         message: '{{ __('lang.common.confirm_composer_dump') }}',
         confirmText: '{{ __('lang.labels.env_variable.composer_dump') }}',
-        onConfirm: function() {
-            $.post('{{ route('env-variable.composer-dump') }}', {
-                _token: '{{ csrf_token() }}'
-            }).done(function(response) {
-                if (response.status_code === 200) {
-                    erpToast({ title: 'Success', message: response.message, type: 'success' });
-                } else {
-                    erpToast({ title: 'Error', message: response.message, type: 'error' });
-                }
-            }).fail(function() {
-                erpToast({ title: 'Error', message: '{{ __('lang.common.something_went_wrong') }}', type: 'error' });
-            });
-        }
+    }).then(function (confirmed) {
+        if (!confirmed) return;
+        $.post('{{ route('env-variable.composer-dump') }}', {
+            _token: '{{ csrf_token() }}'
+        }).done(function(response) {
+            if (response.status_code === 200) {
+                erpToast({ title: 'Success', message: response.message, type: 'success' });
+            } else {
+                erpToast({ title: 'Error', message: response.message, type: 'error' });
+            }
+        }).fail(function() {
+            erpToast({ title: 'Error', message: '{{ __('lang.common.something_went_wrong') }}', type: 'error' });
+        });
     });
 }
 </script>

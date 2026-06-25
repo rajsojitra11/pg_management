@@ -20,7 +20,7 @@ class UpdateUserRequest extends FormRequest
         return [
             'name_prefix' => 'nullable|string|max:20',
             'firstname' => 'required|string|max:255',
-            'lastname' => 'required|string|max:255',
+            'lastname' => 'nullable|string|max:255',
             'email' => [
                 'nullable',
                 'email',

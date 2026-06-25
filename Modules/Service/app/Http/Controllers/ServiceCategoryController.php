@@ -31,7 +31,7 @@ class ServiceCategoryController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $flag = true;
-                    $show = 'service-category-show';
+                    $show = '';
                     $edit = $flag ? 'service-category-edit' : '';
                     $delete = $flag ? 'service-category-delete' : '';
                     $showURL = '';
