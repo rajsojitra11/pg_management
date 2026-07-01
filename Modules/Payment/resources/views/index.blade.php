@@ -17,26 +17,42 @@
     </div>
 </div>
 
+{{-- Tab Navigation --}}
+<div class="mb-4 border-b border-zinc-200">
+    <nav class="flex gap-1 -mb-px" id="paymentTabs">
+        <button type="button" class="tab-link px-4 py-2.5 text-sm font-medium border-b-2 transition-colors"
+                data-tab="all">
+            {{ __('payment::message.tab_all') }}
+        </button>
+        <button type="button" class="tab-link px-4 py-2.5 text-sm font-medium border-b-2 transition-colors"
+                data-tab="verified">
+            {{ __('payment::message.tab_verified') }}
+        </button>
+        <button type="button" class="tab-link px-4 py-2.5 text-sm font-medium border-b-2 transition-colors"
+                data-tab="pending">
+            {{ __('payment::message.tab_pending_verification') }}
+        </button>
+        <button type="button" class="tab-link px-4 py-2.5 text-sm font-medium border-b-2 transition-colors"
+                data-tab="overdue">
+            {{ __('payment::message.tab_pending_payment') }}
+        </button>
+    </nav>
+</div>
+
+<div id="paymentSection">
 {{-- Filter Bar --}}
 <form id="filter_form" class="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm mb-4" onsubmit="return false;">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 lg:items-end">
-        <div class="lg:col-span-4">
+        <div class="lg:col-span-7">
             <label class="block text-xs font-medium text-zinc-500 mb-1">{{ __('message.common.search') }}</label>
             <div class="flex h-9 rounded-md border border-zinc-200 bg-white focus-within:ring-2 focus-within:ring-zinc-900 focus-within:ring-offset-2 overflow-hidden">
                 <span class="inline-flex items-center px-3 bg-zinc-50 border-r border-zinc-200 text-zinc-400 text-xs"><i class="fa-solid fa-magnifying-glass"></i></span>
                 <input type="text" id="filterSearch" name="filter_search" placeholder="{{ __('payment::message.search_placeholder') }}" class="flex-1 min-w-0 bg-transparent px-3 text-sm text-zinc-700 placeholder:text-zinc-400 focus:outline-none">
             <input type="hidden" id="filterTenantId" name="filter_tenant_id" value="{{ request('filter_tenant_id') }}">
+            <input type="hidden" id="filterVerified" name="filter_verified" value="{{ request('filter_verified') }}">
             </div>
         </div>
-        <div class="lg:col-span-3">
-            <label class="block text-xs font-medium text-zinc-500 mb-1">{{ __('payment::message.verified') }}</label>
-            <select id="filterVerified" name="filter_verified" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-700 focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500">
-                <option value="">{{ __('message.common.select') }}</option>
-                <option value="pending">{{ __('payment::message.verified_pending') }}</option>
-                <option value="verified">{{ __('payment::message.verified_done') }}</option>
-            </select>
-        </div>
-        <div class="lg:col-span-5 flex items-center gap-2 justify-end lg:col-start-8">
+        <div class="lg:col-span-5 flex items-center gap-2 justify-end">
             <button type="button" class="search h-9 px-4 rounded-md bg-zinc-900 text-white text-sm font-medium hover:bg-zinc-800">{{ __('payment::message.apply') }}</button>
             <button type="button" class="reset h-9 px-3 rounded-md border border-zinc-200 bg-white text-sm text-zinc-500 hover:bg-zinc-50">{{ __('payment::message.reset') }}</button>
         </div>
@@ -62,6 +78,30 @@
             </thead>
             <tbody></tbody>
         </table>
+    </div>
+</div>
+</div>
+
+{{-- Pending Payment Section --}}
+<div id="pendingSection" class="hidden">
+    <div class="rounded-lg border border-zinc-200 bg-white shadow-sm">
+        <div class="p-4 overflow-x-auto">
+            <table id="pendingTable" class="display responsive nowrap w-full">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>{{ __('payment::message.tenant') }}</th>
+                        <th>{{ __('payment::message.pg') }}</th>
+                        <th>{{ __('payment::message.room_no') }}</th>
+                        <th>{{ __('tenant::message.checkin_date') }}</th>
+                        <th>{{ __('payment::message.monthly_rent') }}</th>
+                        <th>{{ __('payment::message.days_elapsed') }}</th>
+                        <th>{{ __('message.common.action') }}</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -142,6 +182,78 @@
     window.URL_ROUTE = "{{ route('payment.index') }}";
 
     var table = '';
+    var pendingTable = '';
+
+    function getUrlParam(name) {
+        var params = new URLSearchParams(window.location.search);
+        return params.get(name);
+    }
+
+    function setUrlParam(name, value) {
+        var url = new URL(window.location.href);
+        if (value) {
+            url.searchParams.set(name, value);
+        } else {
+            url.searchParams.delete(name);
+        }
+        window.history.replaceState({}, '', url);
+    }
+
+    function switchTab(tab) {
+        setUrlParam('tab', tab !== 'all' ? tab : '');
+
+        $('#paymentTabs .tab-link').removeClass('border-zinc-900 text-zinc-900').addClass('border-transparent text-zinc-500 hover:text-zinc-700 hover:border-zinc-300');
+        $('#paymentTabs .tab-link[data-tab="' + tab + '"]').removeClass('border-transparent text-zinc-500 hover:text-zinc-700 hover:border-zinc-300').addClass('border-zinc-900 text-zinc-900');
+
+        if (tab === 'overdue') {
+            $('#paymentSection').addClass('hidden');
+            $('#pendingSection').removeClass('hidden');
+            if (!pendingTable || !$.fn.DataTable.isDataTable('#pendingTable')) {
+                initPendingTable();
+            }
+        } else {
+            $('#paymentSection').removeClass('hidden');
+            $('#pendingSection').addClass('hidden');
+
+            if (tab === 'verified') {
+                $('#filterVerified').val('verified');
+            } else if (tab === 'pending') {
+                $('#filterVerified').val('pending');
+            } else {
+                $('#filterVerified').val('');
+            }
+
+            if (table && $.fn.DataTable.isDataTable('#table')) {
+                table.ajax.reload();
+            }
+        }
+    }
+
+    function initPendingTable() {
+        pendingTable = initErpTable('#pendingTable', {
+            ajax: {
+                url: '{{ route("payment.pending.data") }}',
+            },
+            processing: true,
+            serverSide: true,
+            scrollX: true,
+            aLengthMenu: [
+                [15, 30, 50, 100, -1],
+                [15, 30, 50, 100, "All"]
+            ],
+            order: [[0, 'desc']],
+            columns: [
+                { data: 'id', render: function(data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; }, orderable: false, width: '50px' },
+                { data: 'name', name: 'name' },
+                { data: 'pg_name', name: 'pg_name', orderable: false, searchable: false },
+                { data: 'room_no', name: 'room_no', orderable: false, searchable: false },
+                { data: 'checkin_date', name: 'checkin_date', render: function(data) { return window.erpDate ? window.erpDate(data) : (data || '-'); } },
+                { data: 'monthly_rent', name: 'monthly_rent', render: function(data) { return data ? '₹' + parseFloat(data).toFixed(2) : '-'; } },
+                { data: 'days_elapsed', name: 'days_elapsed', orderable: false, searchable: false },
+                { data: 'action', name: 'action', orderable: false, sortable: false, width: '160px' }
+            ]
+        });
+    }
 
     $(function() {
         table = initErpTable('#table', {
@@ -172,6 +284,14 @@
                 { data: 'verified', name: 'verified' },
                 { data: 'action', name: 'action', orderable: false, sortable: false, width: '160px' }
             ]
+        });
+
+        var initialTab = getUrlParam('tab') || 'all';
+        switchTab(initialTab);
+
+        $(document).on('click', '#paymentTabs .tab-link', function() {
+            var tab = $(this).data('tab');
+            switchTab(tab);
         });
 
         $(document).on('click', '#filter_form .search', function() {

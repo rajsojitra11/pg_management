@@ -259,3 +259,52 @@ tests/               Pest feature and unit tests
  php artisan make:export RawmaterialExport --model=Modules\Rawmaterial\Entities\Rawmaterial
 
  php artisan module:make-with-model SalesQuotation
+
+
+ ## **🏗️ MODULE ARCHITECTURE REQUIREMENTS**
+
+### **📁 Mandatory Directory Structure**
+
+```
+Modules/{ModuleName}/
+├── app/
+│   ├── Helpers/
+│   │   └── {ModuleName}Helper.php (MANDATORY - Module utilities)
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   └── {ModuleName}Controller.php
+│   │   └── Requests/
+│   │       ├── Store{ModuleName}Request.php
+│   │       └── Update{ModuleName}Request.php
+│   ├── Models/
+│   │   └── {ModuleName}.php
+│   ├── Providers/
+│   │   └── {ModuleName}ServiceProvider.php
+│   └── Traits/ (optional - for module-specific logging)
+│       └── Logs{ModuleName}Activity.php
+├── database/
+│   ├── migrations/
+│   │   └── {timestamp}_create_{table_name}_table.php
+│   ├── factories/
+│   │   └── {ModuleName}Factory.php
+│   └── seeders/
+│       ├── {ModuleName}DatabaseSeeder.php
+│       └── {ModuleName}PermissionSeeder.php (MANDATORY - Module permissions)
+├── lang/
+│   └── en/
+│       └── message.php          (Language translations)
+├── resources/
+│   └── views/
+│       ├── index.blade.php      (List view)
+│       ├── create.blade.php     (Create form)
+│       ├── edit.blade.php       (Edit form)
+│       └── show.blade.php       (Detail view)
+├── routes/
+│   └── web.php
+├── tests/
+│   └── Feature/
+│       └── {ModuleName}ControllerTest.php
+├── composer.json
+├── module.json
+├── package.json
+└── vite.config.js

@@ -44,6 +44,14 @@ return [
     'enter_remarks' => 'Enter Remarks',
     'search_placeholder' => 'Search by tenant, amount, reference...',
 
+    // Tabs
+    'tab_verified' => 'Verified Payment',
+    'tab_pending_verification' => 'Pending Verification',
+    'tab_pending_payment' => 'Pending Payment',
+    'tab_all' => 'All Payments',
+    'days_elapsed' => 'Days Elapsed',
+    'monthly_rent' => 'Monthly Rent',
+
     // Actions
     'apply' => 'Apply',
     'reset' => 'Reset',

@@ -9,6 +9,7 @@ use Modules\Payment\Http\Requests\DeletePaymentRequest;
 use Modules\Payment\Http\Requests\StorePaymentRequest;
 use Modules\Payment\Http\Requests\UpdatePaymentRequest;
 use Modules\Payment\Models\Payment;
+use Modules\Tenant\Models\Tenant;
 use Yajra\DataTables\Facades\DataTables;
 
 class PaymentController extends Controller
@@ -197,6 +198,52 @@ class PaymentController extends Controller
         } catch (Exception $e) {
             return response()->json(['status_code' => 500, 'message' => 'Something went wrong. Please try again.']);
         }
+    }
+
+    public function pendingPaymentsData()
+    {
+        if (! request()->ajax()) {
+            abort(404);
+        }
+
+        $user = auth()->user();
+
+        $billingRaw = 'DATE_ADD(tenants.checkin_date, INTERVAL TIMESTAMPDIFF(MONTH, tenants.checkin_date, CURDATE()) MONTH)';
+
+        $query = Tenant::with('pg:id,public_id,pg_name', 'room:id,public_id,room_no')
+            ->select('id', 'public_id', 'name', 'pg_id', 'room_id', 'checkin_date', 'monthly_rent')
+            ->whereNotNull('checkin_date')
+            ->where('checkin_date', '<=', now()->subMonth())
+            ->whereRaw("NOT EXISTS (
+                SELECT 1 FROM payments
+                WHERE payments.tenant_id = tenants.id
+                AND payments.payment_date >= {$billingRaw}
+            )");
+
+        if ($user->hasRole('Pg_Admin')) {
+            $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
+        }
+
+        return DataTables::of($query)
+            ->addIndexColumn()
+            ->addColumn('pg_name', function ($row) {
+                return $row->pg?->pg_name ?? '—';
+            })
+            ->addColumn('room_no', function ($row) {
+                return $row->room?->room_no ?? '—';
+            })
+            ->addColumn('days_elapsed', function ($row) {
+                return $row->checkin_date ? $row->checkin_date->diffInDays(now()).' days' : '—';
+            })
+            ->addColumn('action', function ($row) {
+                $createUrl = route('payment.create');
+
+                return '<a href="'.$createUrl.'" class="py-1.5 px-2.5 rounded-md bg-emerald-50 text-emerald-700 text-xs font-medium hover:bg-emerald-100 whitespace-nowrap inline-flex items-center">
+                    <i class="fa-solid fa-plus mr-1 text-[10px]"></i>Make Payment
+                </a>';
+            })
+            ->escapeColumns([])
+            ->make(true);
     }
 
     public function destroy(DeletePaymentRequest $request, $id)
