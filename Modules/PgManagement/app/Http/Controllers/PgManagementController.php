@@ -27,7 +27,7 @@ class PgManagementController extends Controller
     {
         if (request()->ajax()) {
             $user = auth()->user();
-            $query = PgManagement::select('id', 'public_id', 'pg_name', 'owner_id', 'mobile_no', 'total_block', 'total_room', 'country_id', 'state_id', 'city_id', 'pincode', 'address', 'status');
+            $query = PgManagement::with('owner')->select('id', 'public_id', 'pg_name', 'owner_id', 'mobile_no', 'total_block', 'total_room', 'country_id', 'state_id', 'city_id', 'pincode', 'address', 'status');
 
             if ($user->hasRole('Pg_Admin')) {
                 $query->where('owner_id', $user->id);
