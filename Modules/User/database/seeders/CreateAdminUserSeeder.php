@@ -69,21 +69,8 @@ class CreateAdminUserSeeder extends Seeder
             $this->logSeederOperation("Assigned Super_Admin role to user: {$superAdminUser->name}", User::class, $superAdminRole);
         }
 
-        // ── Pg_Admin user + role (web + mobile app) ──────────────────
-        $companyAdminUser = $this->createUserWithLogging([
-            'name' => 'Pg Admin',
-            'mobile' => '9876543110',
-            'username' => 'pg_admin',
-            'email' => 'pg_admin@adm.com',
-            'password' => bcrypt('Company'),
-            'status' => 'Active',
-        ], [
-            'firstname' => 'Pg',
-            'lastname' => 'Admin',
-            'date_of_birth' => '1990-01-01',
-        ]);
-
-        $companyAdminRole = Role::firstOrCreate(
+        // ── Pg_Admin role (no default user) ──────────────────────────────
+        $pgAdminRole = Role::firstOrCreate(
             ['name' => 'Pg_Admin', 'guard_name' => 'web'],
             [
                 'title' => 'Pg_Admin',
@@ -95,87 +82,74 @@ class CreateAdminUserSeeder extends Seeder
             ]
         );
 
-        if ($companyAdminUser && $companyAdminRole) {
-            $companyAdminUser->assignRole($companyAdminRole);
-            $this->logSeederOperation("Assigned Pg_Admin role to user: {$companyAdminUser->name}", User::class, $companyAdminRole);
-        }
-
-        // ── Pg_Manager user + role (mobile app only) ─────────────────
-        $pgManagerUser = $this->createUserWithLogging([
-            'name' => 'Pg Manager',
-            'mobile' => '9876543220',
-            'username' => 'pg_manager',
-            'email' => 'pg_manager@app.com',
-            'password' => bcrypt('Manager@123'),
-            'status' => 'Active',
-        ], [
-            'firstname' => 'Pg',
-            'lastname' => 'Manager',
-            'date_of_birth' => '1990-01-01',
-        ]);
-
-        $pgManagerRole = Role::firstOrCreate(
-            ['name' => 'Pg_Manager', 'guard_name' => 'web'],
+        // ── Pg_Admin users ───────────────────────────────────────────────
+        $pgAdminUsers = [
             [
-                'title' => 'Pg_Manager',
-                'access_type' => 'mobile',
-                'created_by' => $superAdminUser?->id,
-                'updated_by' => $superAdminUser?->id,
-                'created_at' => $migrationDate,
-                'updated_at' => $migrationDate,
-            ]
-        );
-
-        if ($pgManagerUser && $pgManagerRole) {
-            $pgManagerUser->assignRole($pgManagerRole);
-            $this->logSeederOperation("Assigned Pg_Manager role to user: {$pgManagerUser->name}", User::class, $pgManagerRole);
-        }
-
-        // ── Tenant user + role (mobile app only) ─────────────────────
-        $tenantUser = $this->createUserWithLogging([
-            'name' => 'Tenant',
-            'mobile' => '9876543230',
-            'username' => 'tenant',
-            'email' => 'tenant@app.com',
-            'password' => bcrypt('Tenant@123'),
-            'status' => 'Active',
-        ], [
-            'firstname' => 'Tenant',
-            'lastname' => 'User',
-            'date_of_birth' => '1990-01-01',
-        ]);
-
-        $tenantRole = Role::firstOrCreate(
-            ['name' => 'Tenant', 'guard_name' => 'web'],
+                'name' => 'Raj Sojitra',
+                'mobile' => '9876543311',
+                'username' => 'rajsojitra52',
+                'email' => 'rajsojitra52@gmail.com',
+                'password' => bcrypt('PgAdmin@123'),
+                'status' => 'Active',
+                'profile' => [
+                    'firstname' => 'Raj',
+                    'lastname' => 'Sojitra',
+                    'date_of_birth' => '1990-01-01',
+                ],
+            ],
             [
-                'title' => 'Tenant',
-                'access_type' => 'mobile',
-                'created_by' => $superAdminUser?->id,
-                'updated_by' => $superAdminUser?->id,
-                'created_at' => $migrationDate,
-                'updated_at' => $migrationDate,
-            ]
-        );
+                'name' => 'Raj Techfirst',
+                'mobile' => '9876543322',
+                'username' => 'rajs.techfirst',
+                'email' => 'rajs.techfirst@gmail.com',
+                'password' => bcrypt('PgAdmin@123'),
+                'status' => 'Active',
+                'profile' => [
+                    'firstname' => 'Raj',
+                    'lastname' => 'Techfirst',
+                    'date_of_birth' => '1990-01-01',
+                ],
+            ],
+            [
+                'name' => 'MCAE 240046',
+                'mobile' => '9876543333',
+                'username' => 'mcae240046',
+                'email' => 'mcae240046@gmail.com',
+                'password' => bcrypt('PgAdmin@123'),
+                'status' => 'Active',
+                'profile' => [
+                    'firstname' => 'MCAE',
+                    'lastname' => '240046',
+                    'date_of_birth' => '1990-01-01',
+                ],
+            ],
+        ];
 
-        if ($tenantUser && $tenantRole) {
-            $tenantUser->assignRole($tenantRole);
-            $this->logSeederOperation("Assigned Tenant role to user: {$tenantUser->name}", User::class, $tenantRole);
+        foreach ($pgAdminUsers as $userData) {
+            $profileData = $userData['profile'];
+            unset($userData['profile']);
+
+            $user = $this->createUserWithLogging($userData, $profileData, $superAdminUser?->id);
+
+            if ($user && $pgAdminRole) {
+                $user->assignRole($pgAdminRole);
+                $this->logSeederOperation("Assigned Pg_Admin role to user: {$user->name}", User::class, $pgAdminRole);
+            }
         }
+
     }
 
     /**
      * Create user + sibling user_profile row. Idempotent — skips if a user
      * with the same email or username already exists.
      */
-    private function createUserWithLogging(array $userData, array $profileData): ?User
+    private function createUserWithLogging(array $userData, array $profileData, ?int $createdBy = null): ?User
     {
         $existingUser = User::where('email', $userData['email'])
             ->orWhere('username', $userData['username'])
             ->first();
 
         if ($existingUser) {
-            $this->command->info("User {$userData['name']} already exists. Skipping creation.");
-
             return $existingUser;
         }
 
@@ -190,17 +164,24 @@ class CreateAdminUserSeeder extends Seeder
             if ($user) {
                 $this->stampInitialDataLoad($user, Carbon::parse($migrationDate));
 
+                $auditBy = $createdBy ?? $user->id;
+
+                $user->update([
+                    'created_by' => $auditBy,
+                    'updated_by' => $auditBy,
+                ]);
+
                 UserProfile::create(array_merge($profileData, [
                     'user_id' => $user->id,
-                    'created_by' => $user->id,
-                    'updated_by' => $user->id,
+                    'parent_id' => $auditBy,
+                    'created_by' => $auditBy,
+                    'updated_by' => $auditBy,
                     'created_at' => $migrationDate,
                     'updated_at' => $migrationDate,
                 ]));
             }
 
             $this->logSeederOperation("Created user: {$userData['name']} with profile", User::class, $user);
-            $this->command->info("User {$userData['name']} created successfully.");
 
             return $user;
         } catch (Exception $e) {

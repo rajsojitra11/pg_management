@@ -4,8 +4,10 @@ namespace Modules\Room\Database\Seeders;
 
 use App\Traits\SeederLogging;
 use Illuminate\Database\Seeder;
+use Modules\PgManagement\Models\PgManagement;
 use Modules\Room\Models\Room;
 use Modules\Room\Models\RoomCategory;
+use Modules\User\Models\User;
 
 class RoomDatabaseSeeder extends Seeder
 {
@@ -15,37 +17,64 @@ class RoomDatabaseSeeder extends Seeder
     {
         $defaultDate = getDefaultMigrationDate();
 
-        // Default categories
-        $categories = [
-            ['pg_id' => 1, 'category_name' => 'Standard Room'],
-            ['pg_id' => 1, 'category_name' => 'Deluxe Room'],
-        ];
+        $superAdmin = User::where('username', 'super_admin')->first();
+        $createdBy = $superAdmin?->id ?? 1;
 
-        foreach ($categories as $cat) {
-            RoomCategory::create(array_merge($cat, [
-                'created_by' => 1,
-                'updated_by' => 1,
-                'created_at' => $defaultDate,
-                'updated_at' => $defaultDate,
-            ]));
+        $pgs = PgManagement::all();
+
+        if ($pgs->isEmpty()) {
+            $this->command->warn('No PG records found. Skipping Room seeding.');
+
+            return;
         }
 
-        // Default rooms
-        $rooms = [
-            ['pg_id' => 1, 'category_id' => 1, 'room_no' => '101', 'bed_capacity' => 2, 'rent_amount' => 5000],
-            ['pg_id' => 1, 'category_id' => 1, 'room_no' => '102', 'bed_capacity' => 3, 'rent_amount' => 6000],
-            ['pg_id' => 1, 'category_id' => 2, 'room_no' => '201', 'bed_capacity' => 2, 'rent_amount' => 8000],
+        $categoryTemplates = [
+            ['category_name' => 'Two Sharing', 'bed_capacity' => 2, 'rent_amount' => 5000],
+            ['category_name' => 'Three Sharing', 'bed_capacity' => 3, 'rent_amount' => 4000],
+            ['category_name' => 'Four Sharing', 'bed_capacity' => 4, 'rent_amount' => 3000],
         ];
 
-        foreach ($rooms as $room) {
-            Room::create(array_merge($room, [
-                'created_by' => 1,
-                'updated_by' => 1,
-                'created_at' => $defaultDate,
-                'updated_at' => $defaultDate,
-            ]));
-        }
+        $roomNo = 101;
 
-        $this->command->info('Room seeding completed successfully.');
+        foreach ($pgs as $pg) {
+            foreach ($categoryTemplates as $template) {
+                $catName = $template['category_name'];
+
+                $existing = RoomCategory::where('pg_id', $pg->id)
+                    ->where('category_name', $catName)
+                    ->first();
+
+                if ($existing) {
+                    continue;
+                }
+
+                $category = RoomCategory::create([
+                    'pg_id' => $pg->id,
+                    'category_name' => $catName,
+                    'status' => 'active',
+                    'created_by' => $createdBy,
+                    'updated_by' => $createdBy,
+                    'created_at' => $defaultDate,
+                    'updated_at' => $defaultDate,
+                ]);
+
+                for ($i = 0; $i < 3; $i++) {
+                    Room::create([
+                        'pg_id' => $pg->id,
+                        'category_id' => $category->id,
+                        'room_no' => (string) $roomNo,
+                        'bed_capacity' => $template['bed_capacity'],
+                        'rent_amount' => $template['rent_amount'],
+                        'status' => 'active',
+                        'created_by' => $createdBy,
+                        'updated_by' => $createdBy,
+                        'created_at' => $defaultDate,
+                        'updated_at' => $defaultDate,
+                    ]);
+
+                    $roomNo++;
+                }
+            }
+        }
     }
 }

@@ -9,23 +9,27 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Modules\City\Database\Seeders\CityDatabaseSeeder;
+use Modules\Complaint\Database\Seeders\ComplaintDatabaseSeeder;
 use Modules\Country\Database\Seeders\CountryDatabaseSeeder;
 use Modules\Currency\Database\Seeders\CurrencyDatabaseSeeder;
 use Modules\Email\Database\Seeders\EmailDatabaseSeeder;
 use Modules\EnvVariable\Database\Seeders\EnvVariableDatabaseSeeder;
 use Modules\Login\Database\Seeders\LoginDatabaseSeeder;
+use Modules\Maintenance\Database\Seeders\MaintenanceDatabaseSeeder;
 use Modules\MenuMaster\Database\Seeders\MenuMasterDatabaseSeeder;
 use Modules\Noticeboard\Models\Noticeboard;
-use Modules\Payment\Models\Payment;
+use Modules\Payment\Database\Seeders\PaymentDatabaseSeeder;
 use Modules\PgManagement\Database\Seeders\PgManagementDatabaseSeeder;
 use Modules\Role\Database\Seeders\RoleDatabaseSeeder;
 use Modules\Room\Database\Seeders\RoomDatabaseSeeder;
+use Modules\Service\Database\Seeders\ServiceDatabaseSeeder;
 use Modules\Setting\Database\Seeders\SettingDatabaseSeeder;
 use Modules\State\Database\Seeders\StateDatabaseSeeder;
 use Modules\Subscription\Database\Seeders\SubscriptionDatabaseSeeder;
-use Modules\Tenant\Models\Tenant;
+use Modules\Tenant\Database\Seeders\TenantDatabaseSeeder;
 use Modules\Unit\Database\Seeders\UnitDatabaseSeeder;
 use Modules\User\Database\Seeders\UserDatabaseSeeder;
+use Modules\User\Models\UserProfile;
 use Modules\Year\Database\Seeders\YearDatabaseSeeder;
 use Symfony\Component\Process\Process;
 
@@ -74,6 +78,11 @@ class DatabaseSeeder extends Seeder
             // PG & Rooms — needs users, countries/states/cities
             PgManagementDatabaseSeeder::class,
             RoomDatabaseSeeder::class,
+            ServiceDatabaseSeeder::class,
+            TenantDatabaseSeeder::class,
+            PaymentDatabaseSeeder::class,
+            ComplaintDatabaseSeeder::class,
+            MaintenanceDatabaseSeeder::class,
         ]);
 
         // ── Demo data: one record per remaining entity table ──────────────
@@ -110,10 +119,9 @@ class DatabaseSeeder extends Seeder
         // Look up records seeded by sub-seeders
         $pg = DB::table('pg_management')->first();
         $room = DB::table('pg_rooms')->first();
-        $pgAdminUser = DB::table('users')->where('username', 'pg_admin')->first();
-        $tenantUser = DB::table('users')->where('username', 'tenant')->first();
+        $superAdminUser = DB::table('users')->where('username', 'super_admin')->first();
 
-        if (! $pg || ! $room || ! $pgAdminUser || ! $tenantUser) {
+        if (! $pg || ! $room || ! $superAdminUser) {
             $this->command->warn('Required seed records not found. Skipping demo data creation.');
 
             return;
@@ -121,7 +129,7 @@ class DatabaseSeeder extends Seeder
 
         // ── Noticeboard ────────────────────────────────────────────
         $noticeboard = Noticeboard::create([
-            'user_id' => $pgAdminUser->id,
+            'user_id' => $superAdminUser->id,
             'pg_id' => $pg->id,
             'title' => 'Welcome to Default PG',
             'description' => 'Welcome to our PG accommodation. Please read the house rules and enjoy your stay.',
@@ -131,57 +139,21 @@ class DatabaseSeeder extends Seeder
             'created_at' => $migrationDate,
             'updated_at' => $migrationDate,
         ]);
-        $this->command->info("Created noticeboard: {$noticeboard->title}");
+        // ── Set state/city for Pg_Admin users ──────────────────────────
+        $country = DB::table('countries')->where('code', 'IN')->first();
+        $state = DB::table('states')->where('code', 'GJ')->where('country_id', $country?->id)->first();
+        $city = DB::table('cities')->where('name', 'Rajkot')->where('country_id', $country?->id)->where('state_id', $state?->id)->first();
 
-        // ── Tenant ─────────────────────────────────────────────────
-        $tenant = Tenant::create([
-            'user_id' => $tenantUser->id,
-            'name' => 'Demo Tenant',
-            'email' => 'demo.tenant@example.com',
-            'phone' => '9876543300',
-            'address' => 'Room 101, Default PG, Sample Address',
-            'status' => 'active',
-            'pg_id' => $pg->id,
-            'room_id' => $room->id,
-            'bed_no' => 'A1',
-            'date_of_birth' => '1995-06-15',
-            'gender' => 'male',
-            'occupation' => 'Software Engineer',
-            'checkin_date' => '2025-01-01',
-            'expected_checkout_date' => '2025-12-31',
-            'monthly_rent' => 5000.00,
-            'security_deposit' => 10000.00,
-            'payment_method' => 'UPI',
-            'id_proof_type' => 'Aadhar',
-            'id_proof_number' => '1234-5678-9012',
-            'emergency_contact_name' => 'Emergency Contact',
-            'emergency_relation' => 'Father',
-            'emergency_contact_number' => '9876543400',
-            'permanent_address' => 'Sample Permanent Address, City',
-            'additional_notes' => 'Demo tenant created during seeding.',
-            'created_by' => $superAdminId,
-            'updated_by' => $superAdminId,
-            'created_at' => $migrationDate,
-            'updated_at' => $migrationDate,
-        ]);
-        $this->command->info("Created tenant: {$tenant->name}");
+        if ($country && $state && $city) {
+            $pgAdminUserIds = DB::table('users')
+                ->whereIn('username', ['rajsojitra52', 'rajs.techfirst', 'mcae240046'])
+                ->pluck('id');
 
-        // ── Payment ─────────────────────────────────────────────────
-        $payment = Payment::create([
-            'tenant_id' => $tenant->id,
-            'pg_id' => $pg->id,
-            'room_id' => $room->id,
-            'payment_date' => '2025-01-01',
-            'amount' => 5000.00,
-            'payment_method' => 'UPI',
-            'reference_no' => 'REF-DEMO-001',
-            'remarks' => 'Demo payment for monthly rent',
-            'verified' => 'paid',
-            'created_by' => $superAdminId,
-            'updated_by' => $superAdminId,
-            'created_at' => $migrationDate,
-            'updated_at' => $migrationDate,
-        ]);
-        $this->command->info("Created payment: {$payment->reference_no}");
+            UserProfile::whereIn('user_id', $pgAdminUserIds)->update([
+                'state_id' => $state->id,
+                'city_id' => $city->id,
+            ]);
+
+        }
     }
 }

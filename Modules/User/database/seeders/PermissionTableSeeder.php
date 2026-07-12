@@ -758,39 +758,5 @@ class PermissionTableSeeder extends Seeder
             $PgAdminRole->syncPermissions($companyPermissions);
         }
 
-        // ── Pg_Manager: mobile-relevant permissions ────────────────────
-        $pgManagerRole = Role::where('name', 'Pg_Manager')->first();
-        if ($pgManagerRole) {
-            $pgManagerPermissionNames = [
-                'pgmanagement-list', 'pgmanagement-create', 'pgmanagement-show', 'pgmanagement-edit',
-                'room-list', 'room-create', 'room-show', 'room-edit',
-                'room-category-list', 'room-category-show',
-                'subscription-list', 'subscription-create', 'subscription-show', 'subscription-edit',
-                'noticeboard-list', 'noticeboard-create', 'noticeboard-show', 'noticeboard-edit',
-                'tenant-list', 'tenant-create', 'tenant-show', 'tenant-edit',
-                'payment-list', 'payment-create', 'payment-show', 'payment-edit',
-                'service-category-list', 'service-category-create', 'service-category-show', 'service-category-edit',
-                'service-list', 'service-create', 'service-show', 'service-edit',
-                'complaint-list', 'complaint-create', 'complaint-show', 'complaint-edit',
-                'maintenance-list', 'maintenance-create', 'maintenance-show', 'maintenance-edit',
-                'email-list', 'email-create', 'email-edit',
-            ];
-            $pgManagerPermissions = Permission::whereIn('name', $pgManagerPermissionNames)->pluck('id')->toArray();
-            $pgManagerRole->syncPermissions($pgManagerPermissions);
-        }
-
-        // ── Tenant: minimal read-only permissions ──────────────────────
-        $tenantRole = Role::where('name', 'Tenant')->first();
-        if ($tenantRole) {
-            $tenantPermissionNames = [
-                'pgmanagement-show',
-                'room-show',
-                'subscription-list', 'subscription-show',
-                'tenant-list', 'tenant-show',
-                'payment-list', 'payment-show',
-            ];
-            $tenantPermissions = Permission::whereIn('name', $tenantPermissionNames)->pluck('id')->toArray();
-            $tenantRole->syncPermissions($tenantPermissions);
-        }
     }
 }

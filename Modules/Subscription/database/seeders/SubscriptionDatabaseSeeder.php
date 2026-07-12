@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Modules\Subscription\Models\Subscription;
+use Modules\User\Models\User;
 
 class SubscriptionDatabaseSeeder extends Seeder
 {
@@ -15,34 +16,50 @@ class SubscriptionDatabaseSeeder extends Seeder
     public function run(): void
     {
         $defaultDate = getDefaultMigrationDate();
+        $superAdmin = User::where('username', 'super_admin')->first();
+        $createdBy = $superAdmin?->id ?? 1;
 
-        $subscriptions = [
-            [
-                'subscriber_name' => 'Default Client',
-                'email' => 'client@example.com',
-                'phone' => '1234567890',
+        $pgAdminEmails = [
+            'rajsojitra52@gmail.com',
+            'rajs.techfirst@gmail.com',
+            'mcae240046@gmail.com',
+        ];
+
+        $users = User::whereIn('email', $pgAdminEmails)->get();
+
+        if ($users->isEmpty()) {
+            $this->command->warn('No Pg_Admin users found. Skipping subscription seeding.');
+
+            return;
+        }
+
+        foreach ($users as $user) {
+            $existing = Subscription::where('email', $user->email)->first();
+            if ($existing) {
+                continue;
+            }
+
+            $subscription = Subscription::create([
+                'subscriber_name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->mobile,
                 'plan_type' => 'basic',
                 'start_date' => $defaultDate,
                 'end_date' => Carbon::parse($defaultDate)->addYear(),
                 'status' => 'active',
                 'amount' => 99.00,
                 'payment_status' => 'paid',
-            ],
-        ];
-
-        foreach ($subscriptions as $subscription) {
-            $subscriptionRecord = Subscription::create(array_merge($subscription, [
-                'created_by' => 1,
-                'updated_by' => 1,
+                'created_by' => $createdBy,
+                'updated_by' => $createdBy,
                 'created_at' => $defaultDate,
                 'updated_at' => $defaultDate,
-            ]));
+            ]);
 
             DB::table('subscription_logs')
-                ->where('subscription_id', $subscriptionRecord->id)
+                ->where('subscription_id', $subscription->id)
                 ->where('activity', 'created')
                 ->update([
-                    'new_values' => json_encode($subscriptionRecord),
+                    'new_values' => json_encode($subscription),
                     'user_agent' => 'System Data Creator',
                     'device' => 'Server',
                     'platform' => 'Server',
@@ -50,7 +67,5 @@ class SubscriptionDatabaseSeeder extends Seeder
                     'system_remark' => 'Initial Data Created By System Setup',
                 ]);
         }
-
-        $this->command->info('Subscription seeding completed successfully.');
     }
 }
