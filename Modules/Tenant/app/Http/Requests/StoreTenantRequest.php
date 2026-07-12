@@ -37,7 +37,7 @@ class StoreTenantRequest extends FormRequest
             'payment_method' => ['nullable', 'string', 'max:50'],
             'id_proof_type' => ['required', 'string', 'max:50'],
             'id_proof_number' => ['required', 'string', 'max:100'],
-            'id_proof_file' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
+            'id_proof_file' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
 
             // Step 3: Emergency & Permanent Address
             'emergency_contact_name' => ['required', 'string', 'max:255'],

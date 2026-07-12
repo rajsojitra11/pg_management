@@ -115,7 +115,19 @@ class MaintenanceController extends Controller
                 $data['proof'] = $request->file('proof')->store('maintenance/proof', 'public');
             }
 
-            Maintenance::create($data);
+            $maintenance = Maintenance::create($data);
+
+            $complaintStatus = match ($data['status'] ?? 'pending') {
+                'in_progress' => 'in_progress',
+                'completed' => 'resolved',
+                default => null,
+            };
+            if ($complaintStatus && $maintenance->complaint) {
+                $maintenance->complaint->update([
+                    'status' => $complaintStatus,
+                    'updated_by' => auth()->id(),
+                ]);
+            }
 
             DB::commit();
 
@@ -167,6 +179,18 @@ class MaintenanceController extends Controller
             }
 
             $maintenance->update($data);
+
+            $complaintStatus = match ($data['status'] ?? 'pending') {
+                'in_progress' => 'in_progress',
+                'completed' => 'resolved',
+                default => null,
+            };
+            if ($complaintStatus && $maintenance->fresh()->complaint) {
+                $maintenance->fresh()->complaint->update([
+                    'status' => $complaintStatus,
+                    'updated_by' => auth()->id(),
+                ]);
+            }
 
             DB::commit();
 

@@ -24,6 +24,12 @@ class StateController extends Controller
 
     public function index()
     {
+        if (request()->expectsJson()) {
+            return response()->json([
+                'data' => State::select('id', 'name', 'code')->get(),
+            ]);
+        }
+
         if (request()->ajax()) {
             return DataTables::of(State::with('country:id,name,code'))
                 ->addIndexColumn()

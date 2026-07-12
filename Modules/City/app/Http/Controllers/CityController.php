@@ -25,6 +25,17 @@ class CityController extends Controller
 
     public function index()
     {
+        if (request()->expectsJson()) {
+            $query = City::select('id', 'name');
+            if (request()->filled('state_id')) {
+                $query->where('state_id', request('state_id'));
+            }
+
+            return response()->json([
+                'data' => $query->get(),
+            ]);
+        }
+
         if (request()->ajax()) {
             return DataTables::of(City::with('state:id,name,code', 'country:id,name,code'))
                 ->addIndexColumn()

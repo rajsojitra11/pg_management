@@ -45,6 +45,7 @@ class ComplaintApiController extends Controller
         $complaints = $query->orderByDesc('created_at')->paginate((int) request('per_page', 10));
 
         $data = $complaints->map(fn ($c) => [
+            'id' => (string) $c->id,
             'public_id' => $c->public_id,
             'complaint_no' => $c->complaint_no,
             'pg_id' => (string) $c->pg?->id,
@@ -85,6 +86,7 @@ class ComplaintApiController extends Controller
             if (! is_null($c)) {
                 return response()->json([
                     'data' => [
+                        'id' => (string) $c->id,
                         'public_id' => $c->public_id,
                         'complaint_no' => $c->complaint_no,
                         'pg_id' => (string) $c->pg?->id,
@@ -124,6 +126,7 @@ class ComplaintApiController extends Controller
 
             return response()->json([
                 'data' => [
+                    'id' => (string) $complaint->id,
                     'public_id' => $complaint->public_id,
                     'complaint_no' => $complaint->complaint_no,
                     'pg_id' => (string) $complaint->pg?->id,
@@ -166,6 +169,7 @@ class ComplaintApiController extends Controller
 
             return response()->json([
                 'data' => [
+                    'id' => (string) $complaint->id,
                     'public_id' => $complaint->public_id,
                     'complaint_no' => $complaint->complaint_no,
                     'pg_id' => (string) $complaint->pg?->id,
