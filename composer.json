@@ -76,7 +76,6 @@
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi",
-            "npm run build",
             "@php artisan optimize:clear"
         ],
         "post-update-cmd": [
