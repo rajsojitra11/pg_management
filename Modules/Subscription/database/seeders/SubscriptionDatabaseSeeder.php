@@ -48,7 +48,6 @@ class SubscriptionDatabaseSeeder extends Seeder
                     'platform' => 'Server',
                     'browser' => 'Server',
                     'system_remark' => 'Initial Data Created By System Setup',
-                    'user_remark' => 'subscription initial system configuration',
                 ]);
         }
 

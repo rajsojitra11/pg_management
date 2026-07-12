@@ -16,7 +16,6 @@ class StateController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:state-list', ['only' => ['index', 'store']]);
         $this->middleware('permission:state-create', ['only' => ['create', 'store']]);
         $this->middleware('permission:state-edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:state-delete', ['only' => ['destroy']]);

@@ -20,7 +20,6 @@ class UpdateMaintenanceRequest extends FormRequest
             'description' => 'nullable|string',
             'maintenance_date' => 'required|date',
             'status' => 'required|string|in:pending,in_progress,completed,cancelled',
-            'user_remark' => 'required|string',
         ];
     }
 
@@ -35,7 +34,6 @@ class UpdateMaintenanceRequest extends FormRequest
             'maintenance_date.required' => __('maintenance::message.validation.date_required'),
             'maintenance_date.date' => __('maintenance::message.validation.date_invalid'),
             'status.required' => __('maintenance::message.validation.status_required'),
-            'user_remark.required' => __('message.common.user_remark_required_update'),
         ];
     }
 }

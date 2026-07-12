@@ -173,16 +173,7 @@
                             <div class="mt-1 text-sm text-red-500" id="error_description"></div>
                         </div>
 
-                        <div id="user_remark_block" class="hidden">
-                            <label class="block text-sm font-medium text-zinc-700 mb-1" for="user_remark">
-                                {{ __('message.common.user_remark') }}<span class="text-red-500"> *</span>
-                            </label>
-                            <textarea required
-                                      class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
-                                      name="user_remark" id="user_remark" rows="2"
-                                      placeholder="{{ __('message.common.user_remark_placeholder') }}"></textarea>
-                            <div class="mt-1 text-sm text-red-500" id="error_user_remark"></div>
-                        </div>
+
                     </div>
 
                     <div class="flex items-center justify-end gap-2 p-4 border-t border-zinc-200">
@@ -364,11 +355,9 @@
         $('#error_status').html('');
         $('#error_proof').html('');
         $('#error_description').html('');
-        $('#error_user_remark').html('');
         $('#inlineModal').find('.erp-btn-locked').each(function() {
             $(this).css({ opacity: '', pointerEvents: '' }).removeClass('erp-btn-locked').removeData('erp-original-pointer');
         });
-        $('#user_remark_block').addClass('hidden');
         $('#existing_proof').addClass('hidden').find('a').attr('href', '');
         $("#save").attr('data-route', "{{ route('maintenance.store') }}")
             .removeClass('update').addClass('save')
@@ -459,7 +448,6 @@
                     $("#description").val(response.result.description);
                     $("#status").val(response.result.status);
                     $("#id").val(id);
-                    $('#user_remark_block').removeClass('hidden');
 
                     if (pgSelectInst && typeof pgSelectInst.setValue === 'function') {
                         pgSelectInst.setValue(response.result.complaint ? response.result.complaint.pg_id || '' : '');

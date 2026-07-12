@@ -13,15 +13,11 @@ class DeleteComplaintRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
-            'user_remark' => 'required|string',
-        ];
+        return [];
     }
 
     public function messages(): array
     {
-        return [
-            'user_remark.required' => __('message.common.user_remark_required_delete'),
-        ];
+        return [];
     }
 }

@@ -69,6 +69,7 @@ class TenantApiController extends Controller
             'payment_method' => $t->payment_method,
             'id_proof_type' => $t->id_proof_type,
             'id_proof_number' => $t->id_proof_number,
+            'id_proof_file' => $t->id_proof_file ? request()->getSchemeAndHttpHost().'/storage/'.$t->id_proof_file : null,
             'emergency_contact_name' => $t->emergency_contact_name,
             'emergency_relation' => $t->emergency_relation,
             'emergency_contact_number' => $t->emergency_contact_number,
@@ -124,7 +125,7 @@ class TenantApiController extends Controller
                         'payment_method' => $t->payment_method,
                         'id_proof_type' => $t->id_proof_type,
                         'id_proof_number' => $t->id_proof_number,
-                        'id_proof_file' => $t->id_proof_file ? Storage::disk('public')->url($t->id_proof_file) : null,
+                        'id_proof_file' => $t->id_proof_file ? request()->getSchemeAndHttpHost().'/storage/'.$t->id_proof_file : null,
                         'emergency_contact_name' => $t->emergency_contact_name,
                         'emergency_relation' => $t->emergency_relation,
                         'emergency_contact_number' => $t->emergency_contact_number,
@@ -295,6 +296,16 @@ class TenantApiController extends Controller
                 'data' => [
                     'id' => (string) $tenant->id,
                     'public_id' => $tenant->public_id,
+                    'name' => $tenant->name,
+                    'email' => $tenant->email,
+                    'phone' => $tenant->phone,
+                    'status' => $tenant->status,
+                    'pg_id' => (string) $tenant->pg?->id,
+                    'pg_name' => $tenant->pg?->pg_name,
+                    'room_id' => (string) $tenant->room?->id,
+                    'room_no' => $tenant->room?->room_no,
+                    'bed_no' => $tenant->bed_no,
+                    'created_at' => $tenant->created_at?->toIso8601String(),
                 ],
             ]);
         } catch (Exception $e) {

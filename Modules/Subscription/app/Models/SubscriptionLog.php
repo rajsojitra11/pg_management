@@ -14,7 +14,6 @@ class SubscriptionLog extends Model
         'subscription_id',
         'user_id',
         'activity',
-        'user_remark',
         'system_remark',
         'old_values',
         'new_values',

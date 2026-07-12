@@ -20,7 +20,6 @@ class UpdateComplaintRequest extends FormRequest
             'service_id' => 'required|exists:services,id',
             'complaint_date' => 'required|date',
             'note' => 'required|string',
-            'user_remark' => 'required|string',
         ];
     }
 
@@ -34,7 +33,6 @@ class UpdateComplaintRequest extends FormRequest
             'complaint_date.required' => __('complaint::message.validation.date_required'),
             'complaint_date.date' => __('complaint::message.validation.date_invalid'),
             'note.required' => __('complaint::message.validation.note_required'),
-            'user_remark.required' => __('message.common.user_remark_required_update'),
         ];
     }
 }
