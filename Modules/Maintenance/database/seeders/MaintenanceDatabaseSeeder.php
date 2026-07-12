@@ -37,14 +37,14 @@ class MaintenanceDatabaseSeeder extends Seeder
             $complaints = Complaint::where('pg_id', $pg->id)->inRandomOrder()->limit(3)->get();
 
             foreach ($complaints as $complaint) {
-                $maintenanceNo = 'MNT-' . $maintenanceYear . str_pad((string) $seq, 4, '0', STR_PAD_LEFT);
+                $maintenanceNo = 'MNT-'.$maintenanceYear.str_pad((string) $seq, 4, '0', STR_PAD_LEFT);
                 $seq++;
 
                 Maintenance::create([
                     'maintenance_no' => $maintenanceNo,
                     'complaint_id' => $complaint->id,
                     'cost' => rand(500, 5000),
-                    'description' => 'Maintenance completed for complaint ' . $complaint->complaint_no . ': ' . $complaint->note,
+                    'description' => 'Maintenance completed for complaint '.$complaint->complaint_no.': '.$complaint->note,
                     'maintenance_date' => Carbon::parse($defaultDate)->addDays(rand(1, 15))->toDateString(),
                     'status' => 'completed',
                     'created_by' => $createdBy,

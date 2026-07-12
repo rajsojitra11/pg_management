@@ -758,5 +758,19 @@ class PermissionTableSeeder extends Seeder
             $PgAdminRole->syncPermissions($companyPermissions);
         }
 
+        // ── Tenant: minimal read-only permissions ──────────────────────
+        $tenantRole = Role::where('name', 'Tenant')->first();
+        if ($tenantRole) {
+            $tenantPermissionNames = [
+                'pgmanagement-show',
+                'room-show',
+                'subscription-list', 'subscription-show',
+                'tenant-list', 'tenant-show',
+                'payment-list', 'payment-show',
+            ];
+            $tenantPermissions = Permission::whereIn('name', $tenantPermissionNames)->pluck('id')->toArray();
+            $tenantRole->syncPermissions($tenantPermissions);
+        }
+
     }
 }

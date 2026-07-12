@@ -45,7 +45,7 @@ class SubscriptionDatabaseSeeder extends Seeder
                 'phone' => $user->mobile,
                 'plan_type' => 'basic',
                 'start_date' => $defaultDate,
-                'end_date' => Carbon::parse($defaultDate)->addYear(),
+                'end_date' => Carbon::parse('2030-12-31'),
                 'status' => 'active',
                 'amount' => 99.00,
                 'payment_status' => 'paid',

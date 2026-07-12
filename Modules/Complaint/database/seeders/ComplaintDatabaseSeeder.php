@@ -81,7 +81,7 @@ class ComplaintDatabaseSeeder extends Seeder
                 $status = $statuses[array_rand($statuses)];
                 $complaintDate = Carbon::parse($defaultDate)->addDays(rand(0, 60));
 
-                $complaintNo = $year . str_pad((string) $seq, 4, '0', STR_PAD_LEFT);
+                $complaintNo = $year.str_pad((string) $seq, 4, '0', STR_PAD_LEFT);
                 $seq++;
 
                 Complaint::create([

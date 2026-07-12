@@ -117,7 +117,7 @@ class EnvVariableDatabaseSeeder extends Seeder
             // Mail Configuration
             [
                 'key' => 'MAIL_MAILER',
-                'value' => 'smtp',
+                'value' => env('MAIL_MAILER', 'smtp'),
                 'type' => 'select',
                 'options' => ['smtp', 'sendmail', 'mailgun', 'ses', 'postmark', 'log', 'array', 'failover', 'roundrobin'],
                 'category' => 'Mail',
@@ -129,7 +129,7 @@ class EnvVariableDatabaseSeeder extends Seeder
             ],
             [
                 'key' => 'MAIL_HOST',
-                'value' => 'mailpit',
+                'value' => env('MAIL_HOST', 'mailpit'),
                 'type' => 'text',
                 'category' => 'Mail',
                 'description' => 'SMTP server hostname',
@@ -140,7 +140,7 @@ class EnvVariableDatabaseSeeder extends Seeder
             ],
             [
                 'key' => 'MAIL_PORT',
-                'value' => '1025',
+                'value' => env('MAIL_PORT', '1025'),
                 'type' => 'number',
                 'category' => 'Mail',
                 'description' => 'SMTP server port',
@@ -151,7 +151,7 @@ class EnvVariableDatabaseSeeder extends Seeder
             ],
             [
                 'key' => 'MAIL_USERNAME',
-                'value' => null,
+                'value' => env('MAIL_USERNAME'),
                 'type' => 'text',
                 'category' => 'Mail',
                 'description' => 'SMTP username',
@@ -162,7 +162,7 @@ class EnvVariableDatabaseSeeder extends Seeder
             ],
             [
                 'key' => 'MAIL_PASSWORD',
-                'value' => null,
+                'value' => env('MAIL_PASSWORD'),
                 'type' => 'password',
                 'category' => 'Mail',
                 'description' => 'SMTP password',
@@ -173,7 +173,7 @@ class EnvVariableDatabaseSeeder extends Seeder
             ],
             [
                 'key' => 'MAIL_ENCRYPTION',
-                'value' => null,
+                'value' => env('MAIL_ENCRYPTION'),
                 'type' => 'select',
                 'options' => [null, 'tls', 'ssl'],
                 'category' => 'Mail',
@@ -185,7 +185,7 @@ class EnvVariableDatabaseSeeder extends Seeder
             ],
             [
                 'key' => 'MAIL_FROM_ADDRESS',
-                'value' => 'hello@example.com',
+                'value' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
                 'type' => 'text',
                 'category' => 'Mail',
                 'description' => 'Default from email address',
@@ -196,7 +196,7 @@ class EnvVariableDatabaseSeeder extends Seeder
             ],
             [
                 'key' => 'MAIL_FROM_NAME',
-                'value' => '${APP_NAME}',
+                'value' => env('MAIL_FROM_NAME', '${APP_NAME}'),
                 'type' => 'text',
                 'category' => 'Mail',
                 'description' => 'Default from name for emails',

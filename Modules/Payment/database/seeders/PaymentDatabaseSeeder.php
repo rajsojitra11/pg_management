@@ -62,7 +62,7 @@ class PaymentDatabaseSeeder extends Seeder
                 'payment_date' => $paymentDate->toDateString(),
                 'amount' => $tenant->monthly_rent,
                 'payment_method' => $paymentMethod,
-                'reference_no' => "PAY-DEMO-" . str_pad((string) $index, 4, '0', STR_PAD_LEFT),
+                'reference_no' => 'PAY-DEMO-'.str_pad((string) $index, 4, '0', STR_PAD_LEFT),
                 'remarks' => $remark,
                 'verified' => $verified,
                 'created_by' => $createdBy,

@@ -6,6 +6,7 @@ use App\Traits\SeederLogging;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Modules\Role\Models\Role;
 use Modules\Room\Models\Room;
 use Modules\Tenant\Models\Tenant;
 use Modules\User\Models\User;
@@ -112,6 +113,11 @@ class TenantDatabaseSeeder extends Seeder
                     ]);
                 } else {
                     $user = $existingUser;
+                }
+
+                $tenantRole = Role::where('name', 'Tenant')->first();
+                if ($tenantRole && ! $user->hasRole('Tenant')) {
+                    $user->assignRole($tenantRole);
                 }
 
                 Tenant::create([

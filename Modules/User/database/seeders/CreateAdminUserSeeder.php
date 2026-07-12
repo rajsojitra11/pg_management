@@ -82,6 +82,19 @@ class CreateAdminUserSeeder extends Seeder
             ]
         );
 
+        // ── Tenant role (no default user) ─────────────────────────────────
+        $tenantRole = Role::firstOrCreate(
+            ['name' => 'Tenant', 'guard_name' => 'web'],
+            [
+                'title' => 'Tenant',
+                'access_type' => 'mobile',
+                'created_by' => $superAdminUser?->id,
+                'updated_by' => $superAdminUser?->id,
+                'created_at' => $migrationDate,
+                'updated_at' => $migrationDate,
+            ]
+        );
+
         // ── Pg_Admin users ───────────────────────────────────────────────
         $pgAdminUsers = [
             [
