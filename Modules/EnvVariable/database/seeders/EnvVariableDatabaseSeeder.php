@@ -362,6 +362,19 @@ class EnvVariableDatabaseSeeder extends Seeder
             }
         }
 
+        // Sync existing mail env variables with current .env values so stale DB
+        // records (e.g. mailpit:1025 from an earlier seed) don't get written
+        // back to .env by syncToEnvFile() on production.
+        $mailKeys = ['MAIL_MAILER', 'MAIL_HOST', 'MAIL_PORT', 'MAIL_USERNAME',
+            'MAIL_PASSWORD', 'MAIL_ENCRYPTION', 'MAIL_FROM_ADDRESS', 'MAIL_FROM_NAME'];
+        foreach ($mailKeys as $key) {
+            $envValue = env($key);
+            if ($envValue !== null) {
+                EnvVariable::where('key', $key)->where('value', '!=', $envValue)
+                    ->update(['value' => $envValue, 'updated_at' => now()]);
+            }
+        }
+
         // Clear configuration cache after seeding all variables
         $envVariable = new EnvVariable;
         $envVariable->clearAllCaches();
