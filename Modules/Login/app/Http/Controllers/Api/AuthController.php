@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Modules\Login\Mail\OtpMail;
 use Modules\Subscription\Models\Subscription;
@@ -136,6 +137,18 @@ class AuthController extends Controller
 
         $user = User::where('email', $email)->first();
 
+        $hasActiveSubscription = Subscription::where('email', $email)
+            ->where('status', 'active')
+            ->whereDate('end_date', '>=', now()->toDateString())
+            ->exists();
+
+        if (! $hasActiveSubscription) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your subscription has expired. Please renew to continue.',
+            ], 403);
+        }
+
         // Revoke old tokens
         $user->tokens()->delete();
 
@@ -151,7 +164,101 @@ class AuthController extends Controller
                 'email' => $user->email,
                 'mobile' => $user->mobile,
                 'token' => $token,
+                'current_pg' => $user->current_pg ? (string) $user->current_pg : null,
             ],
+        ]);
+    }
+
+    public function login(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
+        $email = strtolower(trim((string) $request->input('email')));
+        $user = User::whereRaw('LOWER(email) = ?', [$email])->first();
+
+        if (! $user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No account found with this email.',
+            ], 404);
+        }
+
+        if ($user->status !== 'Active') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your account is inactive. Contact admin.',
+            ], 403);
+        }
+
+        if ($user->is_blocked) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your account is blocked. Contact admin.',
+            ], 403);
+        }
+
+        if (! $user->hasRole('Pg_Admin')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Access denied. Only Pg_Admin users can log in via the app.',
+            ], 403);
+        }
+
+        $hasActiveSubscription = Subscription::where('email', $email)
+            ->where('status', 'active')
+            ->whereDate('end_date', '>=', now()->toDateString())
+            ->exists();
+
+        if (! $hasActiveSubscription) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your subscription has expired. Please renew to continue.',
+            ], 403);
+        }
+
+        if (! Hash::check($request->input('password'), $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid password.',
+            ], 401);
+        }
+
+        // Revoke old tokens
+        $user->tokens()->delete();
+
+        // Create new Sanctum token
+        $token = $user->createToken('mobile-app')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Login successful.',
+            'data' => [
+                'id' => (string) $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'mobile' => $user->mobile,
+                'token' => $token,
+                'current_pg' => $user->current_pg ? (string) $user->current_pg : null,
+            ],
+        ]);
+    }
+
+    public function updateCurrentPg(Request $request): JsonResponse
+    {
+        $request->validate([
+            'pg_id' => 'required|integer',
+        ]);
+
+        $user = auth()->user();
+        $user->current_pg = $request->input('pg_id');
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Current PG updated.',
         ]);
     }
 }
