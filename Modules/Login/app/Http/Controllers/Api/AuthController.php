@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Modules\Login\Mail\OtpMail;
+use Modules\PgManagement\Models\PgManagement;
 use Modules\Subscription\Models\Subscription;
 use Modules\User\Models\User;
 
@@ -249,11 +250,23 @@ class AuthController extends Controller
     public function updateCurrentPg(Request $request): JsonResponse
     {
         $request->validate([
-            'pg_id' => 'required|integer',
+            'pg_id' => 'required|integer|exists:pg_management,id',
         ]);
 
         $user = auth()->user();
-        $user->current_pg = $request->input('pg_id');
+        $pgId = $request->integer('pg_id');
+
+        if ($user->hasRole('Pg_Admin')) {
+            $pg = PgManagement::where('id', $pgId)->where('owner_id', $user->id)->exists();
+            if (! $pg) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'PG not found or access denied.',
+                ], 403);
+            }
+        }
+
+        $user->current_pg = $pgId;
         $user->save();
 
         return response()->json([
