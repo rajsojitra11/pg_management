@@ -18,4 +18,10 @@ Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
 // Authenticated auth routes
 Route::middleware(['auth:sanctum'])->prefix('v1/auth')->group(function () {
     Route::post('current-pg', [AuthController::class, 'updateCurrentPg']);
+    Route::post('logout', [AuthController::class, 'logout']);
+});
+
+// Device token update (authenticated)
+Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
+    Route::put('device-token', [AuthController::class, 'updateDeviceToken']);
 });

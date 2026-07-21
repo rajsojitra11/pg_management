@@ -55,6 +55,8 @@ class User extends Authenticatable
         'head_id',
         'is_blocked',
         'current_pg',
+        'fcm_token',
+        'device_name',
         // Set by the installer when creating role users with the shared default
         // password — login flow forces a reset on first attempt while it's set.
         'force_password_change_at',

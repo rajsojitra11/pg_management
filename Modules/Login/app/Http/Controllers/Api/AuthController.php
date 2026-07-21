@@ -3,6 +3,7 @@
 namespace Modules\Login\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Services\FcmService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Modules\Login\Mail\OtpMail;
+use Modules\Notification\Models\Notification;
 use Modules\PgManagement\Models\PgManagement;
 use Modules\Subscription\Models\Subscription;
 use Modules\User\Models\User;
@@ -150,11 +152,29 @@ class AuthController extends Controller
             ], 403);
         }
 
+        // Persist device info
+        $user->fcm_token = $request->input('fcm_token');
+        $user->device_name = $request->input('device_name');
+        $user->save();
+
         // Revoke old tokens
         $user->tokens()->delete();
 
         // Create new Sanctum token
         $token = $user->createToken('mobile-app')->plainTextToken;
+
+        // Send login notification
+        try {
+            Notification::create([
+                'user_id' => $user->id,
+                'type' => 'login',
+                'title' => 'Login Successful',
+                'body' => 'You have logged in successfully.',
+            ]);
+            app(FcmService::class)->sendToUser($user, 'Login Successful', 'You have logged in successfully.', ['type' => 'login']);
+        } catch (\Throwable $e) {
+            logger()->error('Login notification failed: '.$e->getMessage());
+        }
 
         return response()->json([
             'success' => true,
@@ -227,11 +247,29 @@ class AuthController extends Controller
             ], 401);
         }
 
+        // Persist device info
+        $user->fcm_token = $request->input('fcm_token');
+        $user->device_name = $request->input('device_name');
+        $user->save();
+
         // Revoke old tokens
         $user->tokens()->delete();
 
         // Create new Sanctum token
         $token = $user->createToken('mobile-app')->plainTextToken;
+
+        // Send login notification
+        try {
+            Notification::create([
+                'user_id' => $user->id,
+                'type' => 'login',
+                'title' => 'Login Successful',
+                'body' => 'You have logged in successfully.',
+            ]);
+            app(FcmService::class)->sendToUser($user, 'Login Successful', 'You have logged in successfully.', ['type' => 'login']);
+        } catch (\Throwable $e) {
+            logger()->error('Login notification failed: '.$e->getMessage());
+        }
 
         return response()->json([
             'success' => true,
@@ -272,6 +310,37 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Current PG updated.',
+        ]);
+    }
+
+    public function updateDeviceToken(Request $request): JsonResponse
+    {
+        $request->validate([
+            'fcm_token' => 'required|string',
+            'device_name' => 'nullable|string|max:100',
+        ]);
+
+        $user = auth()->user();
+        $user->fcm_token = $request->input('fcm_token');
+        $user->device_name = $request->input('device_name');
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Device token updated.',
+        ]);
+    }
+
+    public function logout(Request $request): JsonResponse
+    {
+        $user = auth()->user();
+
+        // Revoke the current Sanctum token
+        $user->currentAccessToken()->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Logged out successfully.',
         ]);
     }
 }
