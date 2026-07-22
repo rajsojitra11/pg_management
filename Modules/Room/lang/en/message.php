@@ -27,6 +27,7 @@ return [
     'room_no_taken' => 'This room number is already taken',
     'enter_bed_capacity' => 'Please enter the bed capacity',
     'bed_capacity_min' => 'Bed capacity must be at least 1',
+    'bed_capacity_max' => 'Bed capacity must not exceed 20',
     'enter_rent_amount' => 'Enter rent amount',
     'search_placeholder' => 'Search by category name',
     'room_search_placeholder' => 'Search by room number or category',

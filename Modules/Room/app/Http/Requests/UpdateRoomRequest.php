@@ -26,7 +26,7 @@ class UpdateRoomRequest extends FormRequest
                 'max:50',
                 Rule::unique('pg_rooms')->ignore($id)->whereNull('deleted_at'),
             ],
-            'bed_capacity' => ['required', 'integer', 'min:1'],
+            'bed_capacity' => ['required', 'integer', 'min:1', 'max:20'],
             'rent_amount' => ['nullable', 'numeric', 'min:0'],
             'status' => ['nullable', 'string', 'in:active,inactive'],
         ];
@@ -52,6 +52,7 @@ class UpdateRoomRequest extends FormRequest
             'room_no.unique' => __('room::message.room_no_taken'),
             'bed_capacity.required' => __('room::message.enter_bed_capacity'),
             'bed_capacity.min' => __('room::message.bed_capacity_min'),
+            'bed_capacity.max' => __('room::message.bed_capacity_max'),
         ];
     }
 }
