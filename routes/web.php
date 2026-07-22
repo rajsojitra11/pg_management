@@ -30,7 +30,7 @@ Route::get('/db-info', function () {
         'domain' => request()->getHost(),
         'database_name' => DB::connection()->getDatabaseName(),
         'connection_name' => config('database.default'),
-        'host' => config('database.connections.'.config('database.default').'.host'),
+        'host' => config('database.connections.' . config('database.default') . '.host'),
     ]);
 });
 Route::get('/clear-cache', function () {
@@ -89,4 +89,8 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::redirect('/', '/login');
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
+
+Route::get('/health', function () {
+    return response()->json(['status' => 'ok', 'time' => now()]);
+});
