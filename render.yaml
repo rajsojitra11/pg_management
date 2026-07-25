@@ -38,19 +38,19 @@ services:
         value: pgsql
 
       - key: DB_HOST
-        value: dpg-d9iashb7uimc73b8nrdg-a.singapore-postgres.render.com
+        value: dpg-d9if0ljtqb8s738qc0vg-a
 
       - key: DB_PORT
         value: "5432"
 
       - key: DB_DATABASE
-        value: pgmanagement_db_91gf
+        value: pgmanagement_db_v0f7
 
       - key: DB_USERNAME
-        value: pgmanagement_db_91gf_user
+        value: pgmanagement_db_v0f7_user
 
       - key: DB_PASSWORD
-        value: WnhPO8S7zfi9CvVfGjhoynp7GPeTDWSf
+        value: hTiWCZTtTA7Gij8osbRwBWQJjVB1txmB
 
       - key: DB_SSLMODE
         value: require
