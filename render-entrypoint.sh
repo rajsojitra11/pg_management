@@ -51,6 +51,13 @@ chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true
 # Storage link
 php artisan storage:link --no-interaction 2>/dev/null || true
 
+# Start Apache in the background so Render detects the port immediately
+echo "Starting Apache..."
+apache2-foreground &
+
+# Give Apache a moment to bind
+sleep 2
+
 # If FRESH_MIGRATIONS=true, drop all tables and re-run everything.
 # Otherwise, run only pending migrations and seed as normal.
 if [ "${FRESH_MIGRATIONS:-false}" = "true" ]; then
@@ -69,5 +76,7 @@ php artisan config:cache --no-interaction 2>/dev/null || true
 php artisan route:cache --no-interaction 2>/dev/null || true
 php artisan view:cache --no-interaction 2>/dev/null || true
 
-echo "=== Entrypoint complete, starting Apache ==="
-exec "$@"
+echo "=== Entrypoint complete ==="
+
+# Keep container running (Apache is backgrounded)
+wait

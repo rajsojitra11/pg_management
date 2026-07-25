@@ -8,6 +8,8 @@ services:
 
     autoDeploy: true
 
+    healthCheckPath: /up
+
     envVars:
       # Laravel
       - key: APP_NAME
