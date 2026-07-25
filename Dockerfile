@@ -41,8 +41,10 @@ WORKDIR /var/www/html
 # Copy application source
 COPY . .
 
-# Install PHP deps
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Install PHP deps (--no-scripts prevents post-autoload-dump which runs
+# artisan optimize:clear — that needs a database connection we don't have at build time)
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts \
+    && php artisan package:discover --ansi 2>/dev/null || true
 
 # Permissions
 RUN chown -R www-data:www-data storage bootstrap/cache public/build \
