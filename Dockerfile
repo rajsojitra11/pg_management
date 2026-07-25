@@ -17,6 +17,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
     git \
     curl \
+    nodejs \
+    npm \
     && rm -rf /var/lib/apt/lists/*
 
 # PHP extensions
@@ -40,6 +42,11 @@ WORKDIR /var/www/html
 
 # Copy application source
 COPY . .
+
+# Build frontend assets
+RUN npm ci --no-audit --no-fund \
+    && npm run build \
+    && rm -rf node_modules
 
 # Install PHP deps (--no-scripts prevents post-autoload-dump which runs
 # artisan optimize:clear — that needs a database connection we don't have at build time)
