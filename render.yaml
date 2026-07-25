@@ -2,13 +2,14 @@ services:
   - type: web
     name: pg-management
     runtime: docker
-    repo: https://github.com/rajsojitra11/pg_management
+    plan: free
     branch: main
     dockerfilePath: ./Dockerfile
-    plan: free
+
+    autoDeploy: true
 
     envVars:
-      # Application
+      # Laravel
       - key: APP_NAME
         value: "PG Management"
 
@@ -18,13 +19,10 @@ services:
       - key: APP_DEBUG
         value: "false"
 
-      - key: APP_URL
-        fromService:
-          type: web
-          name: pg-management
-          envVarKey: RENDER_EXTERNAL_URL
-
       - key: APP_KEY
+        value: "base64:DKD/5JhDEbr9BCzGmC/sUI4IArXgGL1oyJc+8skaww4="
+
+      - key: APP_URL
         sync: false
 
       - key: APP_TIMEZONE
@@ -38,42 +36,32 @@ services:
         value: pgsql
 
       - key: DB_HOST
-        fromDatabase:
-          name: pgmanagement_db_91gf
-          property: host
+        value: dpg-d9iashb7uimc73b8nrdg-a.singapore-postgres.render.com
 
       - key: DB_PORT
-        fromDatabase:
-          name: pgmanagement_db_91gf
-          property: port
+        value: "5432"
 
       - key: DB_DATABASE
-        fromDatabase:
-          name: pgmanagement_db_91gf
-          property: database
+        value: pgmanagement_db_91gf
 
       - key: DB_USERNAME
-        fromDatabase:
-          name: pgmanagement_db_91gf
-          property: user
+        value: pgmanagement_db_91gf_user
 
       - key: DB_PASSWORD
-        fromDatabase:
-          name: pgmanagement_db_91gf
-          property: password
+        value: WnhPO8S7zfi9CvVfGjhoynp7GPeTDWSf
 
       - key: DB_SSLMODE
         value: require
 
-      # Laravel
+      # Laravel Drivers
       - key: SESSION_DRIVER
-        value: database
+        value: file
 
       - key: CACHE_STORE
-        value: database
+        value: file
 
       - key: QUEUE_CONNECTION
-        value: database
+        value: sync
 
       - key: FILESYSTEM_DISK
         value: public
@@ -111,11 +99,4 @@ services:
         sync: false
 
       - key: MAIL_FROM_NAME
-        value: PG Management
-
-databases:
-  - name: pgmanagement_db_91gf
-    plan: free
-    databaseName: pgmanagement_db_91gf
-    user: pgmanagement_db_91gf_user
-    postgresMajorVersion: 16
+        value: "PG Management"

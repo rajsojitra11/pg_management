@@ -163,4 +163,28 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Run tests: `php artisan test --compact` or filter: `php artisan test --compact --filter=testName`.
 - Do NOT delete tests without approval.
 
+=== render deployment rules ===
+
+# Render Deployment (Free Tier)
+
+## Infrastructure
+- **Runtime**: Docker (php:8.4-apache)
+- **Database**: Render PostgreSQL (external, not linked service)
+- **Plan**: Free — container spins down after 15 min idle, cold starts ~30-60s
+- **Storage**: Ephemeral — file uploads lost on restart. Use S3 for production.
+
+## Config Files
+- `render.yaml` — service definition & environment variables
+- `Dockerfile` — PHP 8.4 + Apache, PostgreSQL extensions, pre-built assets
+- `render-entrypoint.sh` — startup script (DB wait, migrations, caching)
+
+## Required Post-Deploy Steps
+1. Set `APP_URL` in Render dashboard to your service URL (e.g. `https://pg-management.onrender.com`)
+2. Set mail env vars (`MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_ENCRYPTION`, `MAIL_FROM_ADDRESS`) in Render dashboard if email is needed
+3. Verify `/up` health check returns 200
+4. Run `php artisan storage:link` if uploads don't work (entrypoint runs it automatically)
+
+## Note
+Assets are pre-built in `public/build/`. If you change frontend code, run `npm run build` locally and commit the updated build artifacts before deploying.
+
 </laravel-boost-guidelines>

@@ -17,8 +17,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
     git \
     curl \
-    nodejs \
-    npm \
     && rm -rf /var/lib/apt/lists/*
 
 # PHP extensions
@@ -40,24 +38,11 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Copy package files first (for Docker caching)
-COPY package.json package-lock.json ./
-
-# Install npm packages so vite is available
-RUN npm ci
-
 # Copy application source
 COPY . .
 
-# Build frontend assets
-RUN npm run build
-
-# Remove dev dependencies (not needed at runtime)
-RUN rm -rf node_modules
-
-# Install PHP deps with --no-scripts to prevent post-autoload-dump (which tries npm run build)
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts \
-    && php artisan package:discover --ansi 2>/dev/null || true
+# Install PHP deps
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Permissions
 RUN chown -R www-data:www-data storage bootstrap/cache public/build \
