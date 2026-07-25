@@ -58,31 +58,9 @@ apache2-foreground &
 # Give Apache a moment to bind
 sleep 2
 
-# If FRESH_MIGRATIONS=true, drop all tables and re-run everything with seeders.
-if [ "${FRESH_MIGRATIONS:-false}" = "true" ]; then
-    echo "FRESH_MIGRATIONS=true — dropping all tables and re-seeding..."
-    php artisan migrate:fresh --force --seed --no-interaction 2>&1 || true
-else
-    echo "Running pending migrations..."
-    php artisan migrate --force --no-interaction 2>&1 | grep -v "Nothing to migrate" || true
-
-    # Seed only on first deploy (when no users exist yet)
-    USER_COUNT=$(php -r "
-        try {
-            \$pdo = new PDO('pgsql:host=${DB_HOST};port=${DB_PORT};dbname=${DB_DATABASE}', '${DB_USERNAME}', '${DB_PASSWORD}');
-            \$stmt = \$pdo->query('SELECT COUNT(*) FROM users');
-            echo \$stmt->fetchColumn();
-        } catch (Exception \$e) {
-            echo '0';
-        }
-    " 2>/dev/null || echo "0")
-    if [ "$USER_COUNT" = "0" ]; then
-        echo "Empty database detected — running seeders..."
-        php artisan db:seed --force --no-interaction 2>&1 || true
-    else
-        echo "Database already seeded — skipping seeders."
-    fi
-fi
+# Drop all tables and re-run migrations + seeders on every deploy.
+echo "Running migrate:fresh --seed..."
+php artisan migrate:fresh --force --seed --no-interaction 2>&1 || true
 
 # Clear and cache config for performance
 echo "Caching config, routes, and views..."
