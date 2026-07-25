@@ -24,8 +24,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # PHP extensions
 RUN docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd
 
+# Copy production PHP config (opcache)
+COPY docker-php.ini /usr/local/etc/php/conf.d/docker-php.ini
+
 # Apache mods
-RUN a2enmod rewrite
+RUN a2enmod rewrite expires deflate headers
 
 # Set Apache document root to Laravel's public directory
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public

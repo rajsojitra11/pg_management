@@ -60,7 +60,7 @@ services:
         value: file
 
       - key: CACHE_STORE
-        value: file
+        value: array
 
       - key: QUEUE_CONNECTION
         value: sync
