@@ -58,16 +58,14 @@ apache2-foreground &
 # Give Apache a moment to bind
 sleep 2
 
-# If FRESH_MIGRATIONS=true, drop all tables and re-run everything.
-# Otherwise, run only pending migrations and seed as normal.
+# If FRESH_MIGRATIONS=true, drop all tables and re-run everything with seeders.
+# Otherwise, run only pending migrations (seeders only run on fresh migrations).
 if [ "${FRESH_MIGRATIONS:-false}" = "true" ]; then
     echo "FRESH_MIGRATIONS=true — dropping all tables and re-seeding..."
     php artisan migrate:fresh --force --seed --no-interaction 2>&1 || true
 else
     echo "Running pending migrations..."
     php artisan migrate --force --no-interaction 2>&1 | grep -v "Nothing to migrate" || true
-    echo "Running database seeders..."
-    php artisan db:seed --force --no-interaction 2>&1 || true
 fi
 
 # Clear and cache config for performance
