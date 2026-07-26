@@ -15,7 +15,6 @@ return new class extends Migration
             $table->foreignId('payment_id')->constrained('payments');
             $table->foreignId('user_id')->constrained('users');
             $table->string('activity');
-            $table->text('user_remark')->nullable();
             $table->text('system_remark')->nullable();
             $table->json('old_values')->nullable();
             $table->json('new_values')->nullable();

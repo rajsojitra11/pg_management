@@ -219,9 +219,7 @@
 
     // Validation messages
     window.validationMessages = {
-        user_remark_required: "{{ __('validation.user_remark_required') }}",
-        user_remark_min: "{{ __('validation.user_remark_min', ['min' => config('app.min_comment_length', 3)]) }}",
-        user_remark_max: "{{ __('validation.user_remark_max', ['max' => config('app.max_comment_length', 1000)]) }}",
+
     };
 
     let STATE_ID = "{{ $setting->state_id ?? '0' }}";
@@ -278,21 +276,6 @@
                 errors.push(field);
             }
         });
-
-        // Validate remarks (required for update)
-        var $remark = $form.find('[name="user_remark"]');
-        if ($remark.length) {
-            var remarkVal = $remark.val() ? $remark.val().trim() : '';
-            var minLen = parseInt($remark.attr('data-min-length')) || 3;
-            var msgs = window.validationMessages || {};
-            if (!remarkVal) {
-                addFieldError($remark, msgs.user_remark_required || 'Please provide a reason');
-                errors.push('user_remark');
-            } else if (remarkVal.length < minLen) {
-                addFieldError($remark, msgs.user_remark_min || 'Minimum ' + minLen + ' characters required');
-                errors.push('user_remark');
-            }
-        }
 
         if (errors.length > 0) {
             return;

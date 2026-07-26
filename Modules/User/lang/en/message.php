@@ -52,7 +52,6 @@ return [
 
     // Common labels (from labels.php)
     'common' => [
-        'user_remark' => 'User Remark',
         'created_at' => 'Joined',
         'updated_at' => 'Updated At',
         'created_by' => 'Created By',
@@ -166,13 +165,6 @@ return [
 
     // Validation rules (from validation.php and global)
     'validation' => [
-        'user_remark' => [
-            'required_for_update' => 'User remark is required for updates',
-            'required_for_delete' => 'Deletion reason is required',
-            'min_length' => 'User remark must be at least :min characters',
-            'max_length' => 'User remark cannot exceed :max characters',
-            'min_length_info' => 'Minimum :min characters required',
-        ],
         'remark_cannot_exceed_500' => 'Remark cannot exceed 500 characters.',
         'id_required' => 'ID is required.',
         'id_integer' => 'ID must be an integer.',
@@ -259,23 +251,6 @@ return [
     'system_profile_updated' => 'User profile information updated for: :name',
     'system_profile_deleted' => 'User profile deleted for: :name',
     'system_profile_restored' => 'User profile restored for: :name',
-
-    // User action remarks
-    'user_remark_created' => 'User account created through system',
-    'user_remark_updated' => 'User account information updated',
-    'user_remark_deleted' => 'User account deleted',
-    'user_remark_activated' => 'User account activated',
-    'user_remark_deactivated' => 'User account deactivated',
-    'user_remark_blocked' => 'Account blocked due to security policy',
-    'user_remark_unblocked' => 'Account unblocked and access restored',
-    'user_remark_login' => 'User login successful',
-    'user_remark_logout' => 'User logged out',
-    'user_remark_logout_automatic' => 'Automatic logout due to session timeout',
-    'user_remark_login_failed' => 'Login attempt failed',
-    'user_remark_password_changed' => 'Password updated successfully',
-    'user_remark_profile_created' => 'Profile information created',
-    'user_remark_profile_updated' => 'Profile information updated',
-    'user_remark_profile_deleted' => 'Profile information removed',
 
     // Status change success messages (moved to root level for proper access)
     'user_activated_successfully' => 'User activated successfully',

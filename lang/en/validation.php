@@ -181,10 +181,6 @@ return [
         ],
     ],
 
-    // User remark validation messages
-    'user_remark_required' => 'User remark is required for this operation',
-    'user_remark_min' => 'User remark must be at least :min characters (minimum '.config('app.min_comment_length', 3).')',
-    'user_remark_max' => 'User remark may not be greater than :max characters (maximum '.config('app.max_comment_length', 1000).')',
     'deletion_reason_required' => 'Deletion reason is required',
 
     // Environment Variable validation messages

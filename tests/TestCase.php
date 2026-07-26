@@ -78,7 +78,7 @@ abstract class TestCase extends BaseTestCase
      * Assert a log record exists with exhaustive field verification.
      *
      * Validates ALL fields written by HasActivityLogging: user_id, created_by, created_at,
-     * system_remark, ip_address, browser, platform, device, user_remark, old_values/new_values.
+     * system_remark, ip_address, browser, platform, device, old_values/new_values.
      *
      * @param  string  $logTable  The log table name (e.g. 'city_logs')
      * @param  string  $foreignKeyColumn  The foreign key column name (e.g. 'city_id')
@@ -87,8 +87,6 @@ abstract class TestCase extends BaseTestCase
      * @param  int  $expectedUserId  Expected user_id and created_by
      * @param  array  $options  Additional assertions:
      *                          - system_remark_contains: string to assert system_remark contains
-     *                          - user_remark: exact user_remark value to match
-     *                          - user_remark_contains: string to assert user_remark contains
      *                          - new_values_keys: array of keys that must exist in new_values JSON
      *                          - old_values_keys: array of keys that must exist in old_values JSON
      *                          - old_value_check: associative array of field => value to check in old_values
@@ -149,19 +147,6 @@ abstract class TestCase extends BaseTestCase
             $this->assertNotNull($log->browser, "Log browser is null in {$logTable}");
             $this->assertNotNull($log->platform, "Log platform is null in {$logTable}");
             $this->assertNotNull($log->device, "Log device is null in {$logTable}");
-        }
-
-        // user_remark checks
-        if (isset($options['user_remark'])) {
-            $this->assertEquals($options['user_remark'], $log->user_remark, "Log user_remark mismatch in {$logTable}");
-        }
-        if (isset($options['user_remark_contains'])) {
-            $this->assertNotNull($log->user_remark, "Log user_remark is null in {$logTable}");
-            $this->assertStringContainsString(
-                $options['user_remark_contains'],
-                $log->user_remark,
-                "Log user_remark does not contain expected string in {$logTable}"
-            );
         }
 
         // old_values checks

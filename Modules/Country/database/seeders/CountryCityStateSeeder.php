@@ -321,7 +321,6 @@ class CountryCityStateSeeder extends Seeder
                 ($table === 'states' ? 'state_id' : 'city_id') => $moduleId,
                 'user_id' => $createdBy,
                 'activity' => 'System Record Creation',
-                'user_remark' => $userRemark,
                 'system_remark' => $systemRemark,
                 'old_values' => null,
                 'new_values' => json_encode($record),

@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('user_id');
             $table->string('activity');
 
-            $table->text('user_remark')->nullable();
             $table->text('system_remark');
 
             // Data snapshots for audit trail

@@ -66,16 +66,11 @@ return [
         'permissions' => [
             'required' => 'At least one permission must be selected',
         ],
-        'user_remark' => [
-            'required' => 'Please provide a reason for this update',
-            'min' => 'Reason must be at least :min characters',
-            'max' => 'Reason must not exceed :max characters',
-        ],
+
     ],
 
     // Labels for forms and displays
     'labels' => [
-        'user_remark' => 'User Remark',
         'deletion_reason' => 'Deletion Reason',
         'created_at' => 'Created At',
         'updated_at' => 'Updated At',
@@ -111,7 +106,6 @@ return [
         'search' => 'Search roles...',
         'select_option' => 'Select an option',
         'enter_name' => 'Enter role name',
-        'user_remark' => 'Please provide reason for this action...',
         'permissions_search' => 'Search permissions...',
     ],
 
@@ -124,8 +118,6 @@ return [
     ],
 
     'instructions' => [
-        'user_remark_update' => 'Please provide reason for updating this role',
-        'user_remark_delete' => 'Please provide reason for deleting this role',
         'permission_selection' => 'Select the permissions that should be granted to this role',
     ],
 

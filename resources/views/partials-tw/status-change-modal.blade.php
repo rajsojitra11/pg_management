@@ -40,8 +40,6 @@
                     @include('partials-tw.remarks-field', [
                         'type' => 'custom',
                         'required' => true,
-                        'fieldId' => 'global_status_user_remark',
-                        'fieldName' => 'user_remark',
                         'colSize' => 'w-full',
                         'rows' => 3,
                         'label' => 'Reason for Status Change',

@@ -39,7 +39,6 @@ class MenuMasterDatabaseSeeder extends Seeder
                 'menu_master_id' => $menu['id'],
                 'user_id' => 1,
                 'activity' => 'System Record Creation',
-                'user_remark' => 'Menu configuration seeded for navigation: '.$menu['menu_title'],
                 'system_remark' => 'Initial Data Created By System Setup',
                 'old_values' => null,
                 'new_values' => json_encode(array_merge($menu, [
@@ -95,7 +94,6 @@ class MenuMasterDatabaseSeeder extends Seeder
             'menu_master_id' => $systemAdminId,
             'user_id' => 1,
             'activity' => 'System Record Creation',
-            'user_remark' => 'System initialization',
             'system_remark' => 'System administration created navigation: '.$systemAdminMenuData['menu_title'],
             'old_values' => null,
             'new_values' => json_encode(array_merge($systemAdminMenuData, ['id' => $systemAdminId])),
@@ -137,7 +135,6 @@ class MenuMasterDatabaseSeeder extends Seeder
                 'menu_master_id' => $submenuId,
                 'user_id' => 1,
                 'activity' => 'System Record Creation',
-                'user_remark' => 'System administration submenu seeded for navigation: '.$submenu['menu_title'],
                 'system_remark' => 'Initial Data Created By System Setup',
                 'old_values' => null,
                 'new_values' => json_encode(array_merge($submenuData, ['id' => $submenuId])),

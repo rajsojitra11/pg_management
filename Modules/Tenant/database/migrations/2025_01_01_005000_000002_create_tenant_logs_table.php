@@ -14,7 +14,6 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->string('activity')->nullable();
-            $table->text('user_remark')->nullable();
             $table->text('system_remark')->nullable();
             $table->longText('old_values')->nullable();
             $table->longText('new_values')->nullable();

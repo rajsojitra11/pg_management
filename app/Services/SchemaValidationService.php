@@ -538,7 +538,7 @@ class SchemaValidationService
 
         // Check for fields in FormRequest but not in DB
         foreach ($existingFields as $field) {
-            if (! isset($schemaColumns[$field]) && ! str_contains($field, '.*') && ! in_array($field, ['user_remark', 'entry_date'])) {
+            if (! isset($schemaColumns[$field]) && ! str_contains($field, '.*') && ! in_array($field, ['entry_date'])) {
                 $diff[$field] = [
                     'status' => 'extra',
                     'schema_rules' => [],

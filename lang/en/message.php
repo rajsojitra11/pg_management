@@ -88,13 +88,8 @@ return [
         // User remarks and entries
         'is_required' => 'is required',
         'invalid' => 'is invalid',
-        'user_remark' => 'User Remark',
         'deletion_reason' => 'Deletion Reason',
         'confirm_delete' => 'Confirm Delete',
-        'user_remark_help_create' => 'You can provide additional context for this entry',
-        'user_remark_required_update' => 'Please provide a reason for this update',
-        'user_remark_required_delete' => 'Please provide a reason for deletion',
-        'user_remark_help_custom' => 'Please provide your remarks',
 
         // Operation results
         'error_occurred' => 'An error occurred. Please try again.',

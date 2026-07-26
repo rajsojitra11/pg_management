@@ -39,7 +39,6 @@ class LogUserAuthentication
             'user_id' => $user->id,
             'user_id_acting_on' => $user->id,
             'activity' => 'login',
-            'user_remark' => __('user::message.user_remark_login'),
             'system_remark' => __('user::message.system_user_login', ['name' => $user->name]),
             'ip_address' => request()->ip() ?: ($_SERVER['REMOTE_ADDR'] ?? null),
             'location' => getLocationFromIp(request()->ip() ?: ($_SERVER['REMOTE_ADDR'] ?? null)),
@@ -80,7 +79,6 @@ class LogUserAuthentication
             'user_id' => $user->id,
             'user_id_acting_on' => $user->id,
             'activity' => 'logout',
-            'user_remark' => __('user::message.user_remark_logout'),
             'system_remark' => __('user::message.system_user_logout', ['name' => $user->name]),
             'ip_address' => request()->ip() ?: ($_SERVER['REMOTE_ADDR'] ?? null),
             'location' => getLocationFromIp(request()->ip() ?: ($_SERVER['REMOTE_ADDR'] ?? null)),
@@ -132,7 +130,6 @@ class LogUserAuthentication
             'user_id' => $userId ?: 1, // Use system user if no user found
             'user_id_acting_on' => $userId ?: 1,
             'activity' => 'login_failed',
-            'user_remark' => __('user::message.user_remark_login_failed'),
             'system_remark' => __('user::message.system_user_login_failed', ['identifier' => $identifier]),
             'ip_address' => request()->ip() ?: ($_SERVER['REMOTE_ADDR'] ?? null),
             'location' => getLocationFromIp(request()->ip() ?: ($_SERVER['REMOTE_ADDR'] ?? null)),
@@ -163,7 +160,6 @@ class LogUserAuthentication
             'user_id' => $userId,
             'user_id_acting_on' => $userId,
             'activity' => 'logout',
-            'user_remark' => __('user::message.user_remark_logout_automatic'),
             'system_remark' => __('user::message.system_user_logout_automatic', [
                 'reason' => $reason,
                 'name' => $user ? $user->name : 'Unknown User',
@@ -197,7 +193,6 @@ class LogUserAuthentication
             'user_id' => $userId,
             'user_id_acting_on' => $userId,
             'activity' => 'password_changed',
-            'user_remark' => $userRemark ?: __('user::message.user_remark_password_changed'),
             'system_remark' => __('user::message.system_password_changed', [
                 'name' => $user ? $user->name : 'Unknown User',
             ]),
@@ -230,7 +225,6 @@ class LogUserAuthentication
             'user_id' => $userId,
             'user_id_acting_on' => $userId,
             'activity' => 'blocked',
-            'user_remark' => $userRemark ?: __('user::message.user_remark_blocked'),
             'system_remark' => __('user::message.system_user_blocked', [
                 'name' => $user ? $user->name : 'Unknown User',
             ]),
@@ -263,7 +257,6 @@ class LogUserAuthentication
             'user_id' => $userId,
             'user_id_acting_on' => $userId,
             'activity' => 'unblocked',
-            'user_remark' => $userRemark ?: __('user::message.user_remark_unblocked'),
             'system_remark' => __('user::message.system_user_unblocked', [
                 'name' => $user ? $user->name : 'Unknown User',
             ]),
@@ -304,7 +297,6 @@ class LogUserAuthentication
                 'user_id' => $userId,
                 'user_id_acting_on' => $userId,
                 'activity' => 'activated',
-                'user_remark' => $userRemark ?: __('user::message.user_remark_activated'),
                 'system_remark' => __('user::message.system_user_activated', [
                     'name' => $user->name,
                 ]),
@@ -355,7 +347,6 @@ class LogUserAuthentication
                 'user_id' => $userId,
                 'user_id_acting_on' => $userId,
                 'activity' => 'deactivated',
-                'user_remark' => $userRemark ?: __('user::message.user_remark_deactivated'),
                 'system_remark' => __('user::message.system_user_deactivated', [
                     'name' => $user->name,
                 ]),

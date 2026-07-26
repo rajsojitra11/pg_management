@@ -55,7 +55,6 @@ class StoreUserRequest extends FormRequest
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'status' => 'required|string|in:Active,InActive',
             'dateofbirth' => 'nullable|date',
-            // IMPORTANT: NO user_remark field for CREATE operations
         ];
     }
 

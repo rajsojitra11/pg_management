@@ -212,7 +212,6 @@ trait SeederLogging
                         'user_id' => $superAdminId,
                         'activity' => 'System Record Creation',
                         'system_remark' => $message,
-                        'user_remark' => 'Initial Data Created By System Setup',
                         'old_values' => null,
                         'new_values' => json_encode($fullData),
                         'ip_address' => '127.0.0.1',

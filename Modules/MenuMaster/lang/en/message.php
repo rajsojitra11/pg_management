@@ -194,8 +194,5 @@ return [
     'validation' => [
         'menu_title_required' => 'Menu title is required',
         'parent_id_exists' => 'Selected parent menu does not exist',
-        'user_remark_required' => 'Please explain the reason for this change',
-        'user_remark_min' => 'Reason must be at least :min characters',
-        'user_remark_max' => 'Reason may not be greater than :max characters',
     ],
 ];

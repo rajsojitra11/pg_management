@@ -15,7 +15,6 @@ class ServiceLog extends Model
         'user_id',
         'created_by',
         'activity',
-        'user_remark',
         'system_remark',
         'old_values',
         'new_values',

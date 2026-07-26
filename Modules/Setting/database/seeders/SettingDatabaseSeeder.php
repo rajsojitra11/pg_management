@@ -68,7 +68,6 @@ class SettingDatabaseSeeder extends Seeder
                 'platform' => 'Server',
                 'browser' => 'Server',
                 'system_remark' => 'Initial Data Created By System Setup',
-                'user_remark' => 'Sample company settings seeded for initial system configuration',
             ]);
     }
 }

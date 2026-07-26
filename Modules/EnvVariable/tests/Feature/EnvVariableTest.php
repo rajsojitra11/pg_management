@@ -82,29 +82,6 @@ class EnvVariableTest extends TestCase
         ]);
     }
 
-    public function test_can_create_env_variable_with_user_remarks(): void
-    {
-        $data = [
-            'key' => 'TEST_WITH_REMARKS',
-            'value' => 'test_value',
-            'type' => 'text',
-            'description' => 'Test variable with remarks',
-            'is_active' => true,
-            'is_encrypted' => false,
-            'user_remark' => 'Creating new test variable for testing purposes',
-        ];
-
-        $response = $this->postJson(route('env-variable.store'), $data);
-
-        $response->assertStatus(200);
-
-        $envVariable = EnvVariable::where('key', 'TEST_WITH_REMARKS')->first();
-        $this->assertLogRecord('env_variable_logs', 'env_variable_id', $envVariable->id, 'created', $this->user->id, [
-            'expect_null_old_values' => true,
-            'user_remark_contains' => 'Creating new test variable',
-        ]);
-    }
-
     public function test_can_view_env_variable(): void
     {
         $envVariable = EnvVariable::factory()->create(['is_encrypted' => false]);
@@ -127,25 +104,7 @@ class EnvVariableTest extends TestCase
         $response->assertViewHas('envVariable');
     }
 
-    public function test_cannot_update_env_variable_without_user_remarks(): void
-    {
-        $envVariable = EnvVariable::factory()->create(['is_encrypted' => false]);
-
-        $data = [
-            'key' => $envVariable->key,
-            'value' => 'updated_value',
-            'type' => 'text',
-            'description' => 'Updated description',
-            'is_active' => true,
-        ];
-
-        $response = $this->putJson(route('env-variable.update', $envVariable), $data);
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['user_remark']);
-    }
-
-    public function test_can_update_env_variable_with_user_remarks(): void
+    public function test_can_update_env_variable(): void
     {
         $envVariable = EnvVariable::factory()->create([
             'value' => 'original_value',
@@ -160,7 +119,6 @@ class EnvVariableTest extends TestCase
             'description' => 'Updated description',
             'is_active' => true,
             'is_encrypted' => false,
-            'user_remark' => 'Updating value for configuration change',
         ];
 
         $response = $this->putJson(route('env-variable.update', $envVariable), $data);
@@ -172,30 +130,14 @@ class EnvVariableTest extends TestCase
         $this->assertEquals('Updated description', $envVariable->description);
         $this->assertEquals($this->user->id, $envVariable->updated_by);
 
-        $this->assertLogRecord('env_variable_logs', 'env_variable_id', $envVariable->id, 'updated', $this->user->id, [
-            'user_remark' => 'Updating value for configuration change',
-        ]);
+        $this->assertLogRecord('env_variable_logs', 'env_variable_id', $envVariable->id, 'updated', $this->user->id);
     }
 
-    public function test_cannot_delete_env_variable_without_user_remarks(): void
+    public function test_can_delete_env_variable(): void
     {
         $envVariable = EnvVariable::factory()->create(['is_encrypted' => false]);
 
         $response = $this->deleteJson(route('env-variable.destroy', $envVariable));
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['user_remark']);
-    }
-
-    public function test_can_delete_env_variable_with_user_remarks(): void
-    {
-        $envVariable = EnvVariable::factory()->create(['is_encrypted' => false]);
-
-        $data = [
-            'user_remark' => 'Removing obsolete configuration variable',
-        ];
-
-        $response = $this->deleteJson(route('env-variable.destroy', $envVariable), $data);
 
         $response->assertStatus(200);
 
@@ -205,7 +147,6 @@ class EnvVariableTest extends TestCase
         ]);
 
         $this->assertLogRecord('env_variable_logs', 'env_variable_id', $envVariable->id, 'deleted', $this->user->id, [
-            'user_remark' => 'Removing obsolete configuration variable',
             'expect_null_new_values' => true,
         ]);
     }
@@ -219,7 +160,6 @@ class EnvVariableTest extends TestCase
             'description' => 'Encrypted test variable',
             'is_active' => true,
             'is_encrypted' => true,
-            'user_remark' => 'Creating encrypted variable for security',
         ];
 
         $response = $this->postJson(route('env-variable.store'), $data);
@@ -302,32 +242,11 @@ class EnvVariableTest extends TestCase
             'description' => 'Updated description',
             'is_active' => true,
             'is_encrypted' => false,
-            'user_remark' => 'Testing activity log functionality',
         ];
 
         $this->putJson(route('env-variable.update', $envVariable), $updateData);
 
-        $this->assertLogRecord('env_variable_logs', 'env_variable_id', $envVariable->id, 'updated', $this->user->id, [
-            'user_remark' => 'Testing activity log functionality',
-        ]);
-    }
-
-    public function test_user_remark_minimum_length_validation(): void
-    {
-        $envVariable = EnvVariable::factory()->create(['is_encrypted' => false]);
-
-        $data = [
-            'key' => $envVariable->key,
-            'value' => 'updated_value',
-            'type' => 'text',
-            'is_active' => true,
-            'user_remark' => 'ab', // Too short
-        ];
-
-        $response = $this->putJson(route('env-variable.update', $envVariable), $data);
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['user_remark']);
+        $this->assertLogRecord('env_variable_logs', 'env_variable_id', $envVariable->id, 'updated', $this->user->id);
     }
 
     public function test_cannot_create_duplicate_keys(): void

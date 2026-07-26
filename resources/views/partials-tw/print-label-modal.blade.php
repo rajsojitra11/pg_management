@@ -39,8 +39,6 @@
                     @include('partials-tw.remarks-field', [
                         'type' => 'custom',
                         'required' => false,
-                        'fieldId' => 'global_print_user_remark',
-                        'fieldName' => 'user_remark',
                         'colSize' => 'w-full',
                         'rows' => 2,
                         'label' => 'Remark (Optional)',

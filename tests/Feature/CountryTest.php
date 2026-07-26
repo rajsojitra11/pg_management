@@ -52,24 +52,6 @@ class CountryTest extends TestCase
         ]);
     }
 
-    public function test_can_create_with_user_remarks(): void
-    {
-        $data = [
-            'name' => 'United States',
-            'code' => 'US',
-            'user_remark' => 'Adding US country',
-        ];
-
-        $response = $this->postJson(route('country.store'), $data);
-        $response->assertStatus(200);
-
-        $record = Country::where('name', 'United States')->first();
-        $this->assertLogRecord('country_logs', 'country_id', $record->id, 'created', $this->user->id, [
-            'expect_null_old_values' => true,
-            'user_remark_contains' => 'Adding US country',
-        ]);
-    }
-
     public function test_can_edit_returns_json(): void
     {
         $record = Country::factory()->create();
@@ -80,26 +62,12 @@ class CountryTest extends TestCase
         $response->assertJsonStructure(['result']);
     }
 
-    public function test_cannot_update_without_remarks(): void
-    {
-        $record = Country::factory()->create();
-        $data = [
-            'name' => 'Updated Country',
-            'code' => 'UC',
-        ];
-
-        $response = $this->putJson(route('country.update', $record->id), $data);
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['user_remark']);
-    }
-
     public function test_can_update_with_remarks(): void
     {
         $record = Country::factory()->create();
         $data = [
             'name' => 'Updated Country Name',
             'code' => 'UC',
-            'user_remark' => 'Updating country',
         ];
 
         $response = $this->putJson(route('country.update', $record->id), $data);
@@ -110,7 +78,6 @@ class CountryTest extends TestCase
         $this->assertEquals($this->user->id, $record->updated_by);
 
         $this->assertLogRecord('country_logs', 'country_id', $record->id, 'updated', $this->user->id, [
-            'user_remark' => 'Updating country',
         ]);
     }
 
@@ -120,34 +87,21 @@ class CountryTest extends TestCase
         $data = [
             'name' => 'Changed Country',
             'code' => 'CC',
-            'user_remark' => 'Testing change tracking',
         ];
 
         $this->putJson(route('country.update', $record->id), $data);
 
         $this->assertLogRecord('country_logs', 'country_id', $record->id, 'updated', $this->user->id, [
-            'user_remark' => 'Testing change tracking',
             'old_value_check' => ['name' => 'Original Country'],
             'new_value_check' => ['name' => 'Changed Country'],
         ]);
-    }
-
-    public function test_cannot_delete_without_remarks(): void
-    {
-        $record = Country::factory()->create();
-
-        $response = $this->deleteJson(route('country.destroy', $record->id));
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['user_remark']);
     }
 
     public function test_can_delete_with_remarks(): void
     {
         $record = Country::factory()->create();
 
-        $response = $this->deleteJson(route('country.destroy', $record->id), [
-            'user_remark' => 'Removing country',
-        ]);
+        $response = $this->deleteJson(route('country.destroy', $record->id));
         $response->assertStatus(200);
 
         $this->assertSoftDeleted('countries', [
@@ -156,7 +110,6 @@ class CountryTest extends TestCase
         ]);
 
         $this->assertLogRecord('country_logs', 'country_id', $record->id, 'deleted', $this->user->id, [
-            'user_remark' => 'Removing country',
             'expect_null_new_values' => true,
         ]);
     }

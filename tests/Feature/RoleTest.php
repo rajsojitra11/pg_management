@@ -102,7 +102,6 @@ class RoleTest extends TestCase
         $data = [
             'name' => 'Editor Updated',
             'permission' => [$perm2->id, $perm3->id],
-            'user_remark' => 'Updating role permissions',
         ];
 
         $response = $this->put(route('roles.update', $role->id), $data);
@@ -131,7 +130,6 @@ class RoleTest extends TestCase
         $this->put(route('roles.update', $role->id), [
             'name' => 'UpdatedName',
             'permission' => [$perm2->id],
-            'user_remark' => 'Renaming role',
         ]);
 
         $this->assertLogRecord(
@@ -141,7 +139,6 @@ class RoleTest extends TestCase
             'updated',
             $this->user->id,
             [
-                'user_remark' => 'Renaming role',
                 'old_value_check' => ['name' => 'OriginalName'],
                 'new_value_check' => ['name' => 'UpdatedName'],
             ]
@@ -159,9 +156,7 @@ class RoleTest extends TestCase
             'created_by' => $this->user->id,
         ]);
 
-        $response = $this->deleteJson(route('roles.destroy', $role->id), [
-            'user_remark' => 'Removing role',
-        ]);
+        $response = $this->deleteJson(route('roles.destroy', $role->id));
         $response->assertStatus(200);
 
         $this->assertSoftDeleted('roles', ['id' => $role->id]);
@@ -176,9 +171,7 @@ class RoleTest extends TestCase
             'created_by' => $this->user->id,
         ]);
 
-        $this->deleteJson(route('roles.destroy', $role->id), [
-            'user_remark' => 'Testing delete log',
-        ]);
+        $this->deleteJson(route('roles.destroy', $role->id));
 
         $this->assertLogRecord(
             'role_logs',
@@ -202,9 +195,7 @@ class RoleTest extends TestCase
             'created_by' => $this->user->id,
         ]);
 
-        $response = $this->deleteJson(route('roles.destroy', $role->id), [
-            'user_remark' => 'Trying to delete admin',
-        ]);
+        $response = $this->deleteJson(route('roles.destroy', $role->id));
         $response->assertJson(['status_code' => 403]);
     }
 

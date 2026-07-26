@@ -207,7 +207,7 @@ class SchemaValidationCommand extends Command
     protected function generateDeleteJson(string $moduleName, string $action, string $table, bool $isDryRun): void
     {
         if ($isDryRun) {
-            $this->line("  [{$moduleName}] {$action}: Fixed pattern (id + user_remark + entry_date) — no schema needed");
+            $this->line("  [{$moduleName}] {$action}: Fixed pattern (id + entry_date) — no schema needed");
 
             return;
         }
@@ -223,12 +223,6 @@ class SchemaValidationCommand extends Command
                     'type' => 'bigint',
                     'nullable' => false,
                     'html_type' => 'hidden',
-                ],
-                'user_remark' => [
-                    'rules' => ['required', 'string', 'min:3', 'max:1000'],
-                    'type' => 'varchar',
-                    'nullable' => false,
-                    'html_type' => 'textarea',
                 ],
                 'entry_date' => [
                     'rules' => ['nullable', 'date', 'before_or_equal:now'],

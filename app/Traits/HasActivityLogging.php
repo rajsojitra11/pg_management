@@ -52,9 +52,7 @@ trait HasActivityLogging
 
         // Handle creation logging
         static::created(function ($model) {
-            $request = request();
-            $userRemark = ($request && $request->filled('user_remark')) ? $request->user_remark : null;
-            $model->logActivity('created', $userRemark, null, null, $model->getAttributes());
+            $model->logActivity('created', null, null, $model->getAttributes());
         });
 
         // Handle update logging
@@ -69,7 +67,7 @@ trait HasActivityLogging
             $request = request();
             if ($request && ! $request->isMethod('put') && ! $request->isMethod('patch')) {
                 // Allow POST requests that have session-based action data (block/unblock/activate/deactivate)
-                $hasSessionActionData = static::getSessionActionType($model) && static::getSessionActionReason($model);
+                $hasSessionActionData = (bool) static::getSessionActionType($model);
                 if (! $hasSessionActionData) {
                     // For POST requests with X-HTTP-Method-Override header
                     if (
@@ -98,51 +96,30 @@ trait HasActivityLogging
             }
 
             // Check for session-based action data (for specific module actions)
-            $sessionActionReason = static::getSessionActionReason($model);
             $sessionActionType = static::getSessionActionType($model);
 
-            if ($sessionActionReason && $sessionActionType) {
-                $userRemark = $sessionActionReason;
+            if ($sessionActionType) {
                 $activity = $sessionActionType;
 
                 // Clear session data after use
                 static::clearSessionActionData($model);
             } else {
                 // Default update handling
-                $request = request();
-                $userRemark = ($request && $request->filled('user_remark')) ? $request->user_remark : null;
                 $activity = 'updated';
             }
 
-            $model->logActivity($activity, $userRemark, null, $oldValues, $model->getAttributes());
+            $model->logActivity($activity, null, $oldValues, $model->getAttributes());
         });
 
         // Handle deletion logging
         static::deleting(function ($model) {
-            // Check for deletion reason from session
-            $deletionReason = static::getSessionDeletionReason($model);
-
-            // Fallback: read user_remark from request (matches the updated event behavior)
-            if (! $deletionReason) {
-                $request = request();
-                $deletionReason = ($request && $request->filled('user_remark')) ? $request->user_remark : null;
-            }
-
-            $userRemark = $deletionReason ?: null;
-
-            // Log the deletion while the model still exists in the database
-            $model->logActivity('deleted', $userRemark, null, $model->getAttributes(), null);
-
-            // Clear the session key after use
-            if ($deletionReason) {
-                static::clearSessionDeletionReason($model);
-            }
+            $model->logActivity('deleted', null, $model->getAttributes(), null);
         });
 
         // Handle restoration logging (only for models with SoftDeletes)
         if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses_recursive(static::class))) {
             static::restored(function ($model) {
-                $model->logActivity('restored', 'Record restored', null, null, $model->getAttributes());
+                $model->logActivity('restored', null, null, $model->getAttributes());
             });
         }
     }
@@ -152,7 +129,6 @@ trait HasActivityLogging
      */
     public function logActivity(
         string $activity,
-        ?string $userRemark = null,
         ?string $systemRemark = null,
         ?array $oldValues = null,
         ?array $newValues = null,
@@ -180,11 +156,6 @@ trait HasActivityLogging
                 $systemRemark = 'Initial Data Created By System Setup';
             }
 
-            // Generate user remark if not provided
-            if (! $userRemark) {
-                $userRemark = $this->generateUserRemark($activity, $config);
-            }
-
             // Get device/browser information
             $deviceInfo = $this->getDeviceInfo();
 
@@ -193,7 +164,6 @@ trait HasActivityLogging
                 'user_id' => $userId,
                 $config['foreign_key'] => $this->getKey(), // Dynamic foreign key (user_id, currency_id, etc.)
                 'activity' => $activity,
-                'user_remark' => $userRemark,
                 'system_remark' => $systemRemark,
                 'old_values' => $this->enrichValuesWithFkLabels($oldValues),
                 'new_values' => $this->enrichValuesWithFkLabels($newValues),
@@ -584,90 +554,6 @@ trait HasActivityLogging
     }
 
     /**
-     * Generate user remark based on activity
-     */
-    protected function generateUserRemark(string $activity, array $config): string
-    {
-        $modelName = $config['model_name'] ?? class_basename($this);
-
-        switch ($activity) {
-            // Core CRUD Operations
-            case self::ACTIVITY_CREATED:
-                return "New {$modelName} created";
-            case self::ACTIVITY_UPDATED:
-                return "{$modelName} information updated";
-            case self::ACTIVITY_DELETED:
-                return "{$modelName} removed";
-            case self::ACTIVITY_RESTORED:
-                return "{$modelName} restored";
-            case self::ACTIVITY_FORCE_DELETED:
-                return "{$modelName} permanently deleted";
-
-                // Status Management
-            case self::ACTIVITY_ACTIVATED:
-                return "{$modelName} activated";
-            case self::ACTIVITY_DEACTIVATED:
-                return "{$modelName} deactivated";
-            case self::ACTIVITY_UNBLOCKED:
-                return "{$modelName} unblocked";
-
-                // Authentication & Security
-            case self::ACTIVITY_LOGIN:
-                return 'User login successful';
-            case self::ACTIVITY_LOGOUT:
-                return 'User logged out';
-            case self::ACTIVITY_LOGIN_FAILED:
-                return 'Login attempt failed';
-            case self::ACTIVITY_ACCOUNT_BLOCKED:
-                return 'Account blocked for security';
-
-                // Data Management
-            case self::ACTIVITY_VIEWED:
-                return "{$modelName} accessed";
-            case self::ACTIVITY_EXPORTED:
-                return "{$modelName} data exported";
-            case self::ACTIVITY_IMPORTED:
-                return "{$modelName} data imported";
-            case self::ACTIVITY_BULK_OPERATION:
-                return "Bulk operation on {$modelName}";
-            case self::ACTIVITY_CACHE_CLEARED:
-                return "{$modelName} cache cleared";
-
-                // Field-Specific Updates
-            case self::ACTIVITY_NAME_UPDATED:
-                return "{$modelName} name changed";
-            case self::ACTIVITY_SYMBOL_UPDATED:
-                return "{$modelName} symbol changed";
-            case self::ACTIVITY_VALUE_UPDATED:
-                return "{$modelName} value changed";
-            case self::ACTIVITY_PRIORITY_UPDATED:
-                return "{$modelName} priority changed";
-            case self::ACTIVITY_RELATIONSHIP_UPDATED:
-                return "{$modelName} relationships changed";
-            case self::ACTIVITY_PERMISSIONS_UPDATED:
-                return "{$modelName} permissions changed";
-            case self::ACTIVITY_PERMISSIONS_SYNCED:
-                return "{$modelName} permissions synchronized";
-
-                // System Activities
-            case self::ACTIVITY_SYNCHRONIZED:
-                return "{$modelName} synchronized";
-            case self::ACTIVITY_MIGRATED:
-                return "{$modelName} migrated";
-            case self::ACTIVITY_ARCHIVED:
-                return "{$modelName} archived";
-            case self::ACTIVITY_UNARCHIVED:
-                return "{$modelName} unarchived";
-            case self::ACTIVITY_LABEL_PRINTED:
-                return "{$modelName} label printed";
-
-                // Default fallback
-            default:
-                return "{$modelName} {$activity}";
-        }
-    }
-
-    /**
      * Get device/browser information from request
      */
     protected function getDeviceInfo(): array
@@ -812,13 +698,12 @@ trait HasActivityLogging
      */
     public function logCustomActivity(
         string $activity,
-        ?string $userRemark = null,
         ?string $systemRemark = null,
         ?array $oldValues = null,
         ?array $newValues = null,
         ?Carbon $createdAt = null
     ): void {
-        $this->logActivity($activity, $userRemark, $systemRemark, $oldValues, $newValues, $createdAt);
+        $this->logActivity($activity, $systemRemark, $oldValues, $newValues, $createdAt);
     }
 
     /**
@@ -829,11 +714,10 @@ trait HasActivityLogging
         string $activity,
         ?array $oldValues = null,
         ?array $newValues = null,
-        ?string $userRemark = null,
         ?string $systemRemark = null,
         ?Carbon $createdAt = null
     ): void {
-        $this->logActivity($activity, $userRemark, $systemRemark, $oldValues, $newValues, $createdAt);
+        $this->logActivity($activity, $systemRemark, $oldValues, $newValues, $createdAt);
     }
 
     /**
@@ -848,7 +732,7 @@ trait HasActivityLogging
         try {
             // Log to specific module log if available
             if (method_exists($this, 'getLoggingConfig')) {
-                $this->logActivity($action, null, null, $oldValues, $newValues);
+                $this->logActivity($action, null, $oldValues, $newValues);
             }
         } catch (Exception $e) {
             Log::error('Activity logging failed in HasActivityLogging trait', [

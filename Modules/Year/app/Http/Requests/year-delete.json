@@ -13,17 +13,6 @@
             "type": "bigint",
             "nullable": false,
             "html_type": "hidden"
-        },
-        "user_remark": {
-            "rules": [
-                "required",
-                "string",
-                "min:3",
-                "max:1000"
-            ],
-            "type": "varchar",
-            "nullable": false,
-            "html_type": "textarea"
         }
     }
 }

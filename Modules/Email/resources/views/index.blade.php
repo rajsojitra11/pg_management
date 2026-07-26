@@ -190,16 +190,7 @@
                             <div class="mt-1 text-sm text-red-500" id="error_status"></div>
                         </div>
 
-                        <div id="config_user_remark_block" class="hidden">
-                            <label class="block text-sm font-medium text-zinc-700 mb-1" for="config_user_remark">
-                                {{ __('message.common.user_remark') }}<span class="text-red-500"> *</span>
-                            </label>
-                            <textarea required
-                                      class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
-                                      name="user_remark" id="config_user_remark" rows="2"
-                                      placeholder="{{ __('message.common.user_remark_placeholder') }}"></textarea>
-                            <div class="mt-1 text-sm text-red-500" id="error_user_remark"></div>
-                        </div>
+
                     </div>
 
                     <div class="flex items-center justify-end gap-2 p-4 border-t border-zinc-200">
@@ -393,7 +384,7 @@
                 sender_name: $('#sender_name').val(),
                 subject_prefix: $('#subject_prefix').val(),
                 status: $('#config_status').val(),
-                user_remark: $('#config_user_remark').val()
+
             };
 
             btn.prop('disabled', true).html('{{ __("message.common.saving") }}');
@@ -428,13 +419,12 @@
         $('#configModal').addClass('hidden');
         $('#configForm')[0].reset();
         $('#config_id').val('');
-        $('#config_user_remark_block').addClass('hidden');
-        $('#config_user_remark').val('');
+
         $('#configModalTitle').text("{{ __('email::message.add_config') }}");
         $('#saveConfig').html('<i class="fa-solid fa-check mr-1.5 text-xs"></i> {{ __("message.common.submit") }}');
         if (pgSelectInst && typeof pgSelectInst.setValue === 'function') pgSelectInst.setValue('');
         if (statusSelectInst && typeof statusSelectInst.setValue === 'function') statusSelectInst.setValue('active');
-        $('#error_pg_id, #error_sender_email, #error_sender_name, #error_subject_prefix, #error_status, #error_user_remark').html('');
+        $('#error_pg_id, #error_sender_email, #error_sender_name, #error_subject_prefix, #error_status').html('');
     }
 
     $(document).on('click', '.erp-modal-close', function(e) {
@@ -450,8 +440,6 @@
         $('#saveConfig').html('<i class="fa-solid fa-check mr-1.5 text-xs"></i> {{ __("message.common.update") }}');
         $('#configModalTitle').text("{{ __('email::message.edit_config') }}");
         $('#config_id').val(id);
-        $('#config_user_remark_block').removeClass('hidden');
-
         $.get(url, function(res) {
             if (res.status_code == 200) {
                 var d = res.result;

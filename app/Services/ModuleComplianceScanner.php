@@ -418,44 +418,10 @@ class ModuleComplianceScanner
 
     protected function checkRemarksUpdate(string $module, string $model): array
     {
-        $requestFile = base_path("Modules/{$module}/app/Http/Requests/Update{$model}Request.php");
-
-        if (! File::exists($requestFile)) {
-            return [
-                'name' => 'Rmk-Update',
-                'status' => 'WARN',
-                'detail' => "Update{$model}Request.php not found",
-                'fixable' => false,
-                'fix_type' => null,
-            ];
-        }
-
-        $content = File::get($requestFile);
-
-        if (preg_match("/['\"]user_remark['\"]\s*=>\s*['\"]required/", $content)) {
-            return [
-                'name' => 'Rmk-Update',
-                'status' => 'PASS',
-                'detail' => 'user_remark required in UpdateRequest',
-                'fixable' => false,
-                'fix_type' => null,
-            ];
-        }
-
-        if (preg_match("/['\"]user_remark['\"]/", $content)) {
-            return [
-                'name' => 'Rmk-Update',
-                'status' => 'WARN',
-                'detail' => 'user_remark present but not required',
-                'fixable' => false,
-                'fix_type' => null,
-            ];
-        }
-
         return [
             'name' => 'Rmk-Update',
-            'status' => 'FAIL',
-            'detail' => 'user_remark not in UpdateRequest',
+            'status' => 'PASS',
+            'detail' => 'Remarks check skipped - user_remark removed from project',
             'fixable' => false,
             'fix_type' => null,
         ];
@@ -463,44 +429,10 @@ class ModuleComplianceScanner
 
     protected function checkRemarksDelete(string $module, string $model): array
     {
-        $requestFile = base_path("Modules/{$module}/app/Http/Requests/Delete{$model}Request.php");
-
-        if (! File::exists($requestFile)) {
-            return [
-                'name' => 'Rmk-Delete',
-                'status' => 'FAIL',
-                'detail' => "Delete{$model}Request.php not found",
-                'fixable' => false,
-                'fix_type' => null,
-            ];
-        }
-
-        $content = File::get($requestFile);
-
-        if (preg_match("/['\"]user_remark['\"]\s*=>\s*['\"]required/", $content)) {
-            return [
-                'name' => 'Rmk-Delete',
-                'status' => 'PASS',
-                'detail' => 'user_remark required in DeleteRequest',
-                'fixable' => false,
-                'fix_type' => null,
-            ];
-        }
-
-        if (preg_match("/['\"]user_remark['\"]/", $content)) {
-            return [
-                'name' => 'Rmk-Delete',
-                'status' => 'WARN',
-                'detail' => 'user_remark present but not required',
-                'fixable' => false,
-                'fix_type' => null,
-            ];
-        }
-
         return [
             'name' => 'Rmk-Delete',
-            'status' => 'FAIL',
-            'detail' => 'user_remark not in DeleteRequest',
+            'status' => 'PASS',
+            'detail' => 'Remarks check skipped - user_remark removed from project',
             'fixable' => false,
             'fix_type' => null,
         ];
@@ -924,7 +856,6 @@ class Delete{$model}Request extends FormRequest
     {
         return [
             'id' => 'required|integer|exists:{$tableName},id',
-            'user_remark' => 'required|string|min:'.config('app.min_comment_length', 3).'|max:'.config('app.max_comment_length', 1000),
         ];
     }
 
@@ -936,9 +867,6 @@ class Delete{$model}Request extends FormRequest
         return [
             'id.required' => '{$model} ID is required for deletion.',
             'id.exists' => 'Selected {$model} does not exist.',
-            'user_remark.required' => __('validation.user_remark_required'),
-            'user_remark.min' => __('validation.user_remark_min', ['min' => config('app.min_comment_length', 3)]),
-            'user_remark.max' => __('validation.user_remark_max', ['max' => config('app.max_comment_length', 1000)]),
         ];
     }
 }

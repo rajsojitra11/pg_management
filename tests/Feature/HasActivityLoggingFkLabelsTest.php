@@ -81,7 +81,6 @@ class HasActivityLoggingFkLabelsTest extends TestCase
             'name' => 'Tokyo',
             'state_id' => $otherState->id,
             'country_id' => $otherCountry->id,
-            'user_remark' => 'Renaming and re-locating city for FK label test',
         ]);
 
         $log = DB::table('city_logs')
@@ -119,7 +118,6 @@ class HasActivityLoggingFkLabelsTest extends TestCase
             'name' => 'Pune',
             'state_id' => $otherState->id,
             'country_id' => $this->country->id,
-            'user_remark' => 'Moving city to a different state for soft-delete label test',
         ]);
 
         $this->state->delete(); // soft-delete the original state

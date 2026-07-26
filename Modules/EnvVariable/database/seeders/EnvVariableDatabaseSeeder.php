@@ -341,7 +341,6 @@ class EnvVariableDatabaseSeeder extends Seeder
                     'env_variable_id' => $envVariableId,
                     'user_id' => 1,
                     'activity' => 'System Record Creation',
-                    'user_remark' => 'Environment variable seeded for '.$variableData['category'].' configuration: '.$variableData['key'],
                     'system_remark' => 'Initial Data Created By System Setup',
                     'old_values' => null,
                     'new_values' => json_encode(array_merge($variableData, [

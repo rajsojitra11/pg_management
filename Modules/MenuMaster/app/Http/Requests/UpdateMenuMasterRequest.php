@@ -29,7 +29,6 @@ class UpdateMenuMasterRequest extends FormRequest
             'is_main_menu' => 'nullable|boolean',
             'order_display' => 'nullable|string|max:50',
             'display_order' => 'nullable|string|max:50',
-            'user_remark' => 'required|string|min:'.config('app.min_comment_length', 3).'|max:'.config('app.max_comment_length', 1000),
         ];
     }
 
@@ -46,7 +45,6 @@ class UpdateMenuMasterRequest extends FormRequest
             'module_name' => __('menumaster::message.module_name'),
             'if_can' => __('menumaster::message.permission_required'),
             'is_main_menu' => __('menumaster::message.is_main_menu'),
-            'user_remark' => __('lang.labels.user_remark'),
         ];
     }
 
@@ -58,9 +56,6 @@ class UpdateMenuMasterRequest extends FormRequest
         return [
             'menu_title.required' => __('menumaster::message.enter_menu_title'),
             'parent_id.exists' => __('menumaster::message.validation.parent_id_exists'),
-            'user_remark.required' => __('validation.user_remark_required'),
-            'user_remark.min' => __('validation.user_remark_min', ['min' => config('app.min_comment_length', 3)]),
-            'user_remark.max' => __('validation.user_remark_max', ['max' => config('app.max_comment_length', 1000)]),
         ];
     }
 }

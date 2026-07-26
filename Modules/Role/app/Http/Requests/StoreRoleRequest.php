@@ -19,7 +19,6 @@ class StoreRoleRequest extends FormRequest
             'permission.*' => 'exists:permissions,id',
             'all_years' => 'boolean',
             'allowed_year' => 'nullable|integer|min:1|max:9999',
-            // NO user_remark field for CREATE operations
         ];
     }
 

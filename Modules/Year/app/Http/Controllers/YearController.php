@@ -127,7 +127,6 @@ class YearController extends Controller
                     'short' => $request->short ?: $formats['short'],
                     'full' => $request->full ?: $formats['full'],
                     'set_default' => $defaultSet,
-                    'user_remark' => $request->user_remark ?? null,
                     'updated_by' => auth()->id(),
                 ]);
 

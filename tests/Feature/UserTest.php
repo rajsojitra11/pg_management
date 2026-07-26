@@ -138,7 +138,6 @@ class UserTest extends TestCase
             'status' => 'Active',
             'designation' => 'Test Engineer',
             'roles' => [$this->testRole->id],
-            'user_remark' => 'Updating user',
         ];
 
         $response = $this->put(route('users.update', $targetUser->id), $data);
@@ -154,9 +153,7 @@ class UserTest extends TestCase
     {
         $targetUser = User::factory()->create();
 
-        $response = $this->deleteJson(route('users.destroy', $targetUser->id), [
-            'user_remark' => 'Removing user',
-        ]);
+        $response = $this->deleteJson(route('users.destroy', $targetUser->id));
         $response->assertStatus(200);
 
         $this->assertSoftDeleted('users', [
@@ -169,9 +166,7 @@ class UserTest extends TestCase
     {
         $targetUser = User::factory()->create();
 
-        $this->deleteJson(route('users.destroy', $targetUser->id), [
-            'user_remark' => 'Removing user for test',
-        ]);
+        $this->deleteJson(route('users.destroy', $targetUser->id));
 
         $this->assertLogRecord(
             'user_logs',
@@ -196,7 +191,6 @@ class UserTest extends TestCase
         $response = $this->postJson(route('user-login-status-change'), [
             'id' => $targetUser->id,
             'status' => 1,
-            'user_remark' => 'Blocking user',
         ]);
         $response->assertStatus(200);
 
@@ -211,7 +205,6 @@ class UserTest extends TestCase
         $this->postJson(route('user-login-status-change'), [
             'id' => $targetUser->id,
             'status' => 1,
-            'user_remark' => 'Blocking for testing',
         ]);
 
         $this->assertLogRecord(
@@ -221,7 +214,6 @@ class UserTest extends TestCase
             'blocked',
             $this->user->id,
             [
-                'user_remark' => 'Blocking for testing',
                 'system_remark_contains' => 'blocked',
             ]
         );
@@ -234,7 +226,6 @@ class UserTest extends TestCase
         $this->postJson(route('user-login-status-change'), [
             'id' => $targetUser->id,
             'status' => 0,
-            'user_remark' => 'Unblocking user',
         ]);
 
         $targetUser->refresh();
@@ -247,7 +238,6 @@ class UserTest extends TestCase
             'unblocked',
             $this->user->id,
             [
-                'user_remark' => 'Unblocking user',
                 'system_remark_contains' => 'unblocked',
             ]
         );
@@ -262,7 +252,6 @@ class UserTest extends TestCase
         $response = $this->postJson(route('user-status-change'), [
             'id' => $targetUser->id,
             'status' => 'Inactive',
-            'user_remark' => 'Deactivating user',
         ]);
         $response->assertStatus(200);
 
@@ -277,7 +266,6 @@ class UserTest extends TestCase
         $this->postJson(route('user-status-change'), [
             'id' => $targetUser->id,
             'status' => 'Inactive',
-            'user_remark' => 'Deactivating for test',
         ]);
 
         $this->assertLogRecord(
@@ -287,7 +275,6 @@ class UserTest extends TestCase
             'deactivated',
             $this->user->id,
             [
-                'user_remark' => 'Deactivating for test',
                 'system_remark_contains' => 'inactive',
             ]
         );
@@ -300,7 +287,6 @@ class UserTest extends TestCase
         $this->postJson(route('user-status-change'), [
             'id' => $targetUser->id,
             'status' => 'Active',
-            'user_remark' => 'Activating user',
         ]);
 
         $targetUser->refresh();
@@ -313,7 +299,6 @@ class UserTest extends TestCase
             'activated',
             $this->user->id,
             [
-                'user_remark' => 'Activating user',
                 'system_remark_contains' => 'active',
             ]
         );

@@ -222,12 +222,6 @@
                                     </div>
                                 </div>
 
-                                @if($log->user_remark)
-                                <div class="mb-2">
-                                    <span class="text-xs font-medium text-zinc-500">{{ __('lang.labels.env_variable.user_remark') }}:</span>
-                                    <p class="text-xs text-zinc-900 mt-0.5 px-2 py-1.5 rounded" style="background: var(--erp-bg-page);">{{ $log->user_remark }}</p>
-                                </div>
-                                @endif
 
                                 @if($log->system_remark)
                                 <div class="mb-2">

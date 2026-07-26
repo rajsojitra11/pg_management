@@ -516,10 +516,8 @@ class UserController extends Controller
                 ]);
             }
 
-            // Get validated data including user_remark from DeleteUserRequest
-            $data = $request->validated();
             $user->deleted_by = auth()->id(); // REQUIRED: Add user tracking
-            $user->update($data); // Update before delete to capture user_remark
+            $user->update($request->validated());
 
             // Delete user (this will also soft delete related records due to relationships)
             $user->delete();
@@ -917,8 +915,7 @@ class UserController extends Controller
                 $user->save();
 
                 // Log password change with user remark
-                $userRemark = $request->user_remark ?? __('user::message.user_remark_password_changed');
-                LogUserAuthentication::logPasswordChange(Auth::id(), $userRemark);
+                LogUserAuthentication::logPasswordChange(Auth::id(), 'Password changed');
 
                 DB::commit();
 
@@ -975,15 +972,11 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer|exists:users,id',
             'status' => 'required',
-            'user_remark' => 'required|string|min:'.config('app.min_comment_length', 3).'|max:'.config('app.max_comment_length', 1000),
         ], [
             'id.required' => __('user::message.id_required'),
             'id.integer' => __('user::message.id_integer'),
             'id.exists' => __('user::message.user_id_not_exist'),
             'status.required' => __('user::message.enter_user_status'),
-            'user_remark.required' => __('validation.user_remark_required'),
-            'user_remark.min' => __('validation.user_remark_min', ['min' => config('app.min_comment_length', 3)]),
-            'user_remark.max' => __('validation.user_remark_max', ['max' => config('app.max_comment_length', 1000)]),
         ]);
 
         if ($validator->fails()) {
@@ -1016,7 +1009,6 @@ class UserController extends Controller
             // Store action data in session to prevent double logging from HasActivityLogging trait
             if ($activity) {
                 session(["user_action_type_{$user->id}" => $activity]);
-                session(["user_action_reason_{$user->id}" => $request->user_remark]);
             }
 
             // Update user blocked status
@@ -1067,16 +1059,12 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer|exists:users,id',
             'status' => 'required|in:Active,Inactive',
-            'user_remark' => 'required|string|min:'.config('app.min_comment_length', 3).'|max:'.config('app.max_comment_length', 1000),
         ], [
             'id.required' => __('user::message.id_required'),
             'id.integer' => __('user::message.id_integer'),
             'id.exists' => __('user::message.user_id_not_exist'),
             'status.required' => __('user::message.enter_user_status'),
             'status.in' => __('user::message.status_must_be_active_inactive'),
-            'user_remark.required' => __('validation.user_remark_required'),
-            'user_remark.min' => __('validation.user_remark_min', ['min' => config('app.min_comment_length', 3)]),
-            'user_remark.max' => __('validation.user_remark_max', ['max' => config('app.max_comment_length', 1000)]),
         ]);
 
         if ($validator->fails()) {
@@ -1109,7 +1097,6 @@ class UserController extends Controller
             // Store action data in session to prevent double logging from HasActivityLogging trait
             if ($activity) {
                 session(["user_action_type_{$user->id}" => $activity]);
-                session(["user_action_reason_{$user->id}" => $request->user_remark]);
             }
 
             // Update user status

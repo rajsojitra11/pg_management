@@ -25,7 +25,6 @@ class UpdateSettingRequest extends FormRequest
             'country_id' => 'required|integer|exists:countries,id',
             'state_id' => 'required|integer|exists:states,id',
             'city_id' => 'required|integer|exists:cities,id',
-            'user_remark' => 'required|string|min:'.config('app.min_comment_length', 3).'|max:'.config('app.max_comment_length', 1000),
         ];
     }
 
@@ -41,9 +40,6 @@ class UpdateSettingRequest extends FormRequest
             'state_id.exists' => __('setting::message.state_id_exists'),
             'city_id.required' => 'City is required',
             'city_id.exists' => __('setting::message.city_id_exists'),
-            'user_remark.required' => __('validation.user_remark_required'),
-            'user_remark.min' => __('validation.user_remark_min', ['min' => config('app.min_comment_length', 3)]),
-            'user_remark.max' => __('validation.user_remark_max', ['max' => config('app.max_comment_length', 1000)]),
         ];
     }
 }

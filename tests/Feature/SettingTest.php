@@ -78,26 +78,6 @@ class SettingTest extends TestCase
         ]);
     }
 
-    public function test_can_create_with_user_remarks(): void
-    {
-        $data = [
-            'company_name' => 'Remark Company',
-            'country_id' => $this->countryId,
-            'state_id' => $this->stateId,
-            'city_id' => $this->cityId,
-            'user_remark' => 'Setting up company',
-        ];
-
-        $response = $this->postJson(route('setting.store'), $data);
-        $response->assertStatus(200);
-
-        $record = Setting::where('company_name', 'Remark Company')->first();
-        $this->assertLogRecord('setting_logs', 'setting_id', $record->id, 'created', $this->user->id, [
-            'expect_null_old_values' => true,
-            'user_remark_contains' => 'Setting up company',
-        ]);
-    }
-
     public function test_can_update_settings(): void
     {
         $record = Setting::factory()->create(['company_name' => 'Old Company']);
@@ -106,7 +86,6 @@ class SettingTest extends TestCase
             'country_id' => $this->countryId,
             'state_id' => $this->stateId,
             'city_id' => $this->cityId,
-            'user_remark' => 'Updating settings',
         ];
 
         $response = $this->postJson(route('setting.store'), $data);
@@ -124,7 +103,6 @@ class SettingTest extends TestCase
             'country_id' => $this->countryId,
             'state_id' => $this->stateId,
             'city_id' => $this->cityId,
-            'user_remark' => 'Testing change tracking',
         ];
 
         $response = $this->postJson(route('setting.store'), $data);

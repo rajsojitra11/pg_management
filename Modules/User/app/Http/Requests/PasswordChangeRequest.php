@@ -23,7 +23,6 @@ class PasswordChangeRequest extends FormRequest
             'current_password' => 'required',
             'password' => 'required_with:confirm_password|min:8|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[@$!%*#?&]/',
             'confirm_password' => 'same:password',
-            'user_remark' => 'nullable|string|min:'.config('app.min_comment_length', 3).'|max:'.config('app.max_comment_length', 1000),
         ];
     }
 
@@ -35,8 +34,6 @@ class PasswordChangeRequest extends FormRequest
         return [
             'password.min' => __('user::message.enter_password_min'),
             'password.regex' => __('user::message.enter_password_regex'),
-            'user_remark.min' => __('validation.user_remark_min', ['min' => config('app.min_comment_length', 3)]),
-            'user_remark.max' => __('validation.user_remark_max', ['max' => config('app.max_comment_length', 1000)]),
         ];
     }
 }

@@ -32,7 +32,6 @@ class UpdateEnvVariableRequest extends FormRequest
             'requires_restart' => 'boolean',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'boolean',
-            'user_remark' => 'required|string|min:'.config('app.min_comment_length', 3).'|max:'.config('app.max_comment_length', 1000),
             'sync_env_file' => 'boolean',
         ];
 
@@ -68,9 +67,7 @@ class UpdateEnvVariableRequest extends FormRequest
             'key.regex' => __('envvariable::message.validation.key_format'),
             'value.max' => __('envvariable::message.validation.value_max'),
             'description.max' => __('envvariable::message.validation.description_max'),
-            'user_remark.required' => __('validation.user_remark_required'),
-            'user_remark.min' => __('validation.user_remark_min', ['min' => config('app.min_comment_length', 3)]),
-            'user_remark.max' => __('validation.user_remark_max', ['max' => config('app.max_comment_length', 1000)]),
+
         ];
     }
 

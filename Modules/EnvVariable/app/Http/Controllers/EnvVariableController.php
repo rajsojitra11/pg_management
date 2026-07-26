@@ -5,7 +5,6 @@ namespace Modules\EnvVariable\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -53,7 +52,6 @@ class EnvVariableController extends Controller
             $data['created_by'] = Auth::id();
             $data['updated_by'] = Auth::id();
 
-            // The HasActivityLogging trait automatically handles user_remark from the request
             $envVariable = EnvVariable::create($data);
 
             // Update .env file if requested
@@ -103,7 +101,6 @@ class EnvVariableController extends Controller
             $data = $request->validated();
             $data['updated_by'] = Auth::id();
 
-            // The HasActivityLogging trait automatically handles user_remark from the request
             $envVariable->update($data);
 
             // Update .env file if requested
@@ -130,7 +127,7 @@ class EnvVariableController extends Controller
             Log::error('Environment variable update failed', [
                 'error' => $e->getMessage(),
                 'id' => $envVariable->id,
-                'data' => $request->except(['value', 'user_remark']),
+                'data' => $request->except(['value']),
             ]);
 
             return response()->json([
@@ -148,7 +145,6 @@ class EnvVariableController extends Controller
             $envVariable->deleted_by = Auth::id();
             $envVariable->save();
 
-            // The HasActivityLogging trait automatically handles user_remark from the request
             $envVariable->delete();
 
             DB::commit();

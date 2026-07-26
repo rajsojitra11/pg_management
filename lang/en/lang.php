@@ -14,10 +14,8 @@ return [
     'active' => 'Active',
     'inactive' => 'Inactive',
     'reason_required_min_3' => 'Reason is required (minimum 3 characters)',
-    'user_remark_required_min_3' => 'Please explain the reason for this change (minimum 3 characters)',
     'confirm_delete_item' => 'Are you sure you want to delete',
     'warning_permanent_action' => 'Warning: This action cannot be undone!',
-    'user_remark_mandatory' => 'User Remark Required:',
     'explain_changes_requirement' => 'You must explain what changes you are making and why.',
     'deletion_reason_mandatory' => 'Deletion Reason Required:',
     'explain_deletion_requirement' => 'You must provide a detailed explanation for why this record is being deleted.',
@@ -103,13 +101,8 @@ return [
         'no_value_set' => 'No value set',
 
         // User remarks and entries
-        'user_remark' => 'User Remark',
         'deletion_reason' => 'Deletion Reason',
         'confirm_delete' => 'Confirm Delete',
-        'user_remark_help_create' => 'You can provide additional context for this entry',
-        'user_remark_required_update' => 'Please provide a reason for this update',
-        'user_remark_required_delete' => 'Please provide a reason for deletion',
-        'user_remark_help_custom' => 'Please provide your remarks',
 
         // Operation results
         'error_occurred' => 'An error occurred. Please try again.',
@@ -155,10 +148,7 @@ return [
     'placeholders' => [
         'explain_changes' => 'Please explain what changes you made and why...',
         'explain_deletion_reason' => 'Please explain why you are deleting this record...',
-        'user_remark_create' => 'Optional: Provide additional context for this entry...',
-        'user_remark_update' => 'Please explain why you are making this change...',
-        'user_remark_delete' => 'Please explain why you are deleting this record...',
-        'user_remark_custom' => 'Please provide your remarks...',
+
     ],
 
     // Labels
@@ -169,7 +159,6 @@ return [
         'created_at' => 'Created At',
         'actions' => 'Actions',
         'reason' => 'Reason',
-        'user_remark' => 'Reason for Change',
         'reason_for_change' => 'Reason for Change',
         'activity_logs' => 'Activity Logs',
         'confirm_delete' => 'Confirm Delete',
@@ -219,7 +208,6 @@ return [
             'sync_env_file' => 'Sync to .env File',
             'clear_cache' => 'Clear Cache',
             'composer_dump' => 'Composer Dump-Autoload',
-            'user_remark' => 'Reason for Change',
             'no_records' => 'No Environment Variables Found',
             'confirm_delete' => 'Confirm Delete',
             'delete_warning' => 'Are you sure you want to delete this environment variable? This action cannot be undone.',

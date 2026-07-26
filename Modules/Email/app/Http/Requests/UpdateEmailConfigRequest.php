@@ -19,7 +19,6 @@ class UpdateEmailConfigRequest extends FormRequest
             'sender_name' => 'nullable|string|max:255',
             'subject_prefix' => 'nullable|string|max:100',
             'status' => 'required|string|in:active,inactive',
-            'user_remark' => 'required|string',
         ];
     }
 
@@ -29,7 +28,6 @@ class UpdateEmailConfigRequest extends FormRequest
             'pg_id.required' => __('email::message.validation.pg_required'),
             'sender_email.required' => __('email::message.validation.email_required'),
             'sender_email.email' => __('email::message.validation.email_invalid'),
-            'user_remark.required' => __('message.common.user_remark_required_update'),
         ];
     }
 }

@@ -73,7 +73,6 @@ return [
     'deleted_by' => 'Deleted By',
     'activity_logs' => 'Activity Logs',
     'activity' => 'Activity',
-    'user_remark' => 'User Remark',
     'system_remark' => 'System Remark',
     'old_values' => 'Old Values',
     'new_values' => 'New Values',
@@ -152,7 +151,5 @@ return [
         'group_required' => 'Variable group is required',
         'order_display_integer' => 'Display order must be a number',
         'order_display_min' => 'Display order must be at least :min',
-        'user_remark_required' => 'Please explain the reason for this change',
-        'user_remark_min' => 'Reason must be at least :min characters',
     ],
 ];

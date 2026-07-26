@@ -16,7 +16,6 @@ class UserActivityLog extends Model
         'user_id',
         'user_id_acting_on',
         'activity',
-        'user_remark',
         'system_remark',
         'old_values',
         'new_values',

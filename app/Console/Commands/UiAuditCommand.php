@@ -110,24 +110,6 @@ class UiAuditCommand extends Command
     {
         $findings = [];
 
-        // R-PROJ-006 — inline remarks-field
-        // Heuristic: name="user_remark" or name="remark" with <textarea> on a line, but no partials-tw.remarks-field include
-        if (! str_contains($content, 'partials-tw.remarks-field')) {
-            foreach ($lines as $i => $line) {
-                if ((str_contains($line, 'name="user_remark"') || str_contains($line, 'name="remark"'))
-                    && (str_contains($line, '<textarea') || (isset($lines[$i - 1]) && str_contains($lines[$i - 1], '<textarea')))) {
-                    $findings[] = [
-                        'file' => $rel,
-                        'line' => $i + 1,
-                        'severity' => 'blocker',
-                        'rule' => 'R-PROJ-006',
-                        'detail' => 'Inline remarks textarea without @include(\'partials-tw.remarks-field\')',
-                        'excerpt' => trim($line),
-                    ];
-                }
-            }
-        }
-
         // R-PROJ-013 — card surface drifted from canonical
         foreach ($lines as $i => $line) {
             // Look for divs that include some card-like classes but don't match canonical exactly

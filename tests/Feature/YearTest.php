@@ -56,25 +56,6 @@ class YearTest extends TestCase
         ]);
     }
 
-    // Test 3: Can create with user remarks
-    public function test_can_create_with_user_remarks(): void
-    {
-        $data = [
-            'name' => '2050-51',
-            'set_default' => false,
-            'user_remark' => 'Test remark for creation',
-        ];
-
-        $response = $this->postJson(route('year.store'), $data);
-        $response->assertStatus(200);
-
-        $record = Year::where('name', $data['name'])->first();
-        $this->assertLogRecord('year_logs', 'year_id', $record->id, 'created', $this->user->id, [
-            'expect_null_old_values' => true,
-            'user_remark_contains' => 'Test remark for creation',
-        ]);
-    }
-
     // Test 5: Edit returns JSON
     public function test_can_edit_returns_json(): void
     {
@@ -86,20 +67,6 @@ class YearTest extends TestCase
         $response->assertJsonStructure(['result']);
     }
 
-    // Test 6: Cannot update without remarks
-    public function test_cannot_update_without_remarks(): void
-    {
-        $record = Year::factory()->create();
-        $data = [
-            'name' => '2051-52',
-            'set_default' => false,
-        ];
-
-        $response = $this->putJson(route('year.update', $record->id), $data);
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['user_remark']);
-    }
-
     // Test 7: Can update with remarks
     public function test_can_update_with_remarks(): void
     {
@@ -107,7 +74,6 @@ class YearTest extends TestCase
         $data = [
             'name' => '2051-52',
             'set_default' => false,
-            'user_remark' => 'Updating record',
         ];
 
         $response = $this->putJson(route('year.update', $record->id), $data);
@@ -118,7 +84,6 @@ class YearTest extends TestCase
         $this->assertEquals($this->user->id, $record->updated_by);
 
         $this->assertLogRecord('year_logs', 'year_id', $record->id, 'updated', $this->user->id, [
-            'user_remark' => 'Updating record',
         ]);
     }
 
@@ -129,26 +94,14 @@ class YearTest extends TestCase
         $data = [
             'name' => '2051-52',
             'set_default' => false,
-            'user_remark' => 'Testing change tracking',
         ];
 
         $this->putJson(route('year.update', $record->id), $data);
 
         $this->assertLogRecord('year_logs', 'year_id', $record->id, 'updated', $this->user->id, [
-            'user_remark' => 'Testing change tracking',
             'old_value_check' => ['name' => '2050-51'],
             'new_value_check' => ['name' => '2051-52'],
         ]);
-    }
-
-    // Test 10: Cannot delete without remarks
-    public function test_cannot_delete_without_remarks(): void
-    {
-        $record = Year::factory()->create();
-
-        $response = $this->deleteJson(route('year.destroy', $record->id));
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['user_remark']);
     }
 
     // Test 11: Can delete with remarks
@@ -156,9 +109,7 @@ class YearTest extends TestCase
     {
         $record = Year::factory()->create();
 
-        $response = $this->deleteJson(route('year.destroy', $record->id), [
-            'user_remark' => 'Removing this record',
-        ]);
+        $response = $this->deleteJson(route('year.destroy', $record->id));
         $response->assertStatus(200);
 
         $this->assertSoftDeleted('years', [
@@ -167,7 +118,6 @@ class YearTest extends TestCase
         ]);
 
         $this->assertLogRecord('year_logs', 'year_id', $record->id, 'deleted', $this->user->id, [
-            'user_remark' => 'Removing this record',
             'expect_null_new_values' => true,
         ]);
     }

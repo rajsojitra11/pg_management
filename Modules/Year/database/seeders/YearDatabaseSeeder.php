@@ -121,7 +121,6 @@ class YearDatabaseSeeder extends Seeder
                 'year_id' => $year->id,
                 'user_id' => $createdBy,
                 'activity' => 'System Record Creation',
-                'user_remark' => $userRemark,
                 'system_remark' => 'Initial Data Created By System Setup',
                 'old_values' => null,
                 'new_values' => json_encode([

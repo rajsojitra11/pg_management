@@ -14,7 +14,6 @@ class SettingLog extends Model
         'setting_id',
         'user_id',
         'activity',
-        'user_remark',
         'system_remark',
         'old_values',
         'new_values',

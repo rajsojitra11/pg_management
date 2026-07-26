@@ -30,11 +30,8 @@
     {{-- Content --}}
     <div class="flex-1 min-w-0 pt-1">
         <p class="text-sm font-medium text-zinc-900 leading-snug">
-            {{ $log->system_remark ?? $log->user_remark ?? ucfirst(str_replace('_', ' ', $log->activity)) }}
+            {{ $log->system_remark ?? ucfirst(str_replace('_', ' ', $log->activity)) }}
         </p>
-        @if($log->user_remark && $log->user_remark !== $log->system_remark)
-            <p class="text-xs text-zinc-500 mt-0.5">{{ $log->user_remark }}</p>
-        @endif
         <div class="flex items-center gap-2 mt-1.5 text-xs text-zinc-400">
             <span>
                 @php

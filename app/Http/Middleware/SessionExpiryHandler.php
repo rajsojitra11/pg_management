@@ -73,7 +73,6 @@ class SessionExpiryHandler
                 'user_id' => $userId,
                 'user_id_acting_on' => $userId,
                 'activity' => 'logout',
-                'user_remark' => __('user::message.user_remark_logout_automatic'),
                 'system_remark' => __('user::message.system_user_logout_automatic', [
                     'reason' => $reason,
                     'name' => $user ? $user->name : 'Unknown User',
