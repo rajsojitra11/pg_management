@@ -39,6 +39,10 @@ class TenantApiController extends Controller
             $query->where('pg_id', $pgId);
         }
 
+        if ($roomId = request('room_id')) {
+            $query->where('room_id', $roomId);
+        }
+
         if ($search = trim((string) request('search'))) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")

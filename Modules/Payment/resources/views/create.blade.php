@@ -94,6 +94,7 @@
                         <option value="Bank Transfer">{{ __('payment::message.bank_transfer') }}</option>
                         <option value="Cheque">{{ __('payment::message.cheque') }}</option>
                         <option value="UPI">{{ __('payment::message.upi') }}</option>
+                        <option value="Card">{{ __('payment::message.card') }}</option>
                         <option value="Other">{{ __('payment::message.other') }}</option>
                     </select>
                     <div class="mt-1 text-xs text-red-500 erp-field-error" id="error_payment_method"></div>

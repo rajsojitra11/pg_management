@@ -105,3 +105,23 @@ Pg_Admin users are scoped to their own PG properties via `whereHas('pg', fn ($q)
 - Tenant **re-enters** on the next billing cycle start day if no new payment exists
 - Payments are not tagged to specific months — the system infers coverage from `payment_date` relative to `billing_cycle_start`
 - The `where('checkin_date', '<=', now()->subMonth())` ensures tenants are excluded until their first full month completes
+
+## Days Elapsed Calculation
+
+**Never paid:** Days since the **current billing cycle start**:
+```
+$checkin->addMonths($checkin->diffInMonths(now()))->diffInDays(now())
+```
+
+**Has paid before:** Days since the **billing cycle start after the last payment** (i.e., when the covered cycle ended):
+```
+$checkin->addMonths($checkin->diffInMonths($lastPayment) + 1)->diffInDays(now())
+```
+
+This ensures overdue starts counting **after the last payment's covered cycle completes**, not from the payment date itself.
+
+### Example
+
+Check-in **15 Apr**, last payment **16 May** (covered the May 15 cycle → ended 14 Jun):
+- Cycle after last payment = 15 Apr + (0 + 1) months → **15 Jun** ← overdue starts here
+- If today is **26 Jul**: overdue = 26 Jul − 15 Jun = **41 days**

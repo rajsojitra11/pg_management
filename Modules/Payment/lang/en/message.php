@@ -28,6 +28,7 @@ return [
     'bank_transfer' => 'Bank Transfer',
     'cheque' => 'Cheque',
     'upi' => 'UPI',
+    'card' => 'Card',
     'other' => 'Other',
 
     // Verification

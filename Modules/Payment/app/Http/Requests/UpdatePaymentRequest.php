@@ -19,7 +19,7 @@ class UpdatePaymentRequest extends FormRequest
             'room_id' => ['required', 'integer', 'exists:pg_rooms,id'],
             'payment_date' => ['required', 'date'],
             'amount' => ['required', 'numeric', 'min:0'],
-            'payment_method' => ['required', 'string', 'max:50', 'in:Cash,Bank Transfer,Cheque,UPI,Other'],
+            'payment_method' => ['required', 'string', 'max:50', 'in:Cash,Bank Transfer,Cheque,UPI,Card,Other'],
             'reference_no' => ['nullable', 'string', 'max:100'],
             'remarks' => ['nullable', 'string'],
         ];

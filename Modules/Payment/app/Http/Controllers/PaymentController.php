@@ -3,6 +3,7 @@
 namespace Modules\Payment\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Modules\Payment\Http\Requests\DeletePaymentRequest;
@@ -212,6 +213,10 @@ class PaymentController extends Controller
 
         $query = Tenant::with('pg:id,public_id,pg_name', 'room:id,public_id,room_no')
             ->select('id', 'public_id', 'name', 'pg_id', 'room_id', 'checkin_date', 'monthly_rent')
+            ->selectSub(
+                Payment::selectRaw('MAX(payment_date)')->whereColumn('tenant_id', 'tenants.id'),
+                'last_payment_date'
+            )
             ->whereNotNull('checkin_date')
             ->where('checkin_date', '<=', now()->subMonth())
             ->whereRaw("NOT EXISTS (
@@ -233,7 +238,16 @@ class PaymentController extends Controller
                 return $row->room?->room_no ?? '—';
             })
             ->addColumn('days_elapsed', function ($row) {
-                return $row->checkin_date ? $row->checkin_date->diffInDays(now()).' days' : '—';
+                if ($row->last_payment_date) {
+                    $lastPayment = Carbon::parse($row->last_payment_date);
+                    $cycleAfterPayment = $row->checkin_date->copy()->addMonths($row->checkin_date->diffInMonths($lastPayment) + 1);
+
+                    return $cycleAfterPayment->diffInDays(now()).' days';
+                }
+
+                $currentCycleStart = $row->checkin_date->copy()->addMonths($row->checkin_date->diffInMonths(now()));
+
+                return $currentCycleStart->diffInDays(now()).' days';
             })
             ->addColumn('action', function ($row) {
                 $createUrl = route('payment.create');
