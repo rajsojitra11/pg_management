@@ -38,7 +38,8 @@ class ComplaintApiController extends Controller
         if ($search = trim((string) request('search'))) {
             $query->where(function ($q) use ($search) {
                 $q->where('complaint_no', 'like', "%{$search}%")
-                    ->orWhere('note', 'like', "%{$search}%");
+                    ->orWhere('note', 'like', "%{$search}%")
+                    ->orWhereHas('room', fn ($r) => $r->where('room_no', 'like', "%{$search}%"));
             });
         }
 

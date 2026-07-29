@@ -59,6 +59,7 @@ class PaymentApiController extends Controller
             'public_id' => $p->public_id,
             'tenant_id' => (string) $p->tenant_id,
             'tenant_name' => $p->tenant?->name,
+            'tenant_checkin_date' => $p->tenant?->checkin_date?->toDateString(),
             'pg_id' => (string) $p->pg?->id,
             'pg_name' => $p->pg?->pg_name,
             'room_id' => (string) $p->room?->id,
@@ -99,6 +100,7 @@ class PaymentApiController extends Controller
                         'public_id' => $p->public_id,
                         'tenant_id' => (string) $p->tenant_id,
                         'tenant_name' => $p->tenant?->name,
+                        'tenant_checkin_date' => $p->tenant?->checkin_date?->toDateString(),
                         'pg_id' => (string) $p->pg?->id,
                         'pg_name' => $p->pg?->pg_name,
                         'room_id' => (string) $p->room?->id,
@@ -137,6 +139,7 @@ class PaymentApiController extends Controller
                     'public_id' => $payment->public_id,
                     'tenant_id' => (string) $payment->tenant_id,
                     'tenant_name' => $payment->tenant?->name,
+                    'tenant_checkin_date' => $payment->tenant?->checkin_date?->toDateString(),
                     'pg_id' => (string) $payment->pg?->id,
                     'pg_name' => $payment->pg?->pg_name,
                     'room_id' => (string) $payment->room?->id,
@@ -180,6 +183,7 @@ class PaymentApiController extends Controller
                     'public_id' => $payment->public_id,
                     'tenant_id' => (string) $payment->tenant_id,
                     'tenant_name' => $payment->tenant?->name,
+                    'tenant_checkin_date' => $payment->tenant?->checkin_date?->toDateString(),
                     'pg_id' => (string) $payment->pg?->id,
                     'pg_name' => $payment->pg?->pg_name,
                     'room_id' => (string) $payment->room?->id,
@@ -247,6 +251,10 @@ class PaymentApiController extends Controller
 
         if ($user->hasRole('Pg_Admin')) {
             $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
+        }
+
+        if ($pgId = request('pg_id')) {
+            $query->where('pg_id', $pgId);
         }
 
         $tenants = $query->orderBy('name')->get();

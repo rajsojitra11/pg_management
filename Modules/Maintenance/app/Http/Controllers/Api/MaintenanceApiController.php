@@ -37,7 +37,8 @@ class MaintenanceApiController extends Controller
         if ($search = trim((string) request('search'))) {
             $query->where(function ($q) use ($search) {
                 $q->where('maintenance_no', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhereHas('complaint.room', fn ($r) => $r->where('room_no', 'like', "%{$search}%"));
             });
         }
 
