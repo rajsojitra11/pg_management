@@ -95,6 +95,19 @@ class CreateAdminUserSeeder extends Seeder
             ]
         );
 
+        // ── Pg_Manager role (no default user) ─────────────────────────────
+        $pgManagerRole = Role::firstOrCreate(
+            ['name' => 'Pg_Manager', 'guard_name' => 'web'],
+            [
+                'title' => 'Pg_Manager',
+                'access_type' => 'both',
+                'created_by' => $superAdminUser?->id,
+                'updated_by' => $superAdminUser?->id,
+                'created_at' => $migrationDate,
+                'updated_at' => $migrationDate,
+            ]
+        );
+
         // ── Pg_Admin users ───────────────────────────────────────────────
         $pgAdminUsers = [
             [

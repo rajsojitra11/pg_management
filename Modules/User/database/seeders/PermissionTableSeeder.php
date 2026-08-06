@@ -758,6 +758,16 @@ class PermissionTableSeeder extends Seeder
             $PgAdminRole->syncPermissions($companyPermissions);
         }
 
+        // ── Pg_Manager: all except system-administration-access ─────────
+        $PgManagerRole = Role::where('name', 'Pg_Manager')->first();
+        if ($PgManagerRole) {
+            $managerPermissions = $allPermissions;
+            if ($systemAdminPermission) {
+                unset($managerPermissions[$systemAdminPermission->id]);
+            }
+            $PgManagerRole->syncPermissions($managerPermissions);
+        }
+
         // ── Tenant: minimal read-only permissions ──────────────────────
         $tenantRole = Role::where('name', 'Tenant')->first();
         if ($tenantRole) {
