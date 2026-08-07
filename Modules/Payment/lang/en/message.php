@@ -43,6 +43,9 @@ return [
     'enter_amount' => 'Enter Amount',
     'enter_reference_no' => 'Enter Reference No',
     'enter_remarks' => 'Enter Remarks',
+    'select_payment_date' => 'Select Payment Date',
+    'select_payment_method' => 'Select Payment Method',
+    'payment_date_invalid' => 'Enter a valid Payment Date',
     'search_placeholder' => 'Search by tenant, amount, reference...',
 
     // Tabs

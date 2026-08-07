@@ -233,21 +233,11 @@ class PaymentApiController extends Controller
     {
         $user = auth()->user();
 
-        $billingRaw = 'DATE_ADD(tenants.checkin_date, INTERVAL TIMESTAMPDIFF(MONTH, tenants.checkin_date, CURDATE()) MONTH)';
-
         $query = Tenant::with('pg:id,public_id,pg_name', 'room:id,public_id,room_no')
             ->select('id', 'public_id', 'name', 'pg_id', 'room_id', 'checkin_date', 'monthly_rent')
-            ->selectSub(
-                Payment::selectRaw('MAX(payment_date)')->whereColumn('tenant_id', 'tenants.id'),
-                'last_payment_date'
-            )
+            ->withMax('payments as last_payment_date', 'payment_date')
             ->whereNotNull('checkin_date')
-            ->where('checkin_date', '<=', now()->subMonth())
-            ->whereRaw("NOT EXISTS (
-                SELECT 1 FROM payments
-                WHERE payments.tenant_id = tenants.id
-                AND payments.payment_date >= {$billingRaw}
-            )");
+            ->where('checkin_date', '<=', now()->subMonth());
 
         if ($user->hasRole('Pg_Admin')) {
             $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
@@ -257,7 +247,17 @@ class PaymentApiController extends Controller
             $query->where('pg_id', $pgId);
         }
 
-        $tenants = $query->orderBy('name')->get();
+        // A tenant is pending when no payment covers the current billing month.
+        // The billing cutoff is check-in date advanced by the whole months
+        // elapsed since check-in. Computed in PHP so it stays portable across
+        // MySQL, PostgreSQL and SQLite (raw DATE_ADD/TIMESTAMPDIFF is MySQL-only).
+        $tenants = $query->orderBy('name')->get()
+            ->filter(fn ($t) => $t->checkin_date !== null
+                && (
+                    $t->last_payment_date === null
+                    || Carbon::parse($t->last_payment_date)->lt($t->checkin_date->copy()->addMonths($t->checkin_date->diffInMonths(now())))
+                )
+            );
 
         $data = $tenants->map(fn ($t) => [
             'id' => (string) $t->id,

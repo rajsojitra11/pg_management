@@ -47,6 +47,10 @@ class StorePaymentRequest extends FormRequest
             'room_id.required' => __('payment::message.select_room'),
             'amount.required' => __('payment::message.enter_amount'),
             'amount.min' => __('payment::message.enter_amount'),
+            'payment_date.required' => __('payment::message.select_payment_date'),
+            'payment_date.date' => __('payment::message.payment_date_invalid'),
+            'payment_method.required' => __('payment::message.select_payment_method'),
+            'payment_method.in' => __('payment::message.select_payment_method'),
         ];
     }
 }
