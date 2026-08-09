@@ -257,7 +257,7 @@
 
     /**
      * erpApproveModal(opts) — Approval-specific dialog. Two fields, both required:
-     *   user_remark (textarea, min 3 chars)         → audit trail
+     *   remark (textarea, min 3 chars)               → approval reason
      *   effective_date (date, default today, future-allowed) → version semantic
      *
      * Per ICH Q12 / GMP convention every approval must record both: WHY (remark)

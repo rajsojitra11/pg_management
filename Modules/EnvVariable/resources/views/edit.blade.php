@@ -215,11 +215,6 @@
             </div>
         </div>
 
-        {{-- Remarks Field --}}
-        <div class="p-5 border-t border-zinc-200">
-            @include('partials-tw.remarks-field', ['type' => 'update'])
-        </div>
-
         {{-- Action Buttons --}}
         <div class="p-5 border-t border-zinc-200 flex items-center justify-between">
             <a href="{{ route('env-variable.index') }}"

@@ -307,14 +307,8 @@ class CountryCityStateSeeder extends Seeder
             $createdAt = $record['created_at'];
             $createdBy = $record['created_by'];
 
-            // Generate system remark and user remark based on table type
+            // Generate system remark based on table type
             $systemRemark = 'Initial Data Created By System Setup';
-            $userRemark = match ($table) {
-                'countries' => 'Master country data seeded for location setup: '.($record['name'] ?? "Record ID: {$moduleId}"),
-                'states' => 'Master state data seeded for location setup: '.($record['name'] ?? "Record ID: {$moduleId}"),
-                'cities' => 'Master city data seeded for location setup: '.($record['name'] ?? "Record ID: {$moduleId}"),
-                default => 'Master location data seeded for system setup'
-            };
 
             $logRecords[] = [
                 $table === 'countries' ? 'country_id' :

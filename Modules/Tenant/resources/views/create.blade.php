@@ -902,7 +902,7 @@ $(document).ready(function() {
         var $form = $(this);
         var $btn = $form.find('[type="submit"]');
 
-        var errors = validateFormFields($form, false);
+        var errors = validateFormFields($form);
         if (errors.length > 0) {
             if (typeof setButtonError === 'function') setButtonError($btn);
             return false;

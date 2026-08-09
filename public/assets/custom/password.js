@@ -64,7 +64,7 @@ if ($('.change-password').length != 0) {
 
         // Validate: use validateFormFields for TW theme, jQuery Validate for old theme
         if (isTW) {
-            var errors = validateFormFields($('#password_form'), false);
+            var errors = validateFormFields($('#password_form'));
             if (errors.length > 0) {
                 setButtonError($btn);
                 return false;

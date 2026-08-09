@@ -104,10 +104,7 @@ class LoginRequest extends FormRequest
                 $user->save();
 
                 // Log the user blocking event
-                LogUserAuthentication::logUserBlocked(
-                    $user->id,
-                    'Account blocked due to multiple failed login attempts'
-                );
+                LogUserAuthentication::logUserBlocked($user->id);
 
                 throw ValidationException::withMessages([
                     'login' => __('login::message.too_many_attempts'),

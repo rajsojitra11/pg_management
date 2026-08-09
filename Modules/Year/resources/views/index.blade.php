@@ -101,7 +101,6 @@
 
 @section('pagescript')
 {{-- delete.js and save.js/update.js are loaded globally in app-tw.blade.php --}}
-{{-- validation-loader.js NOT needed — delete.js handles its own validation --}}
 
 
 <script type="application/javascript">
@@ -142,7 +141,6 @@
 
     // Validation handled by validateFormFields() in save.js/update.js
     // Required fields use HTML required attribute
-    // Remarks fields validated via data attributes and class-based checks
 
     // ── Modal close/reset ──────────────────────────
     function resetInlineModal() {

@@ -11,8 +11,7 @@ $(document).on('click', '.update', function (e) {
     }
     var $form = $(formClass);
 
-    // UPDATE mode — user_remark IS required
-    if (validateFormFields($form, true).length > 0) {
+    if (validateFormFields($form).length > 0) {
         setButtonError($btn);
         return false;
     }

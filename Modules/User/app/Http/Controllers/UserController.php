@@ -934,7 +934,7 @@ class UserController extends Controller
                 $user->save();
 
                 // Log password change with user remark
-                LogUserAuthentication::logPasswordChange(Auth::id(), 'Password changed');
+                LogUserAuthentication::logPasswordChange(Auth::id());
 
                 DB::commit();
 

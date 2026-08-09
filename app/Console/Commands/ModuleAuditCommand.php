@@ -13,7 +13,7 @@ class ModuleAuditCommand extends Command
                             {--json : Output results as JSON}
                             {--summary : Show only the summary}';
 
-    protected $description = 'Audit modules for activity logging and remarks compliance';
+    protected $description = 'Audit modules for activity logging compliance';
 
     protected ModuleComplianceScanner $scanner;
 

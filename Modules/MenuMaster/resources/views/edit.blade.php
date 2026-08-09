@@ -202,11 +202,6 @@
         </div>
         @endif
 
-        {{-- Remarks --}}
-        <div class="p-5 border-t border-zinc-200">
-            @include('partials-tw.remarks-field', ['type' => 'update'])
-        </div>
-
         {{-- Action Buttons --}}
         <div class="p-5 border-t border-zinc-200 flex flex-wrap items-center justify-between gap-2">
         <div class="flex gap-2">

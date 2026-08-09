@@ -182,7 +182,7 @@ class LogUserAuthentication
     /**
      * Handle password change logging
      */
-    public static function logPasswordChange(int $userId, ?string $userRemark = null): void
+    public static function logPasswordChange(int $userId): void
     {
         $agent = class_exists(Agent::class) ? new Agent : null;
         $user = User::find($userId);
@@ -214,7 +214,7 @@ class LogUserAuthentication
     /**
      * Handle user blocking logging
      */
-    public static function logUserBlocked(int $userId, ?string $userRemark = null): void
+    public static function logUserBlocked(int $userId): void
     {
         $agent = class_exists(Agent::class) ? new Agent : null;
         $user = User::find($userId);
@@ -246,7 +246,7 @@ class LogUserAuthentication
     /**
      * Handle user unblocking logging
      */
-    public static function logUserUnblocked(int $userId, ?string $userRemark = null): void
+    public static function logUserUnblocked(int $userId): void
     {
         $agent = class_exists(Agent::class) ? new Agent : null;
         $user = User::find($userId);
@@ -278,7 +278,7 @@ class LogUserAuthentication
     /**
      * Handle user activation logging
      */
-    public static function logUserActivated(int $userId, ?string $userRemark = null): void
+    public static function logUserActivated(int $userId): void
     {
         try {
 
@@ -328,7 +328,7 @@ class LogUserAuthentication
     /**
      * Handle user deactivation logging
      */
-    public static function logUserDeactivated(int $userId, ?string $userRemark = null): void
+    public static function logUserDeactivated(int $userId): void
     {
         try {
 

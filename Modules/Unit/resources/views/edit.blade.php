@@ -90,7 +90,7 @@
         var $form = $(this);
         var $btn = $form.find('[type="submit"]');
 
-        var errors = validateFormFields($form, false);
+        var errors = validateFormFields($form);
         if (errors.length > 0) { setButtonError($btn); return false; }
 
         $form.find('.erp-field-error').remove();

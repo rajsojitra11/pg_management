@@ -103,7 +103,6 @@
 
 @section('pagescript')
 {{-- delete.js and save.js/update.js are loaded globally in app-tw.blade.php --}}
-{{-- validation-loader.js NOT needed — delete.js handles its own validation --}}
 
 <script type="application/javascript">
     'use strict';

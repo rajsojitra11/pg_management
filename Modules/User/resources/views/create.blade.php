@@ -375,7 +375,7 @@ $(document).ready(function() {
         }
 
         // Client-side validation
-        var errors = validateFormFields($form, false);
+        var errors = validateFormFields($form);
 
         // Validate DOB format
         var $dob = $form.find('#dateofbirth');

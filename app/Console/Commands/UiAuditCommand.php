@@ -14,8 +14,7 @@ use Symfony\Component\Finder\Finder;
  * Companion to ModuleComplianceScanner but for blade views. Catches drift
  * from the canonical Tailwind class strings + mandatory partials-tw/* includes.
  *
- * Checks (from .claude/lessons/lesson-book.md R-PROJ-006, R-PROJ-013, R-PROJ-014):
- *   - Inline remarks-field markup (R-PROJ-006, BLOCKER)
+ * Checks (from .claude/lessons/lesson-book.md R-PROJ-013, R-PROJ-014):
  *   - Card surfaces drifted from canonical class string (R-PROJ-013, MINOR)
  *   - Hardcoded English strings (R-PROJ-014, MAJOR)
  *

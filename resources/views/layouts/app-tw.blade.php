@@ -111,7 +111,6 @@
     @yield('pagescript')
 
     {{-- Custom JS — defer for faster initial render --}}
-    <script src="{{ asset('assets/custom/dynamic-validation.js') }}?v={{ config('app.version', time()) }}" defer></script>
     <script src="{{ asset('assets/custom/edit-loader.js') }}?v={{ config('app.version', time()) }}" defer></script>
     <script src="{{ asset('assets/custom/password.js') }}?v={{ config('app.version', time()) }}" defer></script>
     <script src="{{ asset('assets/custom/filter.js') }}?v={{ config('app.version', time()) }}" defer></script>

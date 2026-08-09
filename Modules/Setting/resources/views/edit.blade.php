@@ -192,11 +192,6 @@
         </div>
         </div>
 
-        {{-- User Remark Field (for UPDATE) --}}
-        <div class="p-5 border-t border-zinc-200">
-            @include('partials-tw.remarks-field', ['type' => 'update'])
-        </div>
-
         {{-- Actions --}}
         <div class="p-5 border-t border-zinc-200 flex items-center justify-between">
             <a href="{{ route('setting.index') }}"

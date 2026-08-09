@@ -112,11 +112,6 @@ class YearDatabaseSeeder extends Seeder
         $logRecords = [];
 
         foreach ($years as $year) {
-            // Generate system remark based on year name
-            $userRemark = $year->name;
-
-            $userRemark = 'Initial Data Created By System Setup';
-
             $logRecords[] = [
                 'year_id' => $year->id,
                 'user_id' => $createdBy,

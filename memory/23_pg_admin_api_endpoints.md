@@ -354,12 +354,6 @@ Request: same fields as create. Response: updated PG object.
 DELETE /api/v1/pgs/{public_id}
 ```
 
-Request:
-
-| Param | Type | Required | Notes |
-| --- | --- | --- | --- |
-| user_remark | string | Yes | Delete reason |
-
 Response: success message. Delete should be soft delete.
 
 ## Room Categories
@@ -554,12 +548,6 @@ kept.
 DELETE /api/v1/tenants/{public_id}
 ```
 
-Request:
-
-| Param | Type | Required | Notes |
-| --- | --- | --- | --- |
-| user_remark | string | Yes | Delete reason |
-
 ## Payments
 
 ### List Payments
@@ -639,7 +627,6 @@ Request:
 | Param | Type | Required | Notes |
 | --- | --- | --- | --- |
 | verified | string | Yes | `pending` or `verified` |
-| user_remark | string | No | Verification note |
 
 Response:
 
@@ -861,16 +848,6 @@ Report response example:
 }
 ```
 
-## Delete Request Rule
-
-All admin deletes should accept a remark for audit logging:
-
-```json
-{
-  "user_remark": "Duplicate record created by mistake."
-}
-```
-
 ## Audit Fields
 
 Every create/update/delete should preserve:
@@ -879,7 +856,6 @@ Every create/update/delete should preserve:
 - `updated_by`
 - `deleted_by`
 - activity log row
-- user remark where supplied
 - IP address
 - user agent
 - device/client name

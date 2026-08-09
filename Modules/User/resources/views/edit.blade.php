@@ -400,7 +400,7 @@ $(document).ready(function() {
         var $form = $(this);
         var $btn = $form.find('[type="submit"]');
 
-        var errors = validateFormFields($form, false);
+        var errors = validateFormFields($form);
 
         var $dob = $form.find('#dateofbirth');
         if ($dob.val() && !isValidDOB($dob.val())) {

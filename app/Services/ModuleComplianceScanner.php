@@ -226,9 +226,6 @@ class ModuleComplianceScanner
         }
 
         // Checks 5-10 only for primary/main models
-        $checks[] = $this->checkRemarksUpdate($module, $model);
-        $checks[] = $this->checkRemarksDelete($module, $model);
-        $checks[] = $this->checkViewPartials($module);
         $checks[] = $this->checkViewExistence($module);
 
         return $checks;
@@ -413,80 +410,6 @@ class ModuleComplianceScanner
             'detail' => "Delete{$model}Request.php missing",
             'fixable' => true,
             'fix_type' => 'create_delete_request',
-        ];
-    }
-
-    protected function checkRemarksUpdate(string $module, string $model): array
-    {
-        return [
-            'name' => 'Rmk-Update',
-            'status' => 'PASS',
-            'detail' => 'Remarks check skipped - user_remark removed from project',
-            'fixable' => false,
-            'fix_type' => null,
-        ];
-    }
-
-    protected function checkRemarksDelete(string $module, string $model): array
-    {
-        return [
-            'name' => 'Rmk-Delete',
-            'status' => 'PASS',
-            'detail' => 'Remarks check skipped - user_remark removed from project',
-            'fixable' => false,
-            'fix_type' => null,
-        ];
-    }
-
-    protected function checkViewPartials(string $module): array
-    {
-        $viewsPath = base_path("Modules/{$module}/resources/views");
-
-        if (! File::exists($viewsPath)) {
-            return [
-                'name' => 'View Partials',
-                'status' => 'WARN',
-                'detail' => 'No views directory found',
-                'fixable' => false,
-                'fix_type' => null,
-            ];
-        }
-
-        $hasRemarks = false;
-
-        foreach (File::allFiles($viewsPath) as $file) {
-            if ($file->getExtension() !== 'php') {
-                continue;
-            }
-
-            $content = File::get($file->getPathname());
-
-            // Accept either the legacy `partials.*` path (pre-Tailwind theme)
-            // or the `partials-tw.*` path used by every TW-migrated module.
-            // Project finished its TW migration; modules ship with the -tw form
-            // exclusively, but the legacy match stays for any holdouts.
-            if (Str::contains($content, 'partials.remarks-field') || Str::contains($content, 'partials-tw.remarks-field')) {
-                $hasRemarks = true;
-                break;
-            }
-        }
-
-        if ($hasRemarks) {
-            return [
-                'name' => 'View Partials',
-                'status' => 'PASS',
-                'detail' => 'remarks-field included',
-                'fixable' => false,
-                'fix_type' => null,
-            ];
-        }
-
-        return [
-            'name' => 'View Partials',
-            'status' => 'FAIL',
-            'detail' => 'Missing: remarks-field',
-            'fixable' => false,
-            'fix_type' => null,
         ];
     }
 

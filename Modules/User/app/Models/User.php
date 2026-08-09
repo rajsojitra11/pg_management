@@ -320,10 +320,7 @@ class User extends Authenticatable
         static::updated(function ($user) {
             // Check if password was changed
             if ($user->isDirty('password')) {
-                LogUserAuthentication::logPasswordChange(
-                    $user->id,
-                    'Password updated by user'
-                );
+                LogUserAuthentication::logPasswordChange($user->id);
             }
         });
     }

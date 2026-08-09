@@ -15,7 +15,7 @@ function _safeUnblock() {
  *
  * For full-page forms, call in the submit handler:
  *   $('#form').on('submit', function(e) {
- *       var errors = validateFormFields($(this), isUpdate);
+ *       var errors = validateFormFields($(this));
  *       if (errors.length) { e.preventDefault(); return false; }
  *       setButtonLoading($(this).find('[type="submit"]'));
  *   });
@@ -79,7 +79,7 @@ function setButtonError($btn) {
     }, 3000);
 }
 
-function validateFormFields($form, isUpdate) {
+function validateFormFields($form) {
     var errors = [];
     var msgs = window.validationMessages || {};
 
@@ -122,24 +122,6 @@ function validateFormFields($form, isUpdate) {
             errors.push($f.attr('name'));
         }
     });
-
-    // 2. Validate user_remark — required for UPDATE mode
-    if (isUpdate) {
-        var $remark = $form.find('[name="user_remark"]');
-        if ($remark.length) {
-            var val = $.trim($remark.val());
-            var minLen = parseInt($remark.attr('data-min-length')) || 3;
-            if (!val) {
-                addFieldError($remark, msgs.user_remark_required || 'Please provide a reason');
-                if (!errors.length) $remark.focus();
-                errors.push('user_remark');
-            } else if (val.length < minLen) {
-                addFieldError($remark, msgs.user_remark_min || 'Minimum ' + minLen + ' characters required');
-                if (!errors.length) $remark.focus();
-                errors.push('user_remark');
-            }
-        }
-    }
 
     return errors;
 }
@@ -186,8 +168,7 @@ $(document).on('click', '.save', function (e) {
     }
     var $form = $(formClass);
 
-    // CREATE mode — user_remark is NOT required
-    if (validateFormFields($form, false).length > 0) {
+    if (validateFormFields($form).length > 0) {
         setButtonError($btn);
         return false;
     }
