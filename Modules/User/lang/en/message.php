@@ -47,6 +47,7 @@ return [
     'profile_photo' => 'Profile',
     'parent_user' => 'Parent User',
     'child_user' => 'Child User',
+    'current_pg' => 'Current PG',
     'manager' => 'Manager',
     'head' => 'Head',
 
@@ -155,8 +156,10 @@ return [
 
     'select_parent_user' => 'Select parent user',
     'select_role' => 'Select role',
+    'select_valid_state' => 'Please select a valid state',
+    'select_valid_city' => 'Please select a valid city',
     'enter_user_status' => 'Enter user status',
-    'status_must_be_active_inactive' => 'Enter user status',
+    'status_must_be_active_inactive' => 'Status must be Active or Inactive.',
     'id_required' => 'Enter ID',
     'id_integer' => 'Enter ID',
     'user_id_not_exist' => 'Enter ID',
@@ -258,6 +261,10 @@ return [
     'user_blocked_successfully' => 'User blocked successfully',
     'user_unblocked_successfully' => 'User unblocked successfully',
     'status_change_successfully' => 'Status changed successfully',
+    'user_blocked_banner_title' => 'This user is currently blocked',
+    'user_blocked_banner_desc' => 'Blocked users cannot log in to the system.',
+    'unblock_user' => 'Unblock User',
+    'unblock_confirm' => 'Are you sure you want to unblock this user?',
     'no_changes_detected' => 'No changes detected. User information remains the same.',
 
     // Change Password page

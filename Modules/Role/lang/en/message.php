@@ -66,6 +66,11 @@ return [
         'permissions' => [
             'required' => 'At least one permission must be selected',
         ],
+        'allowed_year' => [
+            'integer' => 'The year access range must be a valid number',
+            'min' => 'The year access range must be at least :min',
+            'max' => 'The year access range cannot exceed :max',
+        ],
 
     ],
 

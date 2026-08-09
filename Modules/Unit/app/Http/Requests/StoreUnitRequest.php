@@ -12,7 +12,7 @@ class StoreUnitRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->check();
+        return true;
     }
 
     /**
@@ -30,8 +30,6 @@ class StoreUnitRequest extends FormRequest
                 }),
             ],
             'unit_value' => 'nullable|numeric|min:0',
-            'child_id.*' => 'nullable|integer|min:0|:units,id',
-            'segment_value.*' => 'nullable|numeric|min:0',
         ];
     }
 
@@ -43,27 +41,8 @@ class StoreUnitRequest extends FormRequest
         return [
             'name.required' => __('unit::message.enter_unit'),
             'name.unique' => __('unit::message.enter_unique_unit'),
+            'unit_value.numeric' => __('unit::message.enter_valid_unit_value'),
+            'unit_value.min' => __('unit::message.unit_value_min'),
         ];
-    }
-
-    /**
-     * Configure the validator instance.
-     */
-    public function withValidator($validator): void
-    {
-        $validator->addImplicitExtension('childUnitRequired', function ($attribute, $value, $parameters) {
-            $index = explode('.', $attribute)[1] ?? 0;
-            $childId = $this->input("child_id.$index");
-
-            if (! empty($childId) && $childId != '0' && empty($value)) {
-                return false;
-            }
-
-            return true;
-        });
-
-        $validator->sometimes('segment_value.*', 'childUnitRequired', function ($input) {
-            return true;
-        });
     }
 }

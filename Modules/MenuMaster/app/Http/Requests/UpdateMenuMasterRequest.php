@@ -23,7 +23,7 @@ class UpdateMenuMasterRequest extends FormRequest
             'menu_title' => 'required|string|max:255',
             'menu_icon' => 'nullable|string|max:100',
             'menu_route' => 'nullable|string|max:255',
-            'parent_id' => 'nullable|integer|min:0|:menu_masters,id',
+            'parent_id' => 'nullable|integer|min:0|exists:menu_masters,id,deleted_at,NULL',
             'module_name' => 'nullable|string|max:100',
             'if_can' => 'nullable|string|max:100',
             'is_main_menu' => 'nullable|boolean',

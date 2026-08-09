@@ -24,7 +24,7 @@ class StoreStateRequest extends FormRequest
                 }),
             ],
             'code' => 'nullable|string|max:10',
-            'country_id' => 'required|exists:countries,id',
+            'country_id' => 'required|exists:countries,id,deleted_at,NULL',
         ];
     }
 

@@ -14,7 +14,7 @@ class StoreMaintenanceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'complaint_id' => 'required|exists:complaints,id',
+            'complaint_id' => 'required|exists:complaints,id,deleted_at,NULL',
             'cost' => 'required|numeric|min:0',
             'proof' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120',
             'description' => 'nullable|string',
@@ -27,6 +27,7 @@ class StoreMaintenanceRequest extends FormRequest
     {
         return [
             'complaint_id.required' => __('maintenance::message.validation.complaint_required'),
+            'complaint_id.exists' => __('maintenance::message.validation.complaint_invalid'),
             'cost.required' => __('maintenance::message.validation.cost_required'),
             'cost.numeric' => __('maintenance::message.validation.cost_invalid'),
             'proof.mimes' => __('maintenance::message.validation.proof_mimes'),

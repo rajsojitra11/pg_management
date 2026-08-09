@@ -14,9 +14,9 @@ class StorePaymentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'tenant_id' => ['required', 'integer', 'exists:tenants,id'],
-            'pg_id' => ['required', 'integer', 'exists:pg_management,id'],
-            'room_id' => ['required', 'integer', 'exists:pg_rooms,id'],
+            'tenant_id' => ['required', 'integer', 'exists:tenants,id,deleted_at,NULL'],
+            'pg_id' => ['required', 'integer', 'exists:pg_management,id,deleted_at,NULL'],
+            'room_id' => ['required', 'integer', 'exists:pg_rooms,id,deleted_at,NULL'],
             'payment_date' => ['required', 'date'],
             'amount' => ['required', 'numeric', 'min:0'],
             'payment_method' => ['required', 'string', 'max:50', 'in:Cash,Bank Transfer,Cheque,UPI,Card,Other'],
@@ -43,8 +43,11 @@ class StorePaymentRequest extends FormRequest
     {
         return [
             'tenant_id.required' => __('payment::message.select_tenant'),
+            'tenant_id.exists' => __('payment::message.select_valid_tenant'),
             'pg_id.required' => __('payment::message.select_pg'),
+            'pg_id.exists' => __('payment::message.select_valid_pg'),
             'room_id.required' => __('payment::message.select_room'),
+            'room_id.exists' => __('payment::message.select_valid_room'),
             'amount.required' => __('payment::message.enter_amount'),
             'amount.min' => __('payment::message.enter_amount'),
             'payment_date.required' => __('payment::message.select_payment_date'),

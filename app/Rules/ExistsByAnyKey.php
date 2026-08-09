@@ -21,18 +21,18 @@ use Illuminate\Contracts\Validation\ValidationRule;
  */
 class ExistsByAnyKey implements ValidationRule
 {
-    public function __construct(private string $modelClass) {}
+    public function __construct(private string $modelClass, private ?string $messageKey = null) {}
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if ($value === null || $value === '' || ! method_exists($this->modelClass, 'findByAnyKey')) {
-            $fail('validation.exists')->translate(['attribute' => $attribute]);
+            $fail($this->messageKey ?? 'validation.exists')->translate(['attribute' => $attribute]);
 
             return;
         }
 
         if ($this->modelClass::findByAnyKey($value) === null) {
-            $fail('validation.exists')->translate(['attribute' => $attribute]);
+            $fail($this->messageKey ?? 'validation.exists')->translate(['attribute' => $attribute]);
         }
     }
 }

@@ -25,7 +25,7 @@ class UpdateCityRequest extends FormRequest
         $id = City::findByAnyKey($this->route('city') ?? $this->input('id'))?->id;
 
         return [
-            'id' => ['required', new ExistsByAnyKey(City::class)],
+            'id' => ['required', new ExistsByAnyKey(City::class, 'city::message.city_not_exist')],
             'name' => [
                 'required',
                 'string',
@@ -38,8 +38,8 @@ class UpdateCityRequest extends FormRequest
                     ]);
                 }),
             ],
-            'state_id' => 'required|integer|exists:states,id',
-            'country_id' => 'required|integer|exists:countries,id',
+            'state_id' => 'required|integer|exists:states,id,deleted_at,NULL',
+            'country_id' => 'required|integer|exists:countries,id,deleted_at,NULL',
         ];
     }
 
@@ -50,7 +50,6 @@ class UpdateCityRequest extends FormRequest
     {
         return [
             'id.required' => 'City ID is required for update.',
-            'id.exists' => 'Selected city does not exist.',
             'name.required' => __('city::message.enter_name'),
             'name.unique' => __('city::message.enter_unique_name'),
             'name.max' => __('validation.max.string', ['attribute' => 'name', 'max' => config('app.max_comment_length', 1000)]),

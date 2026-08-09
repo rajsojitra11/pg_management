@@ -17,6 +17,7 @@ return [
     'type_text' => 'Text Editor',
     'status' => 'Status',
     'select_pg' => 'Please select a PG',
+    'select_valid_pg' => 'Please select a valid PG',
     'enter_title' => 'Enter notice title',
     'title_taken' => 'This title is already taken',
     'select_image' => 'Select an image',

@@ -22,7 +22,7 @@ class DeleteCityRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => ['required', new ExistsByAnyKey(City::class)],
+            'id' => ['required', new ExistsByAnyKey(City::class, 'city::message.city_not_exist')],
         ];
     }
 
@@ -33,7 +33,6 @@ class DeleteCityRequest extends FormRequest
     {
         return [
             'id.required' => 'City ID is required for deletion.',
-            'id.exists' => 'Selected city does not exist.',
         ];
     }
 }

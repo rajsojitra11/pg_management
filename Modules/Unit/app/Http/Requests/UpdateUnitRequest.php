@@ -14,7 +14,7 @@ class UpdateUnitRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->check();
+        return true;
     }
 
     /**
@@ -22,10 +22,16 @@ class UpdateUnitRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = Unit::findByAnyKey($this->route('unit') ?? $this->input('id'))?->id;
+        // The `{unit}` route param is an implicitly-bound Unit model, not a
+        // scalar. Resolve the numeric primary key so `findByAnyKey()` is never
+        // handed an Eloquent model (which would crash the underlying query).
+        $routeUnit = $this->route('unit');
+        $id = $routeUnit instanceof Unit
+            ? $routeUnit->getKey()
+            : Unit::findByAnyKey($routeUnit ?? $this->input('id'))?->id;
 
-        $rules = [
-            'id' => ['required', new ExistsByAnyKey(Unit::class)],
+        return [
+            'id' => ['required', new ExistsByAnyKey(Unit::class, 'unit::message.unit_not_exist')],
             'name' => [
                 'required',
                 'string',
@@ -35,11 +41,7 @@ class UpdateUnitRequest extends FormRequest
                 }),
             ],
             'unit_value' => 'nullable|numeric|min:0',
-            'child_id.*' => 'nullable|integer|min:0|:units,id',
-            'segment_value.*' => 'nullable|numeric|min:0',
         ];
-
-        return $rules;
     }
 
     /**
@@ -50,27 +52,8 @@ class UpdateUnitRequest extends FormRequest
         return [
             'name.required' => __('unit::message.enter_unit'),
             'name.unique' => __('unit::message.enter_unique_unit'),
+            'unit_value.numeric' => __('unit::message.enter_valid_unit_value'),
+            'unit_value.min' => __('unit::message.unit_value_min'),
         ];
-    }
-
-    /**
-     * Configure the validator instance.
-     */
-    public function withValidator($validator): void
-    {
-        $validator->addImplicitExtension('childUnitRequired', function ($attribute, $value, $parameters) {
-            $index = explode('.', $attribute)[1] ?? 0;
-            $childId = $this->input("child_id.$index");
-
-            if (! empty($childId) && $childId != '0' && empty($value)) {
-                return false;
-            }
-
-            return true;
-        });
-
-        $validator->sometimes('segment_value.*', 'childUnitRequired', function ($input) {
-            return true;
-        });
     }
 }

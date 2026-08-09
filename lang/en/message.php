@@ -31,6 +31,7 @@ return [
         'record_details' => 'Record Information',
 
         // Financial terms
+        'currency_symbol' => '₹',
         'total' => 'Total',
         'sub_total' => 'Sub Total',
         'grand_total' => 'Grand Total',

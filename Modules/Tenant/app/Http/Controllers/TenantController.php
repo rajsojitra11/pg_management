@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Modules\Payment\Models\Payment;
 use Modules\PgManagement\Models\PgManagement;
@@ -117,7 +118,7 @@ class TenantController extends Controller
                 'user_id' => $user->id,
                 'firstname' => ucwords($data['firstname']),
                 'lastname' => ucwords($data['lastname'] ?? ''),
-                'date_of_birth' => $convertDate($data['date_of_birth']),
+                'date_of_birth' => $convertDate($data['date_of_birth'] ?? null),
                 'gender' => $data['gender'] ?? null,
                 'created_by' => auth()->id(),
             ]);
@@ -141,13 +142,13 @@ class TenantController extends Controller
                 'pg_id' => $data['pg_id'] ?? null,
                 'room_id' => $data['room_id'] ?? null,
                 'bed_no' => $data['bed_no'] ?? null,
-                'date_of_birth' => $convertDate($data['date_of_birth']),
+                'date_of_birth' => $convertDate($data['date_of_birth'] ?? null),
                 'gender' => $data['gender'] ?? null,
                 'occupation' => $data['occupation'] ?? null,
 
                 // Step 2: Stay & Payment
-                'checkin_date' => $convertDate($data['checkin_date']),
-                'expected_checkout_date' => $convertDate($data['expected_checkout_date']),
+                'checkin_date' => $convertDate($data['checkin_date'] ?? null),
+                'expected_checkout_date' => $convertDate($data['expected_checkout_date'] ?? null),
                 'monthly_rent' => $data['monthly_rent'] ?? null,
                 'security_deposit' => $data['security_deposit'] ?? null,
                 'payment_method' => $data['payment_method'] ?? null,
@@ -203,7 +204,7 @@ class TenantController extends Controller
             $payments = Payment::with('pg', 'room')
                 ->where('tenant_id', $tenant->id)
                 ->orderBy('payment_date', 'desc')
-                ->get(['id', 'public_id', 'payment_date', 'amount', 'payment_method', 'reference_no', 'status', 'remarks']);
+                ->get(['id', 'public_id', 'payment_date', 'amount', 'payment_method', 'reference_no', 'verified', 'remarks']);
 
             return response()->json([
                 'status_code' => 200,
@@ -255,6 +256,15 @@ class TenantController extends Controller
                 $data['phone'] = $data['mobile'];
             }
             unset($data['mobile']);
+            if (isset($data['status'])) {
+                $data['status'] = strtolower($data['status']);
+            }
+            if ($request->hasFile('id_proof_file')) {
+                if ($tenant->id_proof_file) {
+                    Storage::disk('public')->delete($tenant->id_proof_file);
+                }
+                $data['id_proof_file'] = $request->file('id_proof_file')->store('tenant-id-proofs', 'public');
+            }
             $data['updated_by'] = auth()->id();
             $tenant->update($data);
 

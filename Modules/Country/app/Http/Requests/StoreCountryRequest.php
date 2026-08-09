@@ -49,6 +49,7 @@ class StoreCountryRequest extends FormRequest
             'name.required' => __('country::message.enter_name'),
             'name.unique' => __('country::message.enter_unique_name'),
             'name.max' => __('validation.max.string', ['attribute' => 'name', 'max' => config('app.max_comment_length', 1000)]),
+            'code.required' => __('country::message.enter_code'),
             'code.unique' => __('country::message.enter_unique_code'),
             'code.max' => __('validation.max.string', ['attribute' => 'code', 'max' => 10]),
         ];

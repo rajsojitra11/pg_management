@@ -3,6 +3,7 @@
 namespace Modules\Setting\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -43,18 +44,20 @@ class SettingController extends Controller
             $settings = Setting::find(1);
             $setting = $settings ?? new Setting;
 
-            $setting->company_name = $request->company_name;
-            $setting->tag_line = $request->tag_line;
-            $setting->gst_number = $request->gst_number;
-            $setting->pancard_number = $request->pancard_number;
-            $setting->tan_number = $request->tan_number;
-            $setting->email = $request->email;
-            $setting->mobile = $request->mobile;
-            $setting->address = $request->address;
-            $setting->country_id = $request->country_id;
-            $setting->state_id = $request->state_id;
-            $setting->city_id = $request->city_id;
-            $setting->year_display_format = $request->year_display_format ?: 'full_short';
+            $data = $request->validated();
+
+            $setting->company_name = $data['company_name'];
+            $setting->tag_line = $data['tag_line'] ?? null;
+            $setting->gst_number = $data['gst_number'] ?? null;
+            $setting->pancard_number = $data['pancard_number'] ?? null;
+            $setting->tan_number = $data['tan_number'] ?? null;
+            $setting->email = $data['email'] ?? null;
+            $setting->mobile = $data['mobile'] ?? null;
+            $setting->address = $data['address'] ?? null;
+            $setting->country_id = $data['country_id'];
+            $setting->state_id = $data['state_id'];
+            $setting->city_id = $data['city_id'];
+            $setting->year_display_format = $data['year_display_format'] ?? 'full_short';
 
             // REQUIRED: Add user tracking
             if ($settings) {
@@ -114,7 +117,7 @@ class SettingController extends Controller
             if ($result) {
                 DB::commit();
 
-                return response()->json(['status_code' => 200, 'data' => route('setting.index'), 'message' => 'Setting added successfully.']);
+                return response()->json(['status_code' => 200, 'data' => route('setting.index'), 'message' => __('setting::message.created')]);
             } else {
                 DB::rollback();
 
@@ -196,7 +199,7 @@ class SettingController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Setting updated successfully',
+            'message' => __('setting::message.updated'),
         ]);
     }
 

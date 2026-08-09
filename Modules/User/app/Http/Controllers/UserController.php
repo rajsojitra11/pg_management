@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Modules\PgManagement\Models\PgManagement;
 use Modules\User\Http\Requests\DeleteUserRequest;
 use Modules\User\Http\Requests\PasswordChangeRequest;
 use Modules\User\Http\Requests\StoreUserRequest;
@@ -42,12 +43,14 @@ class UserController extends Controller
             $query = User::with('profile.parentUser')->where('id', '!=', '1')->whereDoesntHave('roles', fn ($q) => $q->where('name', 'customer'));
 
             if (! auth()->user()->hasRole('Super_Admin')) {
-                $subIds = auth()->user()->getAllSubordinateIds();
-                if (! empty($subIds)) {
-                    $query->whereIn('id', $subIds);
-                } else {
-                    $query->whereRaw('1 = 0');
-                }
+                $pgIds = PgManagement::where('owner_id', auth()->id())->pluck('id');
+                $query->whereExists(function ($q) use ($pgIds) {
+                    $q->selectRaw('1')
+                        ->from('tenants')
+                        ->whereColumn('tenants.user_id', 'users.id')
+                        ->whereIn('tenants.pg_id', $pgIds)
+                        ->whereNull('tenants.deleted_at');
+                });
             }
 
             if ($search = trim((string) request('filter_search'))) {
@@ -147,7 +150,13 @@ class UserController extends Controller
             $parentUsers = $parentUsers->where('id', auth()->id());
         }
 
-        return view('user::create', compact('roleMaster', 'parentUsers'));
+        $pgList = PgManagement::select('id', 'pg_name')
+            ->where('status', 'active')
+            ->when(! auth()->user()->hasRole('Super_Admin'), fn ($q) => $q->where('owner_id', auth()->id()))
+            ->orderBy('pg_name')
+            ->get();
+
+        return view('user::create', compact('roleMaster', 'parentUsers', 'pgList'));
     }
 
     public function store(StoreUserRequest $request)
@@ -163,6 +172,7 @@ class UserController extends Controller
             $user->status = $request->status;
             $user->manager_id = $request->filled('manager_id') ? (int) $request->manager_id : null;
             $user->head_id = $request->filled('head_id') ? (int) $request->head_id : null;
+            $user->current_pg = $request->filled('current_pg') ? (int) $request->current_pg : null;
             $user->created_by = auth()->id();
             if ($request->password) {
                 $user->password = Hash::make($request->password);
@@ -199,23 +209,24 @@ class UserController extends Controller
                 if ($request->ajax()) {
                     return response()->json([
                         'status_code' => 200,
-                        'message' => 'User added successfully',
+                        'message' => __('user::message.success.created'),
                         'data' => route('users.index'),
                     ]);
                 }
 
-                return redirect()->route('users.index')->with('success', 'User added successfully');
+                return redirect()->route('users.index')->with('success', __('user::message.success.created'));
             } else {
                 DB::rollback();
 
                 if ($request->ajax()) {
-                    return response()->json(['status_code' => 500, 'message' => 'User creation failed'], 500);
+                    return response()->json(['status_code' => 500, 'message' => __('user::message.error.create_failed')], 500);
                 }
 
-                return redirect()->back()->with('warning', 'User added failed');
+                return redirect()->back()->with('warning', __('user::message.error.create_failed'));
             }
         } catch (Exception $e) {
             DB::rollback();
+            Log::error('User create failed: '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
 
             if ($request->ajax()) {
                 return response()->json(['status_code' => 500, 'message' => 'Something went wrong. Please try again'], 500);
@@ -286,7 +297,13 @@ class UserController extends Controller
             $parentUsers = $parentUsers->where('id', auth()->id());
         }
 
-        return view('user::edit', compact('roleMaster', 'userProfile', 'user', 'userRole', 'permission', 'rolePermissionIds', 'directPermissionIds', 'parentUsers'));
+        $pgList = PgManagement::select('id', 'pg_name')
+            ->where('status', 'active')
+            ->when(! auth()->user()->hasRole('Super_Admin'), fn ($q) => $q->where('owner_id', auth()->id()))
+            ->orderBy('pg_name')
+            ->get();
+
+        return view('user::edit', compact('roleMaster', 'userProfile', 'user', 'userRole', 'permission', 'rolePermissionIds', 'directPermissionIds', 'parentUsers', 'pgList'));
     }
 
     public function update(UpdateUserRequest $request, $id)
@@ -309,6 +326,12 @@ class UserController extends Controller
             }
             $userProfile = UserProfile::where('user_id', $user->id)->first();
 
+            // If profile doesn't exist, get or create one (before reading originals)
+            if (! $userProfile) {
+                $userProfile = new UserProfile;
+                $userProfile->user_id = $user->id;
+            }
+
             // Get original values for comparison
             $originalUserName = $user->name;
             $originalNamePrefix = $user->name_prefix;
@@ -317,16 +340,8 @@ class UserController extends Controller
             $originalUsername = $user->username;
             $originalParentId = $userProfile->parent_id;
             $originalStatus = $user->status;
+            $originalCurrentPg = $user->current_pg;
             $originalRoles = $user->roles->pluck('name')->toArray();
-
-            // If profile doesn't exist, get or create one
-            if (! $userProfile) {
-                $userProfile = UserProfile::where('user_id', $user->id)->first();
-                if (! $userProfile) {
-                    $userProfile = new UserProfile;
-                    $userProfile->user_id = $user->id;
-                }
-            }
 
             $originalFirstname = $userProfile->firstname;
             $originalLastname = $userProfile->lastname;
@@ -341,6 +356,7 @@ class UserController extends Controller
             $newUsername = $request->username;
             $newParentId = $request->filled('parent_id') ? (int) $request->parent_id : null;
             $newStatus = $request->status;
+            $newCurrentPg = $request->filled('current_pg') ? (int) $request->current_pg : null;
             $newRoles = $request->input('roles');
             $newFirstname = ucwords($request->firstname);
             $newLastname = ucwords($request->lastname);
@@ -355,7 +371,8 @@ class UserController extends Controller
                 $originalEmail !== $newEmail ||
                 $originalMobile !== $newMobile ||
                 $originalUsername !== $newUsername ||
-                $originalStatus !== $newStatus
+                $originalStatus !== $newStatus ||
+                $originalCurrentPg != $newCurrentPg
             ) {
                 $hasChanges = true;
             }
@@ -414,6 +431,7 @@ class UserController extends Controller
             $user->mobile = $newMobile;
             $user->username = $newUsername;
             $user->status = $newStatus;
+            $user->current_pg = $newCurrentPg;
             $user->updated_by = auth()->id(); // REQUIRED: Add user tracking
             if ($request->password) {
                 $user->password = Hash::make($request->password);
@@ -434,6 +452,7 @@ class UserController extends Controller
             $userProfile->parent_id = $newParentId;
             $userProfile->state_id = $request->filled('state_id') ? (int) $request->state_id : null;
             $userProfile->city_id = $request->filled('city_id') ? (int) $request->city_id : null;
+            $userProfile->address = $request->address;
             if ($request->hasFile('profile_photo')) {
                 $userProfile->profile_photo = $request->file('profile_photo')->store('profile-photos', 'public');
             }

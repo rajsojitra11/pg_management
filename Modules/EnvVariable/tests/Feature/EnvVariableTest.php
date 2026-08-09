@@ -196,6 +196,80 @@ class EnvVariableTest extends TestCase
         }
     }
 
+    public function test_can_create_env_variable_with_select_type_options(): void
+    {
+        $data = [
+            'key' => 'SELECT_VAR',
+            'value' => 'opt_b',
+            'type' => 'select',
+            'options' => '["opt_a", "opt_b"]',
+            'is_active' => true,
+            'is_encrypted' => false,
+        ];
+
+        $response = $this->postJson(route('env-variable.store'), $data);
+
+        $response->assertStatus(200);
+        $response->assertJson(['status_code' => 200]);
+
+        $envVariable = EnvVariable::where('key', 'SELECT_VAR')->first();
+        $this->assertSame(['opt_a', 'opt_b'], $envVariable->options);
+    }
+
+    public function test_can_update_env_variable_options(): void
+    {
+        $envVariable = EnvVariable::factory()->create(['is_encrypted' => false]);
+
+        $data = [
+            'key' => $envVariable->key,
+            'value' => 'opt_two',
+            'type' => 'select',
+            'options' => '["opt_one", "opt_two"]',
+            'description' => 'Updated description',
+            'is_active' => true,
+            'is_encrypted' => false,
+        ];
+
+        $response = $this->putJson(route('env-variable.update', $envVariable), $data);
+
+        $response->assertStatus(200);
+
+        $envVariable->refresh();
+        $this->assertSame(['opt_one', 'opt_two'], $envVariable->options);
+    }
+
+    public function test_options_must_be_valid_json(): void
+    {
+        $data = [
+            'key' => 'BAD_OPTIONS_VAR',
+            'value' => 'x',
+            'type' => 'select',
+            'options' => 'not-json-at-all',
+            'is_active' => true,
+        ];
+
+        $response = $this->postJson(route('env-variable.store'), $data);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['options']);
+    }
+
+    public function test_options_must_be_array_of_strings(): void
+    {
+        $data = [
+            'key' => 'NUMERIC_OPTIONS_VAR',
+            'value' => 'x',
+            'type' => 'select',
+            'options' => '[1, 2, 3]',
+            'is_active' => true,
+        ];
+
+        $response = $this->postJson(route('env-variable.store'), $data);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['options.0']);
+    }
+
     public function test_can_sync_env_file(): void
     {
         EnvVariable::factory()->create([

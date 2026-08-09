@@ -35,6 +35,21 @@ return [
     'imported' => 'Setting data imported',
 
     // Validation messages (moved from global validation.php)
+    'company_name_required' => 'Company name is required',
+    'company_name_max' => 'Company name must not exceed :max characters',
+    'tag_line_max' => 'Tag line must not exceed :max characters',
+    'email_valid' => 'Please enter a valid email address',
+    'email_max' => 'Email must not exceed 255 characters',
+    'mobile_max' => 'Mobile number must not exceed 20 characters',
+    'address_string' => 'Address must be a valid text',
+    'country_id_required' => 'Country is required',
+    'country_id_exists' => 'Selected country is invalid',
+    'state_id_required' => 'State is required',
+    'state_id_exists' => 'Selected state is invalid',
+    'city_id_required' => 'City is required',
+    'city_id_exists' => 'Selected city is invalid',
+    'year_display_format_in' => 'Selected year display format is invalid',
+
     'validation' => [
     ],
 ];

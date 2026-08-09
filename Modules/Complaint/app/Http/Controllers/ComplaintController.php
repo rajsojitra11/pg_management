@@ -39,6 +39,9 @@ class ComplaintController extends Controller
 
             return DataTables::of($query)
                 ->addIndexColumn()
+                ->editColumn('complaint_date', function ($row) {
+                    return $row->complaint_date ? $row->complaint_date->format('d-m-Y') : '—';
+                })
                 ->addColumn('pg_name', function ($row) {
                     return $row->pg?->pg_name ?? '—';
                 })

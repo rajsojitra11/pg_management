@@ -124,9 +124,10 @@
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="maintenance_date">
                                     {{ __('maintenance::message.maintenance_date') }}<span class="text-red-500"> *</span>
                                 </label>
-                                <input type="date" required
-                                       class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
-                                       name="maintenance_date" id="maintenance_date">
+                                <input type="text" required autocomplete="off"
+                                       class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 flatpickr-datetime"
+                                       name="maintenance_date" id="maintenance_date"
+                                       placeholder="{{ __('maintenance::message.maintenance_date') }}">
                                 <div class="mt-1 text-sm text-red-500" id="error_maintenance_date"></div>
                             </div>
                         </div>
@@ -266,6 +267,7 @@
     var pgSelectInst = null;
     var complaintSelectInst = null;
     var statusSelectInst = null;
+    var maintenanceDatePicker = null;
 
     $(function() {
         table = initErpTable('#table', {
@@ -314,6 +316,15 @@
             pgSelectInst = initErpSelect('#pg_id', { allowClear: true, placeholder: '{{ __("message.common.select") }}' });
         }
 
+        if (typeof flatpickr === 'function' && $('#maintenance_date').length) {
+            maintenanceDatePicker = flatpickr('#maintenance_date', {
+                dateFormat: 'Y-m-d',
+                altInput: true,
+                altFormat: 'd-m-Y',
+                allowInput: true
+            });
+        }
+
         // PG → Complaint cascade
         (function() {
             var $pg = $('#pg_id');
@@ -345,6 +356,9 @@
     function resetInlineModal() {
         $('#inlineModal').addClass('hidden');
         $('#form')[0].reset();
+        if (maintenanceDatePicker) {
+            maintenanceDatePicker.clear();
+        }
         $('#form').find('.border-red-500').removeClass('border-red-500');
         $('#form').find('.erp-field-error').remove();
         $('#form').find('.erp-form-error-banner').hide();
@@ -444,7 +458,11 @@
                     $("#exampleModalTitle").html("{{ __('maintenance::message.detail') }}");
                     $("#display_maintenance_no").text(response.result.maintenance_no || '—');
                     $("#cost").val(response.result.cost);
-                    $("#maintenance_date").val(response.result.maintenance_date);
+                    if (maintenanceDatePicker) {
+                        maintenanceDatePicker.setDate(response.result.maintenance_date || '', true);
+                    } else {
+                        $("#maintenance_date").val(response.result.maintenance_date || '');
+                    }
                     $("#description").val(response.result.description);
                     $("#status").val(response.result.status);
                     $("#id").val(id);

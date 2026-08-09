@@ -47,10 +47,13 @@ return [
 
     'validation' => [
         'pg_required' => 'Please select a PG.',
+        'pg_invalid' => 'The selected PG does not exist.',
         'email_required' => 'Please enter the sender email.',
         'email_invalid' => 'Please enter a valid email address.',
         'subject_required' => 'Please enter the email subject.',
         'body_required' => 'Please enter the email body.',
+        'status_required' => 'Please select a status.',
+        'status_invalid' => 'The selected status is invalid.',
     ],
 
     'placeholder' => [

@@ -25,7 +25,7 @@ class StoreUserRequest extends FormRequest
             'firstname' => 'required|string|max:255',
             'lastname' => 'nullable|string|max:255',
             'email' => [
-                'nullable',
+                'required',
                 'email',
                 Rule::unique('users')->where(function ($query) {
                     return $query->where('deleted_at', '=', null);
@@ -48,13 +48,15 @@ class StoreUserRequest extends FormRequest
             ],
             'password' => 'required_with:confirm_password|min:8|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[@$!%*#?&]/',
             'confirm_password' => 'required|same:password',
-            'parent_id' => 'required|integer|exists:users,id',
+            'parent_id' => 'required|integer|exists:users,id,deleted_at,NULL',
             'roles' => 'required|array',
-            'state_id' => 'nullable|integer|exists:states,id',
-            'city_id' => 'nullable|integer|exists:cities,id',
+            'state_id' => 'nullable|integer|exists:states,id,deleted_at,NULL',
+            'city_id' => 'nullable|integer|exists:cities,id,deleted_at,NULL',
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'status' => 'required|string|in:Active,InActive',
+            'status' => 'required|string|in:Active,InActive,Inactive',
             'dateofbirth' => 'nullable|date',
+            'address' => 'nullable|string|max:1000',
+            'current_pg' => ['nullable', 'integer', 'exists:pg_management,id,deleted_at,NULL'],
         ];
     }
 
@@ -64,6 +66,9 @@ class StoreUserRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'firstname.required' => __('user::message.enter_first_name'),
+            'email.required' => __('user::message.enter_valid_email'),
+            'email.email' => __('user::message.enter_valid_email'),
             'email.unique' => __('user::message.email_unique'),
             'mobile.required' => __('user::message.enter_mobile'),
             'mobile.numeric' => __('user::message.enter_mobile'),
@@ -72,9 +77,14 @@ class StoreUserRequest extends FormRequest
             'username.regex' => __('user::message.username_no_spaces'),
             'password.min' => __('user::message.enter_password_min'),
             'password.regex' => __('user::message.enter_password_regex'),
+            'confirm_password.required' => __('user::message.enter_confirm_password'),
             'parent_id.required' => __('user::message.select_parent_user'),
             'parent_id.integer' => __('user::message.select_parent_user'),
+            'parent_id.exists' => __('user::message.select_parent_user'),
             'roles.required' => __('user::message.select_role'),
+            'status.in' => __('user::message.status_must_be_active_inactive'),
+            'state_id.exists' => __('user::message.select_valid_state'),
+            'city_id.exists' => __('user::message.select_valid_city'),
         ];
     }
 }

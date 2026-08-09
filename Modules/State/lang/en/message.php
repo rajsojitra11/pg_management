@@ -10,6 +10,9 @@ return [
     'code' => 'State Code',
     'enter_name' => 'Enter state name',
     'enter_unique_name' => 'The state name has already been taken',
+    'country_required' => 'Select country',
+    'country_exists' => 'Selected country is invalid',
+    'state_not_exist' => 'Selected state does not exist.',
 
     // Logging messages
     'accessed' => 'State list accessed',

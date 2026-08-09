@@ -25,7 +25,7 @@ class Setting extends Model
 
     protected $table = 'settings';
 
-    protected $fillable = ['id', 'company_name', 'tag_line', 'favicon', 'logo', 'logo_dark', 'gst_number', 'pancard_number', 'tan_number', 'country_id', 'state_id', 'city_id', 'year_display_format', 'created_by', 'updated_by', 'deleted_by'];
+    protected $fillable = ['id', 'company_name', 'tag_line', 'favicon', 'logo', 'logo_dark', 'gst_number', 'pancard_number', 'tan_number', 'email', 'mobile', 'address', 'country_id', 'state_id', 'city_id', 'year_display_format', 'created_by', 'updated_by', 'deleted_by'];
 
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 

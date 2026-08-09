@@ -58,6 +58,9 @@ class MaintenanceController extends Controller
 
                     return '—';
                 })
+                ->editColumn('maintenance_date', function ($row) {
+                    return $row->maintenance_date ? $row->maintenance_date->format('d-m-Y') : '—';
+                })
                 ->addColumn('action', function ($row) {
                     $flag = true;
                     $show = 'maintenance-show';

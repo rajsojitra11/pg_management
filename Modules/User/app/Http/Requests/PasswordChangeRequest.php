@@ -22,7 +22,7 @@ class PasswordChangeRequest extends FormRequest
         return [
             'current_password' => 'required',
             'password' => 'required_with:confirm_password|min:8|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[@$!%*#?&]/',
-            'confirm_password' => 'same:password',
+            'confirm_password' => 'required_with:password|same:password',
         ];
     }
 
@@ -32,8 +32,11 @@ class PasswordChangeRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'current_password.required' => __('user::message.enter_current_password'),
             'password.min' => __('user::message.enter_password_min'),
             'password.regex' => __('user::message.enter_password_regex'),
+            'confirm_password.required_with' => __('user::message.enter_confirm_password'),
+            'confirm_password.same' => __('user::message.password_mismatch'),
         ];
     }
 }

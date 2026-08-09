@@ -23,12 +23,12 @@ class StoreSubscriptionRequest extends FormRequest
             ],
             'email' => ['required', 'email', 'max:255'],
             'phone' => ['required', 'string', 'max:20'],
-            'plan_type' => ['required', 'string', 'max:100'],
+            'plan_type' => ['required', 'string', Rule::in(['basic', 'premium', 'enterprise'])],
             'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date', 'after_or_equal:start_date'],
-            'status' => ['required', 'string', 'max:50'],
+            'status' => ['required', 'string', Rule::in(['active', 'expired', 'cancelled', 'pending'])],
             'amount' => ['required', 'numeric', 'min:0'],
-            'payment_status' => ['required', 'string', 'max:50'],
+            'payment_status' => ['required', 'string', Rule::in(['paid', 'unpaid', 'pending'])],
         ];
     }
 
@@ -56,12 +56,15 @@ class StoreSubscriptionRequest extends FormRequest
             'email.email' => __('subscription::message.enter_valid_email'),
             'phone.required' => __('subscription::message.enter_phone'),
             'plan_type.required' => __('subscription::message.enter_plan_type'),
+            'plan_type.in' => __('subscription::message.plan_type_in'),
             'start_date.required' => __('subscription::message.enter_start_date'),
             'end_date.required' => __('subscription::message.enter_end_date'),
             'end_date.after_or_equal' => __('subscription::message.end_date_after_start'),
             'status.required' => __('subscription::message.enter_status'),
+            'status.in' => __('subscription::message.status_in'),
             'amount.required' => __('subscription::message.enter_amount'),
             'payment_status.required' => __('subscription::message.enter_payment_status'),
+            'payment_status.in' => __('subscription::message.payment_status_in'),
         ];
     }
 }

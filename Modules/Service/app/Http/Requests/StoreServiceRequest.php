@@ -15,7 +15,7 @@ class StoreServiceRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'service_category_id' => ['required', 'exists:service_categories,id'],
+            'service_category_id' => ['required', 'exists:service_categories,id,deleted_at,NULL'],
         ];
 
         if ($this->has('services') && is_array($this->input('services'))) {
@@ -49,6 +49,7 @@ class StoreServiceRequest extends FormRequest
     {
         return [
             'service_category_id.required' => __('service::message.select_category'),
+            'service_category_id.exists' => __('service::message.select_valid_category'),
             'service_name.required' => __('service::message.enter_service_name'),
             'services.required' => __('service::message.add_at_least_one_service'),
             'services.min' => __('service::message.add_at_least_one_service'),

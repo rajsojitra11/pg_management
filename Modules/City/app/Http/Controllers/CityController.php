@@ -3,6 +3,7 @@
 namespace Modules\City\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -83,7 +84,7 @@ class CityController extends Controller
                 'data' => route('city.index'),
                 'message' => 'City added successfully.',
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
 
             return response()->json([
@@ -157,7 +158,7 @@ class CityController extends Controller
                 'data' => route('city.index'),
                 'message' => 'City updated successfully.',
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
 
             return response()->json([
@@ -188,7 +189,7 @@ class CityController extends Controller
                     'message' => 'This city already use in another module.',
                 ]);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'status_code' => 500,
                 'message' => 'Something went wrong. Please try again.',

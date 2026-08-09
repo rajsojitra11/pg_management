@@ -38,8 +38,11 @@ return [
 
     // Validation
     'select_tenant' => 'Select Tenant',
+    'select_valid_tenant' => 'Select a valid Tenant',
     'select_pg' => 'Select PG',
+    'select_valid_pg' => 'Select a valid PG',
     'select_room' => 'Select Room',
+    'select_valid_room' => 'Select a valid Room',
     'enter_amount' => 'Enter Amount',
     'enter_reference_no' => 'Enter Reference No',
     'enter_remarks' => 'Enter Remarks',

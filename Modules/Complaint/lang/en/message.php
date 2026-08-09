@@ -30,9 +30,13 @@ return [
     'restored' => 'Complaint restored successfully',
     'validation' => [
         'pg_required' => 'Please select a PG',
+        'pg_invalid' => 'Please select a valid PG',
         'room_required' => 'Please select a room',
+        'room_invalid' => 'Please select a valid room',
         'category_required' => 'Please select a category',
+        'category_invalid' => 'Please select a valid category',
         'service_required' => 'Please select a service',
+        'service_invalid' => 'Please select a valid service',
         'date_required' => 'Please select a complaint date',
         'date_invalid' => 'Please enter a valid date',
         'note_required' => 'Please enter complaint details',

@@ -26,14 +26,24 @@ class UpdateTenantRequest extends FormRequest
             ],
             'firstname' => ['nullable', 'string', 'max:255'],
             'lastname' => ['nullable', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'max:255'],
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+                Rule::unique('tenants', 'email')->ignore($id)->whereNull('deleted_at'),
+            ],
             'phone' => ['nullable', 'string', 'max:20'],
-            'mobile' => ['nullable', 'string', 'max:20'],
+            'mobile' => [
+                'nullable',
+                'string',
+                'max:20',
+                Rule::unique('tenants', 'phone')->ignore($id)->whereNull('deleted_at'),
+            ],
             'address' => ['nullable', 'string'],
             'status' => ['nullable', 'string', 'in:active,inactive,Active,Inactive'],
 
-            'pg_id' => ['nullable', 'integer', 'exists:pg_management,id'],
-            'room_id' => ['nullable', 'integer', 'exists:pg_rooms,id'],
+            'pg_id' => ['nullable', 'integer', 'exists:pg_management,id,deleted_at,NULL'],
+            'room_id' => ['nullable', 'integer', 'exists:pg_rooms,id,deleted_at,NULL'],
             'bed_no' => ['nullable', 'string', 'max:20'],
             'date_of_birth' => ['nullable', 'date_format:d-m-Y'],
             'gender' => ['nullable', 'string', 'in:Male,Female,Other'],
@@ -53,8 +63,8 @@ class UpdateTenantRequest extends FormRequest
             'emergency_contact_name' => ['nullable', 'string', 'max:255'],
             'emergency_relation' => ['nullable', 'string', 'max:100'],
             'emergency_contact_number' => ['nullable', 'string', 'max:20'],
-            'permanent_state_id' => ['nullable', 'integer', 'exists:states,id'],
-            'permanent_city_id' => ['nullable', 'integer', 'exists:cities,id'],
+            'permanent_state_id' => ['nullable', 'integer', 'exists:states,id,deleted_at,NULL'],
+            'permanent_city_id' => ['nullable', 'integer', 'exists:cities,id,deleted_at,NULL'],
             'permanent_address' => ['nullable', 'string'],
             'additional_notes' => ['nullable', 'string'],
         ];
@@ -97,7 +107,13 @@ class UpdateTenantRequest extends FormRequest
         return [
             'name.required' => __('tenant::message.enter_name'),
             'name.unique' => __('tenant::message.enter_unique_name'),
+            'email.unique' => __('tenant::message.email_taken'),
+            'mobile.unique' => __('tenant::message.mobile_taken'),
             'expected_checkout_date.after_or_equal' => __('tenant::message.checkout_after_checkin'),
+            'pg_id.exists' => __('tenant::message.select_valid_pg'),
+            'room_id.exists' => __('tenant::message.select_valid_room'),
+            'permanent_state_id.exists' => __('tenant::message.select_valid_state'),
+            'permanent_city_id.exists' => __('tenant::message.select_valid_city'),
         ];
     }
 }

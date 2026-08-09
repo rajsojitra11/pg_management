@@ -34,6 +34,9 @@ class UpdateRoleRequest extends FormRequest
             'permission.required' => __('role::message.validation.permissions.required'),
             'permission.array' => __('role::message.validation.permissions.required'),
             'permission.min' => __('role::message.validation.permissions.required'),
+            'allowed_year.integer' => __('role::message.validation.allowed_year.integer'),
+            'allowed_year.min' => __('role::message.validation.allowed_year.min'),
+            'allowed_year.max' => __('role::message.validation.allowed_year.max'),
         ];
     }
 }

@@ -12,6 +12,7 @@ return [
     'enter_unique_name' => 'The city name has already been taken',
     'select_country' => 'Select country',
     'select_state' => 'Select state',
+    'city_not_exist' => 'Selected city does not exist.',
 
     // Logging messages
     'accessed' => 'City list accessed',

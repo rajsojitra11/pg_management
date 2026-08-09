@@ -32,8 +32,8 @@ class StoreCityRequest extends FormRequest
                     ]);
                 }),
             ],
-            'state_id' => 'required|integer|exists:states,id',
-            'country_id' => 'required|integer|exists:countries,id',
+            'state_id' => 'required|integer|exists:states,id,deleted_at,NULL',
+            'country_id' => 'required|integer|exists:countries,id,deleted_at,NULL',
         ];
     }
 

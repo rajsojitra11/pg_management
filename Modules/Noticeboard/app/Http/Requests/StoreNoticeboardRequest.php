@@ -17,7 +17,7 @@ class StoreNoticeboardRequest extends FormRequest
         $noticeType = $this->input('notice_type', 'image');
 
         $rules = [
-            'pg_id' => ['required', 'exists:pg_management,id'],
+            'pg_id' => ['required', 'exists:pg_management,id,deleted_at,NULL'],
             'title' => [
                 'required',
                 'string',
@@ -53,6 +53,7 @@ class StoreNoticeboardRequest extends FormRequest
     {
         return [
             'pg_id.required' => __('noticeboard::message.select_pg'),
+            'pg_id.exists' => __('noticeboard::message.select_valid_pg'),
             'title.required' => __('noticeboard::message.enter_title'),
             'title.unique' => __('noticeboard::message.title_taken'),
             'description.required' => __('noticeboard::message.enter_description'),

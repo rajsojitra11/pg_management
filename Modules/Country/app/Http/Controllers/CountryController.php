@@ -3,6 +3,7 @@
 namespace Modules\Country\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Modules\Country\Http\Requests\DeleteCountryRequest;
 use Modules\Country\Http\Requests\StoreCountryRequest;
@@ -65,7 +66,7 @@ class CountryController extends Controller
                 'data' => route('country.index'),
                 'message' => 'Country added successfully.',
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
 
             return response()->json([
@@ -116,7 +117,7 @@ class CountryController extends Controller
                 'data' => route('country.index'),
                 'message' => 'Country updated successfully.',
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
 
             return response()->json([
@@ -147,7 +148,7 @@ class CountryController extends Controller
                     'message' => 'This country already use in another module.',
                 ]);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'status_code' => 500,
                 'message' => 'Something went wrong. Please try again.',

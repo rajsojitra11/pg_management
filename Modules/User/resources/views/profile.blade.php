@@ -274,7 +274,7 @@
                     <h3 class="text-sm font-semibold text-zinc-900">{{ __('user::message.active_sessions') }}</h3>
                     <p class="text-xs text-zinc-500 mt-0.5">{{ __('user::message.active_sessions_subtitle') }}</p>
                 </div>
-                <form id="logout-everywhere-form" method="POST" action="{{ route('profile.logout-everywhere') }}" onsubmit="return confirm('{{ __('user::message.confirm_logout_everywhere') }}')">
+                <form id="logout-everywhere-form" method="POST" action="{{ route('profile.logout-everywhere') }}">
                     @csrf
                     <button type="submit"
                             class="h-8 px-3 rounded-md border border-red-200 bg-red-50 text-red-700 text-xs font-medium hover:bg-red-100 inline-flex items-center whitespace-nowrap">
@@ -391,6 +391,27 @@
 (function () {
     var profileForm = document.getElementById('profileForm');
 
+    // ── Sign out everywhere (erpConfirm instead of native confirm) ──
+    var logoutEverywhereForm = document.getElementById('logout-everywhere-form');
+    if (logoutEverywhereForm) {
+        logoutEverywhereForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (typeof erpConfirm === 'function') {
+                erpConfirm({
+                    title: '{{ __("user::message.sign_out_everywhere") }}',
+                    message: '{{ __("user::message.confirm_logout_everywhere") }}',
+                    confirmText: '{{ __("user::message.logout_confirmation_button") }}',
+                }).then(function (confirmed) {
+                    if (confirmed) {
+                        logoutEverywhereForm.submit();
+                    }
+                });
+            } else {
+                logoutEverywhereForm.submit();
+            }
+        });
+    }
+
     // Store original form values for cancel/reset
     var originalValues = {};
     if (profileForm) {
@@ -435,16 +456,12 @@
                 } else {
                     if (typeof erpToast === 'function') {
                         erpToast({ title: 'Error', message: data.message || 'Upload failed.', type: 'error' });
-                    } else {
-                        alert(data.message || 'Upload failed.');
                     }
                 }
             })
             .catch(function () {
                 if (typeof erpToast === 'function') {
                     erpToast({ title: 'Error', message: 'Network error.', type: 'error' });
-                } else {
-                    alert('Network error.');
                 }
             })
             .finally(function () {
@@ -475,8 +492,6 @@
             if (data.status_code === 200) {
                 if (typeof erpToast === 'function') {
                     erpToast({ title: '{{ __("user::message.success.updated") }}', message: data.message, type: 'success' });
-                } else {
-                    alert(data.message);
                 }
             } else if (data.status_code === 422 && data.errors) {
                 var mobileErrEl = document.getElementById('pf_mobile_error');
@@ -503,16 +518,12 @@
             } else {
                 if (typeof erpToast === 'function') {
                     erpToast({ title: 'Error', message: data.message || 'Something went wrong.', type: 'error' });
-                } else {
-                    alert(data.message || 'Something went wrong.');
                 }
             }
         })
         .catch(function () {
             if (typeof erpToast === 'function') {
                 erpToast({ title: 'Error', message: 'Network error. Please try again.', type: 'error' });
-            } else {
-                alert('Network error. Please try again.');
             }
         })
         .finally(function () {

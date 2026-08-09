@@ -16,6 +16,24 @@
     @endcan
 </div>
 
+@if ($user->is_blocked)
+<div class="rounded-lg border border-red-200 bg-red-50 p-4 mb-4 flex items-center justify-between gap-3">
+    <div class="flex items-start gap-2">
+        <i class="fa-solid fa-ban text-red-500 mt-0.5"></i>
+        <div>
+            <p class="text-sm font-medium text-red-700">{{ __('user::message.user_blocked_banner_title') }}</p>
+            <p class="text-xs text-red-500 mt-0.5">{{ __('user::message.user_blocked_banner_desc') }}</p>
+        </div>
+    </div>
+    @can('users-edit')
+    <button type="button" id="btnUnblockUser" data-user-id="{{ $user->id }}"
+            class="h-9 px-4 rounded-md bg-red-600 text-white text-sm font-medium hover:bg-red-700 inline-flex items-center shrink-0">
+        <i class="fa-solid fa-unlock mr-1.5 text-xs"></i> {{ __('user::message.unblock_user') }}
+    </button>
+    @endcan
+</div>
+@endif
+
 <form action="{{ route('users.update', [$user->id]) }}" method="POST" id="userForm" enctype="multipart/form-data" novalidate>
     @csrf
     @method('PUT')
@@ -195,8 +213,25 @@
                     <select name="status" id="status" required
                             class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2">
                         <option value="Active" {{ old('status', $user->status) == 'Active' ? 'selected' : '' }}>{{ __('message.common.active') }}</option>
-                        <option value="InActive" {{ old('status', $user->status) == 'InActive' ? 'selected' : '' }}>{{ __('message.common.inactive') }}</option>
+                        <option value="InActive" {{ in_array(old('status', $user->status), ['InActive', 'Inactive']) ? 'selected' : '' }}>{{ __('message.common.inactive') }}</option>
                     </select>
+                </div>
+            </div>
+
+            {{-- Row 6: Current PG --}}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-zinc-700 mb-1.5">{{ __('user::message.current_pg') }}</label>
+                    <select name="current_pg" id="current_pg"
+                            class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2">
+                        <option value="">{{ __('message.common.select') }}</option>
+                        @foreach ($pgList as $pg)
+                            <option value="{{ $pg->id }}" {{ old('current_pg', $user->current_pg ?? '') == $pg->id ? 'selected' : '' }}>{{ $pg->pg_name }}</option>
+                        @endforeach
+                    </select>
+                    @if ($errors->has('current_pg'))
+                        <p class="mt-1 text-xs text-red-500">{{ $errors->first('current_pg') }}</p>
+                    @endif
                 </div>
             </div>
 
@@ -239,6 +274,33 @@
 @section('pagescript')
 <script>
 $(document).ready(function() {
+@if ($user->is_blocked)
+    // Unblock user from edit form
+    $('#btnUnblockUser').on('click', function() {
+        var $btn = $(this);
+        var userId = $btn.data('user-id');
+        if (!confirm('{{ __("user::message.unblock_confirm") }}')) return;
+        $.ajax({
+            type: 'POST',
+            url: '{{ route("user-login-status-change") }}',
+            data: { id: userId, status: 0, _token: $('meta[name="csrf-token"]').attr('content') },
+            dataType: 'json',
+            headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+            success: function(response) {
+                if (response.status_code == 200) {
+                    if (typeof erpToast === 'function') erpToast({ title: 'Success', message: response.message, type: 'success' });
+                    setTimeout(function() { window.location.reload(); }, 800);
+                } else {
+                    if (typeof erpToast === 'function') erpToast({ title: 'Error', message: response.message || 'Something went wrong', type: 'error' });
+                }
+            },
+            error: function() {
+                if (typeof erpToast === 'function') erpToast({ title: 'Error', message: 'Something went wrong. Please try again.', type: 'error' });
+            }
+        });
+    });
+@endif
+
     // Flatpickr for Date of Birth
     if ($('#dateofbirth').length) {
         flatpickr('#dateofbirth', {
@@ -300,6 +362,7 @@ $(document).ready(function() {
         initErpSelect('#parent_id', { allowClear: true, placeholder: '{{ __("message.common.select") }}' });
         initErpSelect('#roles', { allowClear: true, placeholder: '{{ __("message.common.select") }}' });
         initErpSelect('#status', { allowClear: true, placeholder: '{{ __("message.common.select") }}' });
+        initErpSelect('#current_pg', { allowClear: true, placeholder: '{{ __("message.common.select") }}' });
     }
 
     // Show server validation errors inline

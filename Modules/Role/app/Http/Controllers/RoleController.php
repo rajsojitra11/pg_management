@@ -68,9 +68,10 @@ class RoleController extends Controller
 
         // Save year access
         $allYears = $request->boolean('all_years');
+        $allowedYear = $request->filled('allowed_year') ? (int) $request->input('allowed_year') : null;
         $role->yearAccess()->create([
             'all_years' => $allYears,
-            'allowed_year' => $allYears ? null : $request->integer('allowed_year'),
+            'allowed_year' => $allYears ? null : $allowedYear,
         ]);
 
         if ($request->ajax()) {
@@ -151,8 +152,8 @@ class RoleController extends Controller
         // Check if year access has changed
         $currentYearAccess = $role->yearAccess;
         $newAllYears = $request->boolean('all_years');
-        $newAllowedYear = $request->integer('allowed_year');
-        if (! $currentYearAccess || $currentYearAccess->all_years !== $newAllYears || $currentYearAccess->allowed_year !== $newAllowedYear) {
+        $newAllowedYear = $request->filled('allowed_year') ? (int) $request->input('allowed_year') : null;
+        if (! $currentYearAccess || $currentYearAccess->all_years !== $newAllYears || $currentYearAccess->allowed_year != $newAllowedYear) {
             $hasChanges = true;
         }
 

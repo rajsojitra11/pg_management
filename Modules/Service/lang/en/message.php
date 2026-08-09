@@ -17,6 +17,7 @@ return [
     'view_category' => 'Category',
     'view_service' => 'Service',
     'select_category' => 'Please select a category',
+    'select_valid_category' => 'Please select a valid category',
     'enter_category_name' => 'Enter category name',
     'category_name_taken' => 'This category name is already taken',
     'enter_service_name' => 'Enter service name',

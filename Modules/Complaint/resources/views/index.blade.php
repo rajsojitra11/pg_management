@@ -137,8 +137,8 @@
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="complaint_date">
                                     {{ __('complaint::message.complaint_date') }}<span class="text-red-500"> *</span>
                                 </label>
-                                <input type="date" required
-                                       class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
+                                <input type="text" required autocomplete="off"
+                                       class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 flatpickr-datetime"
                                        name="complaint_date" id="complaint_date"
                                        placeholder="{{ __('complaint::message.enter_complaint_date') }}">
                                 <div class="mt-1 text-sm text-red-500" id="error_complaint_date"></div>
@@ -244,6 +244,7 @@
     var categorySelectInst = null;
     var roomSelectInst = null;
     var serviceSelectInst = null;
+    var complaintDatePicker = null;
 
     $(function() {
         table = initErpTable('#table', {
@@ -290,6 +291,15 @@
         if (typeof initErpSelect === 'function') {
             pgSelectInst = initErpSelect('#pg_id', { allowClear: true, placeholder: '{{ __("message.common.select") }}' });
             categorySelectInst = initErpSelect('#service_category_id', { allowClear: true, placeholder: '{{ __("message.common.select") }}' });
+        }
+
+        if (typeof flatpickr === 'function' && $('#complaint_date').length) {
+            complaintDatePicker = flatpickr('#complaint_date', {
+                dateFormat: 'Y-m-d',
+                altInput: true,
+                altFormat: 'd-m-Y',
+                allowInput: true
+            });
         }
 
         // PG → Room cascade
@@ -350,6 +360,9 @@
     function resetInlineModal() {
         $('#inlineModal').addClass('hidden');
         $('#form')[0].reset();
+        if (complaintDatePicker) {
+            complaintDatePicker.clear();
+        }
         $('#form').find('.border-red-500').removeClass('border-red-500');
         $('#form').find('.erp-field-error').remove();
         $('#form').find('.erp-form-error-banner').hide();
@@ -445,7 +458,11 @@
                 if (response.status_code == 200) {
                     $("#exampleModalTitle").html("{{ __('complaint::message.edit_complaint') }}");
                     $("#display_complaint_no").text(response.result.complaint_no || '—');
-                    $("#complaint_date").val(response.result.complaint_date);
+                    if (complaintDatePicker) {
+                        complaintDatePicker.setDate(response.result.complaint_date || '', true);
+                    } else {
+                        $("#complaint_date").val(response.result.complaint_date || '');
+                    }
                     $("#note").val(response.result.note);
                     $("#id").val(id);
 

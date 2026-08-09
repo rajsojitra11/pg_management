@@ -211,6 +211,23 @@
                 </div>
             </div>
 
+            {{-- Row 5: Current PG --}}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-zinc-700 mb-1.5">{{ __('user::message.current_pg') }}</label>
+                    <select name="current_pg" id="current_pg"
+                            class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2">
+                        <option value="">{{ __('message.common.select') }}</option>
+                        @foreach ($pgList as $pg)
+                            <option value="{{ $pg->id }}" {{ old('current_pg') == $pg->id ? 'selected' : '' }}>{{ $pg->pg_name }}</option>
+                        @endforeach
+                    </select>
+                    @if ($errors->has('current_pg'))
+                        <p class="mt-1 text-xs text-red-500">{{ $errors->first('current_pg') }}</p>
+                    @endif
+                </div>
+            </div>
+
             {{-- Address --}}
             <div>
                 <label class="block text-sm font-medium text-zinc-700 mb-1.5">{{ __('user::message.address') }}</label>
@@ -308,6 +325,7 @@ $(document).ready(function() {
         initErpSelect('#parent_id', { allowClear: true, placeholder: '{{ __("message.common.select") }}' });
         initErpSelect('#roles', { allowClear: true, placeholder: '{{ __("message.common.select") }}' });
         initErpSelect('#status', { allowClear: true, placeholder: '{{ __("message.common.select") }}' });
+        initErpSelect('#current_pg', { allowClear: true, placeholder: '{{ __("message.common.select") }}' });
     }
 
     // Show server validation errors inline

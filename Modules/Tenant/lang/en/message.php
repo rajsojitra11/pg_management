@@ -83,6 +83,10 @@ return [
     'enter_permanent_address' => 'Enter permanent address',
     'additional_notes' => 'Additional Notes',
     'enter_additional_notes' => 'Enter additional notes',
+    'select_valid_pg' => 'Please select a valid PG',
+    'select_valid_room' => 'Please select a valid room',
+    'select_valid_state' => 'Please select a valid state',
+    'select_valid_city' => 'Please select a valid city',
 
     // Step 4: Review sections
     'section_pg_personal' => 'PG Assignment & Personal Details',

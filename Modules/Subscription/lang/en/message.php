@@ -27,6 +27,9 @@ return [
     'enter_unique_name' => 'The subscriber name has already been taken',
     'enter_valid_email' => 'Please enter a valid email address',
     'end_date_after_start' => 'End date must be after or equal to start date',
+    'plan_type_in' => 'Selected plan type is invalid',
+    'status_in' => 'Selected status is invalid',
+    'payment_status_in' => 'Selected payment status is invalid',
     'validation' => [],
 
     'search_placeholder' => 'Search by name, email or phone',

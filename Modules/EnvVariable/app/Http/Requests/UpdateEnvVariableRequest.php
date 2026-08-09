@@ -7,6 +7,16 @@ use Illuminate\Validation\Rule;
 
 class UpdateEnvVariableRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        if ($this->filled('options')) {
+            $decoded = json_decode($this->input('options'), true);
+            if (is_array($decoded)) {
+                $this->merge(['options' => $decoded]);
+            }
+        }
+    }
+
     public function rules(): array
     {
         $envVariable = $this->route('env_variable');
@@ -23,6 +33,7 @@ class UpdateEnvVariableRequest extends FormRequest
             'value' => 'nullable|string|max:5000',
             'type' => 'required|string|in:text,number,boolean,select,password',
             'options' => 'nullable|array',
+            'options.*' => 'required|string',
             'category' => 'nullable|string|max:100',
             'validation_rules' => 'nullable|string|max:'.config('app.max_comment_length', 1000),
             'description' => 'nullable|string|max:'.config('app.max_comment_length', 1000),
@@ -67,7 +78,9 @@ class UpdateEnvVariableRequest extends FormRequest
             'key.regex' => __('envvariable::message.validation.key_format'),
             'value.max' => __('envvariable::message.validation.value_max'),
             'description.max' => __('envvariable::message.validation.description_max'),
-
+            'options.array' => __('envvariable::message.validation.options_invalid'),
+            'options.*.required' => __('envvariable::message.validation.options_item_required'),
+            'options.*.string' => __('envvariable::message.validation.options_item_string'),
         ];
     }
 

@@ -101,6 +101,7 @@
         var map = {
             'active': 'background:var(--erp-success-bg);border-color:var(--erp-success-border);color:var(--erp-success-text);',
             'inactive': 'background:var(--erp-warning-bg);border-color:var(--erp-warning-border);color:var(--erp-warning-text);',
+            'verified': 'background:var(--erp-success-bg);border-color:var(--erp-success-border);color:var(--erp-success-text);',
             'paid': 'background:var(--erp-success-bg);border-color:var(--erp-success-border);color:var(--erp-success-text);',
             'pending': 'background:var(--erp-warning-bg);border-color:var(--erp-warning-border);color:var(--erp-warning-text);',
             'refunded': 'background:var(--erp-info-bg);border-color:var(--erp-info-border);color:var(--erp-info-text);',

@@ -3,6 +3,7 @@
 namespace Modules\Year\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Modules\Year\Http\Requests\DeleteYearRequest;
@@ -56,22 +57,24 @@ class YearController extends Controller
     {
         DB::beginTransaction();
         try {
-            $defaultSet = ! empty($request->set_default) ? 1 : 0;
+            $data = $request->validated();
+
+            $defaultSet = ! empty($data['set_default']) ? 1 : 0;
             if ($defaultSet == 1) {
                 Year::query()->update(['set_default' => 0]);
             }
 
             // Generate format fields if not provided
-            $formats = generateYearFormats($request->name);
+            $formats = generateYearFormats($data['name']);
 
             $year = Year::create([
-                'name' => $request->name,
-                'full_short' => $request->full_short ?: $formats['full_short'],
-                'short_full' => $request->short_full ?: $formats['short_full'],
-                'short_short' => $request->short_short ?: $formats['short_short'],
-                'full_full' => $request->full_full ?: $formats['full_full'],
-                'short' => $request->short ?: $formats['short'],
-                'full' => $request->full ?: $formats['full'],
+                'name' => $data['name'],
+                'full_short' => $data['full_short'] ?? $formats['full_short'],
+                'short_full' => $data['short_full'] ?? $formats['short_full'],
+                'short_short' => $data['short_short'] ?? $formats['short_short'],
+                'full_full' => $data['full_full'] ?? $formats['full_full'],
+                'short' => $data['short'] ?? $formats['short'],
+                'full' => $data['full'] ?? $formats['full'],
                 'set_default' => $defaultSet,
                 'created_by' => auth()->id(),
             ]);
@@ -110,22 +113,24 @@ class YearController extends Controller
         try {
             $year = Year::byAnyKey($id)->first();
             if (! is_null($year)) {
-                $defaultSet = ! empty($request->set_default) ? 1 : 0;
+                $data = $request->validated();
+
+                $defaultSet = ! empty($data['set_default']) ? 1 : 0;
                 if ($defaultSet == 1) {
                     Year::query()->update(['set_default' => 0]);
                 }
 
                 // Generate format fields if not provided
-                $formats = generateYearFormats($request->name);
+                $formats = generateYearFormats($data['name']);
 
                 $year->update([
-                    'name' => $request->name,
-                    'full_short' => $request->full_short ?: $formats['full_short'],
-                    'short_full' => $request->short_full ?: $formats['short_full'],
-                    'short_short' => $request->short_short ?: $formats['short_short'],
-                    'full_full' => $request->full_full ?: $formats['full_full'],
-                    'short' => $request->short ?: $formats['short'],
-                    'full' => $request->full ?: $formats['full'],
+                    'name' => $data['name'],
+                    'full_short' => $data['full_short'] ?? $formats['full_short'],
+                    'short_full' => $data['short_full'] ?? $formats['short_full'],
+                    'short_short' => $data['short_short'] ?? $formats['short_short'],
+                    'full_full' => $data['full_full'] ?? $formats['full_full'],
+                    'short' => $data['short'] ?? $formats['short'],
+                    'full' => $data['full'] ?? $formats['full'],
                     'set_default' => $defaultSet,
                     'updated_by' => auth()->id(),
                 ]);

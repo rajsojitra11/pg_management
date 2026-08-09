@@ -115,7 +115,7 @@ class CreateAdminUserSeeder extends Seeder
                 'mobile' => '9876543311',
                 'username' => 'rajsojitra52',
                 'email' => 'rajsojitra52@gmail.com',
-                'password' => bcrypt('PgAdmin@123'),
+                'password' => bcrypt('Tech@123'),
                 'status' => 'Active',
                 'profile' => [
                     'firstname' => 'Raj',
@@ -128,7 +128,7 @@ class CreateAdminUserSeeder extends Seeder
                 'mobile' => '9876543322',
                 'username' => 'rajs.techfirst',
                 'email' => 'rajs.techfirst@gmail.com',
-                'password' => bcrypt('PgAdmin@123'),
+                'password' => bcrypt('Tech@123'),
                 'status' => 'Active',
                 'profile' => [
                     'firstname' => 'Raj',
@@ -141,7 +141,7 @@ class CreateAdminUserSeeder extends Seeder
                 'mobile' => '9876543333',
                 'username' => 'mcae240046',
                 'email' => 'mcae240046@gmail.com',
-                'password' => bcrypt('PgAdmin@123'),
+                'password' => bcrypt('Tech@123'),
                 'status' => 'Active',
                 'profile' => [
                     'firstname' => 'MCAE',

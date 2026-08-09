@@ -338,13 +338,11 @@
                     } else {
                         $('#ph_empty').addClass('hidden');
                         $.each(payments, function(i, p) {
-                            var statusHtml = p.status;
-                            if (p.status === 'paid') {
-                                statusHtml = '<span class="inline-flex items-center rounded-md bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700 border border-green-200">Paid</span>';
-                            } else if (p.status === 'pending') {
+                            var statusHtml = p.verified;
+                            if (p.verified === 'verified') {
+                                statusHtml = '<span class="inline-flex items-center rounded-md bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700 border border-green-200">Verified</span>';
+                            } else if (p.verified === 'pending') {
                                 statusHtml = '<span class="inline-flex items-center rounded-md bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 border border-amber-200">Pending</span>';
-                            } else if (p.status === 'refunded') {
-                                statusHtml = '<span class="inline-flex items-center rounded-md bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700 border border-red-200">Refunded</span>';
                             }
                             var row = '<tr class="border-b border-zinc-100 hover:bg-zinc-50">' +
                                 '<td class="py-2.5 pr-3 text-zinc-400">' + (i + 1) + '</td>' +

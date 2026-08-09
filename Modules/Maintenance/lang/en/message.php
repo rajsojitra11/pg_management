@@ -17,6 +17,7 @@ return [
     'created_by' => 'Created By',
     'validation' => [
         'complaint_required' => 'Please select a complaint.',
+        'complaint_invalid' => 'Please select a valid complaint.',
         'cost_required' => 'Please enter the cost.',
         'cost_invalid' => 'Cost must be a valid number.',
         'proof_mimes' => 'Proof must be a file of type: jpg, jpeg, png, pdf, doc, docx.',

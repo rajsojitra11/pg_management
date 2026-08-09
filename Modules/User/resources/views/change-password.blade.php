@@ -223,16 +223,12 @@ function changePasswordPage() {
                 } else {
                     if (typeof erpToast === 'function') {
                         erpToast({ title: 'Error', message: data.message, type: 'error' });
-                    } else {
-                        alert(data.message);
                     }
                 }
             })
             .catch(function() {
                 if (typeof erpToast === 'function') {
                     erpToast({ title: 'Error', message: 'Network error. Please try again.', type: 'error' });
-                } else {
-                    alert('Network error. Please try again.');
                 }
             })
             .finally(function() {

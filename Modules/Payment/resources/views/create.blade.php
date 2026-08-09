@@ -71,8 +71,9 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
                 <div>
                     <label class="block text-sm font-medium text-zinc-700 mb-1.5">{{ __('payment::message.payment_date') }} <span class="text-red-500">*</span></label>
-                    <input type="date" name="payment_date" id="payment_date" required
-                           class="h-9 w-full rounded-md border border-zinc-200 bg-transparent px-3 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2">
+                    <input type="text" name="payment_date" id="payment_date" required autocomplete="off"
+                           class="h-9 w-full rounded-md border border-zinc-200 bg-transparent px-3 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2 flatpickr-datetime"
+                           placeholder="{{ __('payment::message.select_payment_date') }}">
                     <div class="mt-1 text-xs text-red-500 erp-field-error" id="error_payment_date"></div>
                 </div>
                 <div>
@@ -113,13 +114,13 @@
             </div>
 
             {{-- Row 4: Remarks --}}
-            <div>
-                <label class="block text-sm font-medium text-zinc-700 mb-1.5">{{ __('payment::message.remarks') }}</label>
-                <textarea name="remarks" id="remarks" rows="3"
-                          class="w-full rounded-md border border-zinc-200 bg-transparent px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2"
-                          placeholder="{{ __('payment::message.enter_remarks') }}"></textarea>
-                <div class="mt-1 text-xs text-red-500 erp-field-error" id="error_remarks"></div>
-            </div>
+            @include('partials-tw.remarks-field', [
+                'type' => 'create',
+                'fieldName' => 'remarks',
+                'fieldId' => 'remarks',
+                'label' => __('payment::message.remarks'),
+                'placeholder' => __('payment::message.enter_remarks'),
+            ])
         </div>
 
         {{-- Footer --}}
@@ -185,6 +186,15 @@
         $(function() {
             initTenantSelect();
             initPgSelect();
+
+            if (typeof flatpickr === 'function' && $('#payment_date').length) {
+                flatpickr('#payment_date', {
+                    dateFormat: 'Y-m-d',
+                    altInput: true,
+                    altFormat: 'd-m-Y',
+                    allowInput: true
+                });
+            }
 
             $(document).on('change', '#pg_id', function() {
                 var val = $(this).val();

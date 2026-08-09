@@ -3,6 +3,7 @@
 namespace Modules\Currency\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Modules\Currency\Http\Requests\DeleteCurrencyRequest;
 use Modules\Currency\Http\Requests\StoreCurrencyRequest;

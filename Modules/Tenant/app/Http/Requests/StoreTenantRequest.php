@@ -25,8 +25,8 @@ class StoreTenantRequest extends FormRequest
             'occupation' => ['nullable', 'string', 'max:100'],
 
             // Step 1: PG & Room
-            'pg_id' => ['required', 'integer', 'exists:pg_management,id'],
-            'room_id' => ['required', 'integer', 'exists:pg_rooms,id'],
+            'pg_id' => ['required', 'integer', 'exists:pg_management,id,deleted_at,NULL'],
+            'room_id' => ['required', 'integer', 'exists:pg_rooms,id,deleted_at,NULL'],
             'bed_no' => ['required', 'string', 'max:20'],
 
             // Step 2: Stay & Payment
@@ -43,12 +43,12 @@ class StoreTenantRequest extends FormRequest
             'emergency_contact_name' => ['required', 'string', 'max:255'],
             'emergency_relation' => ['required', 'string', 'max:100'],
             'emergency_contact_number' => ['required', 'string', 'max:20'],
-            'permanent_state_id' => ['nullable', 'integer', 'exists:states,id'],
-            'permanent_city_id' => ['nullable', 'integer', 'exists:cities,id'],
+            'permanent_state_id' => ['nullable', 'integer', 'exists:states,id,deleted_at,NULL'],
+            'permanent_city_id' => ['nullable', 'integer', 'exists:cities,id,deleted_at,NULL'],
             'permanent_address' => ['nullable', 'string'],
             'additional_notes' => ['nullable', 'string'],
 
-            'status' => ['required', 'string', 'in:Active,Inactive'],
+            'status' => ['required', 'string', 'in:active,inactive,Active,Inactive'],
         ];
     }
 
@@ -95,6 +95,10 @@ class StoreTenantRequest extends FormRequest
             'id_proof_file.max' => __('tenant::message.id_proof_file_max'),
             'id_proof_file.mimes' => __('tenant::message.id_proof_file_mimes'),
             'expected_checkout_date.after_or_equal' => __('tenant::message.checkout_after_checkin'),
+            'pg_id.exists' => __('tenant::message.select_valid_pg'),
+            'room_id.exists' => __('tenant::message.select_valid_room'),
+            'permanent_state_id.exists' => __('tenant::message.select_valid_state'),
+            'permanent_city_id.exists' => __('tenant::message.select_valid_city'),
         ];
     }
 }

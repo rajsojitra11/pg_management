@@ -18,13 +18,16 @@ class UpdateRoomRequest extends FormRequest
         $id = Room::findByAnyKey($this->route('room') ?? $this->input('id'))?->id;
 
         return [
-            'pg_id' => ['required', 'exists:pg_management,id'],
-            'category_id' => ['required', 'exists:pg_room_categories,id'],
+            'pg_id' => ['required', 'exists:pg_management,id,deleted_at,NULL'],
+            'category_id' => ['required', 'exists:pg_room_categories,id,deleted_at,NULL'],
             'room_no' => [
                 'required',
                 'string',
                 'max:50',
-                Rule::unique('pg_rooms')->ignore($id)->whereNull('deleted_at'),
+                Rule::unique('pg_rooms')
+                    ->ignore($id)
+                    ->whereNull('deleted_at')
+                    ->where('pg_id', $this->input('pg_id')),
             ],
             'bed_capacity' => ['required', 'integer', 'min:1', 'max:20'],
             'rent_amount' => ['nullable', 'numeric', 'min:0'],
@@ -47,7 +50,9 @@ class UpdateRoomRequest extends FormRequest
     {
         return [
             'pg_id.required' => __('room::message.select_pg'),
+            'pg_id.exists' => __('room::message.select_valid_pg'),
             'category_id.required' => __('room::message.select_category'),
+            'category_id.exists' => __('room::message.select_valid_category'),
             'room_no.required' => __('room::message.enter_room_no'),
             'room_no.unique' => __('room::message.room_no_taken'),
             'bed_capacity.required' => __('room::message.enter_bed_capacity'),

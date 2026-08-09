@@ -26,9 +26,13 @@ return [
     'enter_total_block' => 'Enter total blocks',
     'enter_total_room' => 'Enter total rooms',
     'enter_country' => 'Please select a country',
+    'enter_valid_country' => 'Please select a valid country',
     'enter_state' => 'Please select a state',
+    'enter_valid_state' => 'Please select a valid state',
     'enter_city' => 'Please select a city',
+    'enter_valid_city' => 'Please select a valid city',
     'enter_status' => 'Please select a status',
+    'enter_valid_status' => 'Please select a valid status',
     'validation' => [],
 
     'search_placeholder' => 'Search by PG name, owner or mobile',

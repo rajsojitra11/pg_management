@@ -19,7 +19,7 @@ class UpdateStateRequest extends FormRequest
         $id = State::findByAnyKey($this->route('state') ?? $this->input('id'))?->id;
 
         return [
-            'id' => ['required', new ExistsByAnyKey(State::class)],
+            'id' => ['required', new ExistsByAnyKey(State::class, 'state::message.state_not_exist')],
             'name' => [
                 'required',
                 'string',
@@ -32,7 +32,7 @@ class UpdateStateRequest extends FormRequest
                 }),
             ],
             'code' => 'nullable|string|max:10',
-            'country_id' => 'required|exists:countries,id',
+            'country_id' => 'required|exists:countries,id,deleted_at,NULL',
         ];
     }
 
@@ -40,7 +40,6 @@ class UpdateStateRequest extends FormRequest
     {
         return [
             'id.required' => 'State ID is required for update.',
-            'id.exists' => 'Selected state does not exist.',
             'name.required' => __('state::message.enter_name'),
             'name.unique' => __('state::message.enter_unique_name'),
             'name.max' => __('validation.max.string', ['attribute' => 'name', 'max' => config('app.max_comment_length', 1000)]),

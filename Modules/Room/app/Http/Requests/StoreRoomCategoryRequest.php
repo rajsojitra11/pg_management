@@ -15,7 +15,7 @@ class StoreRoomCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'pg_id' => ['required', 'exists:pg_management,id'],
+            'pg_id' => ['required', 'exists:pg_management,id,deleted_at,NULL'],
             'category_name' => [
                 'required',
                 'string',
@@ -40,6 +40,7 @@ class StoreRoomCategoryRequest extends FormRequest
     {
         return [
             'pg_id.required' => __('room::message.select_pg'),
+            'pg_id.exists' => __('room::message.select_valid_pg'),
             'category_name.required' => __('room::message.enter_category_name'),
             'category_name.unique' => __('room::message.category_name_taken'),
         ];

@@ -18,7 +18,7 @@ class UpdateRoomCategoryRequest extends FormRequest
         $id = RoomCategory::findByAnyKey($this->route('room_category') ?? $this->input('id'))?->id;
 
         return [
-            'pg_id' => ['required', 'exists:pg_management,id'],
+            'pg_id' => ['required', 'exists:pg_management,id,deleted_at,NULL'],
             'category_name' => [
                 'required',
                 'string',
@@ -44,6 +44,7 @@ class UpdateRoomCategoryRequest extends FormRequest
     {
         return [
             'pg_id.required' => __('room::message.select_pg'),
+            'pg_id.exists' => __('room::message.select_valid_pg'),
             'category_name.required' => __('room::message.enter_category_name'),
             'category_name.unique' => __('room::message.category_name_taken'),
         ];

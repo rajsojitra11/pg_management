@@ -146,18 +146,20 @@
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="start_date">
                                     {{ __('subscription::message.start_date') }}<span class="text-red-500"> *</span>
                                 </label>
-                                <input type="date" required
-                                       class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
-                                       name="start_date" id="start_date">
+                                <input type="text" required autocomplete="off"
+                                       class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 flatpickr-datetime"
+                                       name="start_date" id="start_date"
+                                       placeholder="{{ __('subscription::message.enter_start_date') }}">
                                 <div class="mt-1 text-sm text-red-500" id="error_start_date"></div>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 mb-1" for="end_date">
                                     {{ __('subscription::message.end_date') }}<span class="text-red-500"> *</span>
                                 </label>
-                                <input type="date" required
-                                       class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
-                                       name="end_date" id="end_date">
+                                <input type="text" required autocomplete="off"
+                                       class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 flatpickr-datetime"
+                                       name="end_date" id="end_date"
+                                       placeholder="{{ __('subscription::message.enter_end_date') }}">
                                 <div class="mt-1 text-sm text-red-500" id="error_end_date"></div>
                             </div>
                         </div>
@@ -297,6 +299,8 @@
 
     var table = '';
     var emailSelectInst = null;
+    var startDatePicker = null;
+    var endDatePicker = null;
 
     $(function() {
         table = initErpTable('#table', {
@@ -351,11 +355,36 @@
                 options: emailOptions
             });
         }
+
+        if (typeof flatpickr === 'function') {
+            if ($('#start_date').length) {
+                startDatePicker = flatpickr('#start_date', {
+                    dateFormat: 'Y-m-d',
+                    altInput: true,
+                    altFormat: 'd-m-Y',
+                    allowInput: true
+                });
+            }
+            if ($('#end_date').length) {
+                endDatePicker = flatpickr('#end_date', {
+                    dateFormat: 'Y-m-d',
+                    altInput: true,
+                    altFormat: 'd-m-Y',
+                    allowInput: true
+                });
+            }
+        }
     });
 
     function resetInlineModal() {
         $('#inlineModal').addClass('hidden');
         $('#form')[0].reset();
+        if (startDatePicker) {
+            startDatePicker.clear();
+        }
+        if (endDatePicker) {
+            endDatePicker.clear();
+        }
         $('#form').find('.border-red-500').removeClass('border-red-500');
         $('#form').find('.erp-field-error').remove();
         $('#form').find('.erp-form-error-banner').hide();
@@ -448,8 +477,16 @@
                     $("#subscriber_name").val(response.result.subscriber_name);
                     $("#phone").val(response.result.phone);
                     $("#plan_type").val(response.result.plan_type);
-                    $("#start_date").val(response.result.start_date);
-                    $("#end_date").val(response.result.end_date);
+                    if (startDatePicker) {
+                        startDatePicker.setDate(response.result.start_date || '', true);
+                    } else {
+                        $("#start_date").val(response.result.start_date || '');
+                    }
+                    if (endDatePicker) {
+                        endDatePicker.setDate(response.result.end_date || '', true);
+                    } else {
+                        $("#end_date").val(response.result.end_date || '');
+                    }
                     $("#status").val(response.result.status);
                     $("#amount").val(response.result.amount);
                     $("#payment_status").val(response.result.payment_status);

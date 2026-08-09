@@ -151,5 +151,8 @@ return [
         'group_required' => 'Variable group is required',
         'order_display_integer' => 'Display order must be a number',
         'order_display_min' => 'Display order must be at least :min',
+        'options_invalid' => 'Options must be a valid JSON array of strings (e.g., ["option1", "option2"])',
+        'options_item_required' => 'Option values cannot be empty',
+        'options_item_string' => 'Each option must be a string',
     ],
 ];

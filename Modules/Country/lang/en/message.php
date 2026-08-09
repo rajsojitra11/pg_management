@@ -9,6 +9,7 @@ return [
     'code' => 'Country Code',
     'name' => 'Country Name ',
     'enter_name' => 'Enter country name',
+    'enter_code' => 'Enter country code',
     'enter_unique_name' => 'The country name has already been taken',
     'enter_unique_code' => 'The country code has already been taken',
 

@@ -3,6 +3,7 @@
 namespace Modules\MenuMaster\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -85,7 +86,7 @@ class MenuMasterController extends Controller
         // Validation is handled by StoreMenuMasterRequest
 
         try {
-            $menuMaster = $this->menuMasterService->createMenuItem($request->all());
+            $menuMaster = $this->menuMasterService->createMenuItem($request->validated());
 
             if ($request->expectsJson()) {
                 return response()->json([
@@ -164,7 +165,7 @@ class MenuMasterController extends Controller
         }
 
         try {
-            $updatedMenu = $this->menuMasterService->updateMenuItem($menuMaster, $request->all());
+            $updatedMenu = $this->menuMasterService->updateMenuItem($menuMaster, $request->validated());
 
             if ($request->expectsJson()) {
                 return response()->json([
@@ -195,7 +196,7 @@ class MenuMasterController extends Controller
     public function move(Request $request, MenuMaster $menuMaster): JsonResponse
     {
         $request->validate([
-            'parent_id' => 'nullable|integer|min:0|:menu_masters,id',
+            'parent_id' => 'nullable|integer|min:0|exists:menu_masters,id',
             'position' => 'nullable|integer|min:0',
         ]);
 

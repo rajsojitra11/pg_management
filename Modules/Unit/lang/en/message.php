@@ -12,6 +12,9 @@ return [
     'enter_name' => 'Enter unit name',
     'enter_unit' => 'Enter unit name',
     'enter_unique_unit' => 'The unit name has already been taken',
+    'enter_valid_unit_value' => 'The unit value must be a valid number',
+    'unit_value_min' => 'The unit value must be at least 0',
+    'unit_not_exist' => 'Selected unit does not exist.',
 
     // Logging messages
     'created' => 'Unit created successfully',
