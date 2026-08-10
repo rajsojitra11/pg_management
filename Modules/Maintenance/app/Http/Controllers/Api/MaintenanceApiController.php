@@ -14,11 +14,11 @@ class MaintenanceApiController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:maintenance-list|maintenance-create', ['only' => ['index', 'store']]);
-        $this->middleware('permission:maintenance-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:maintenance-show', ['only' => ['show']]);
-        $this->middleware('permission:maintenance-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:maintenance-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:mobile-maintenance-list|mobile-maintenance-create', ['only' => ['index', 'store']]);
+        $this->middleware('permission:mobile-maintenance-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:mobile-maintenance-view', ['only' => ['show']]);
+        $this->middleware('permission:mobile-maintenance-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:mobile-maintenance-delete', ['only' => ['destroy']]);
     }
 
     public function index()

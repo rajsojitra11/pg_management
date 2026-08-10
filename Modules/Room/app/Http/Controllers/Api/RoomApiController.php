@@ -18,11 +18,11 @@ class RoomApiController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:room-list|room-create', ['only' => ['index', 'store']]);
-        $this->middleware('permission:room-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:room-show', ['only' => ['show']]);
-        $this->middleware('permission:room-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:room-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:mobile-room-list|mobile-room-create', ['only' => ['index', 'store']]);
+        $this->middleware('permission:mobile-room-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:mobile-room-view', ['only' => ['show']]);
+        $this->middleware('permission:mobile-room-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:mobile-room-delete', ['only' => ['destroy']]);
     }
 
     public function index()

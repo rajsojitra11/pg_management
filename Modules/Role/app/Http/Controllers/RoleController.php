@@ -290,6 +290,7 @@ class RoleController extends Controller
             'Dispatch',
             'Testing',
             'Reports',
+            'Mobile App',
         ];
 
         $result = [];

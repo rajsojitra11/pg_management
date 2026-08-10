@@ -643,6 +643,193 @@ class PermissionTableSeeder extends Seeder
                 'section' => 'Reports',
             ],
 
+            // Mobile App
+            [
+                'title_tag' => 'Mobile_Room',
+                'title' => 'List',
+                'name' => 'mobile-room-list',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Room',
+                'title' => 'View',
+                'name' => 'mobile-room-view',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Room',
+                'title' => 'Create',
+                'name' => 'mobile-room-create',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Room',
+                'title' => 'Edit',
+                'name' => 'mobile-room-edit',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Room',
+                'title' => 'Delete',
+                'name' => 'mobile-room-delete',
+                'section' => 'Mobile App',
+            ],
+
+            [
+                'title_tag' => 'Mobile_Category',
+                'title' => 'List',
+                'name' => 'mobile-category-list',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Category',
+                'title' => 'View',
+                'name' => 'mobile-category-view',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Category',
+                'title' => 'Create',
+                'name' => 'mobile-category-create',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Category',
+                'title' => 'Edit',
+                'name' => 'mobile-category-edit',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Category',
+                'title' => 'Delete',
+                'name' => 'mobile-category-delete',
+                'section' => 'Mobile App',
+            ],
+
+            [
+                'title_tag' => 'Mobile_Tenant',
+                'title' => 'List',
+                'name' => 'mobile-tenant-list',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Tenant',
+                'title' => 'View',
+                'name' => 'mobile-tenant-view',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Tenant',
+                'title' => 'Create',
+                'name' => 'mobile-tenant-create',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Tenant',
+                'title' => 'Edit',
+                'name' => 'mobile-tenant-edit',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Tenant',
+                'title' => 'Delete',
+                'name' => 'mobile-tenant-delete',
+                'section' => 'Mobile App',
+            ],
+
+            [
+                'title_tag' => 'Mobile_Payment',
+                'title' => 'List',
+                'name' => 'mobile-payment-list',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Payment',
+                'title' => 'View',
+                'name' => 'mobile-payment-view',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Payment',
+                'title' => 'Create',
+                'name' => 'mobile-payment-create',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Payment',
+                'title' => 'Edit',
+                'name' => 'mobile-payment-edit',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Payment',
+                'title' => 'Delete',
+                'name' => 'mobile-payment-delete',
+                'section' => 'Mobile App',
+            ],
+
+            [
+                'title_tag' => 'Mobile_Complaint',
+                'title' => 'List',
+                'name' => 'mobile-complaint-list',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Complaint',
+                'title' => 'View',
+                'name' => 'mobile-complaint-view',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Complaint',
+                'title' => 'Create',
+                'name' => 'mobile-complaint-create',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Complaint',
+                'title' => 'Edit',
+                'name' => 'mobile-complaint-edit',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Complaint',
+                'title' => 'Delete',
+                'name' => 'mobile-complaint-delete',
+                'section' => 'Mobile App',
+            ],
+
+            [
+                'title_tag' => 'Mobile_Maintenance',
+                'title' => 'List',
+                'name' => 'mobile-maintenance-list',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Maintenance',
+                'title' => 'View',
+                'name' => 'mobile-maintenance-view',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Maintenance',
+                'title' => 'Create',
+                'name' => 'mobile-maintenance-create',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Maintenance',
+                'title' => 'Edit',
+                'name' => 'mobile-maintenance-edit',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Maintenance',
+                'title' => 'Delete',
+                'name' => 'mobile-maintenance-delete',
+                'section' => 'Mobile App',
+            ],
+
             // Administration - Export & Masters
             [
                 'title_tag' => 'Menu_Master_Export',

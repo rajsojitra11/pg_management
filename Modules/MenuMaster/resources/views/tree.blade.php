@@ -2,7 +2,7 @@
     <ul class="list-none">
         @foreach ($items as $item)
             <li class="mb-2 menu-item drag-handle" style="cursor: move;" title="Drag to reorder"
-                data-id="{{ $item->id }}">
+                data-id="{{ $item->public_id ?: $item->id }}" data-parent-id="{{ $item->id }}">
                 <div class="flex items-center p-2 border rounded" style="background: var(--erp-bg-muted); border-color: var(--erp-border);">
                     <span class="mr-2">
                         <i class="fa-solid fa-grip-vertical" style="color: var(--erp-text-secondary);"></i>
@@ -38,12 +38,12 @@
                         </a>
                         @endcan
                         @can('menu-master-create')
-                        <button type="button" class="py-1 px-1.5 rounded-md bg-zinc-100 text-zinc-700 text-xs font-medium inline-flex items-center duplicate-item" data-id="{{ $item->id }}" title="{{ __('menumaster::message.duplicate') }}">
+                        <button type="button" class="py-1 px-1.5 rounded-md bg-zinc-100 text-zinc-700 text-xs font-medium inline-flex items-center duplicate-item" data-id="{{ $item->public_id ?: $item->id }}" title="{{ __('menumaster::message.duplicate') }}">
                             <i class="fa-solid fa-copy" style="font-size:10px;"></i>
                         </button>
                         @endcan
                         @can('menu-master-delete')
-                        <button type="button" class="py-1 px-1.5 rounded-md bg-red-50 text-red-700 text-xs font-medium inline-flex items-center delete-item" data-id="{{ $item->id }}" title="{{ __('menumaster::message.delete') }}">
+                        <button type="button" class="py-1 px-1.5 rounded-md bg-red-50 text-red-700 text-xs font-medium inline-flex items-center delete-item" data-id="{{ $item->public_id ?: $item->id }}" title="{{ __('menumaster::message.delete') }}">
                             <i class="fa-solid fa-trash" style="font-size:10px;"></i>
                         </button>
                         @endcan

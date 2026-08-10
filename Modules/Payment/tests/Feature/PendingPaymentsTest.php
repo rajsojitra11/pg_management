@@ -3,6 +3,8 @@
 namespace Modules\Payment\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\Sanctum;
 use Modules\Payment\Models\Payment;
 use Modules\PgManagement\Models\PgManagement;
@@ -25,9 +27,10 @@ class PendingPaymentsTest extends TestCase
         $this->user = User::factory()->create();
         Role::firstOrCreate(
             ['name' => 'Pg_Admin', 'guard_name' => 'web'],
-            ['title' => 'Pg_Admin', 'access_type' => 'mobile']
+            ['title' => 'Pg_Admin', 'access_type' => 'both']
         );
         $this->user->assignRole('Pg_Admin');
+        $this->actingAs($this->user);
         Sanctum::actingAs($this->user);
     }
 
@@ -70,6 +73,44 @@ class PendingPaymentsTest extends TestCase
         $this->assertCount(1, $data);
         $this->assertEquals('Overdue Tenant', $data[0]['name']);
         $this->assertEquals(5000.0, $data[0]['monthly_rent']);
+    }
+
+    public function test_web_pending_payments_endpoint_is_not_matched_as_payment_show(): void
+    {
+        $route = app('router')
+            ->getRoutes()
+            ->match(Request::create('/payments/pending-payments', 'GET'));
+
+        $this->assertSame('payment.pending.data', $route->getName());
+    }
+
+    public function test_pg_admin_lookup_only_returns_owned_pg_and_owned_rooms(): void
+    {
+        Auth::shouldUse('web');
+        $this->actingAs($this->user, 'web');
+
+        $ownedPg = PgManagement::create(['pg_name' => 'Owned PG', 'owner_id' => $this->user->id, 'status' => 'active']);
+        $secondOwnedPg = PgManagement::create(['pg_name' => 'Second Owned PG', 'owner_id' => $this->user->id, 'status' => 'active']);
+        $ownedRoom = Room::create(['pg_id' => $ownedPg->id, 'category_id' => 1, 'room_no' => 'A-101', 'status' => 'active']);
+
+        $other = User::factory()->create();
+        $otherPg = PgManagement::create(['pg_name' => 'Other PG', 'owner_id' => $other->id, 'status' => 'active']);
+        Room::create(['pg_id' => $otherPg->id, 'category_id' => 1, 'room_no' => 'B-101', 'status' => 'active']);
+
+        $this->getJson('/lookup/pg-list')
+            ->assertOk()
+            ->assertExactJson([
+                ['value' => (string) $ownedPg->id, 'label' => 'Owned PG'],
+                ['value' => (string) $secondOwnedPg->id, 'label' => 'Second Owned PG'],
+            ]);
+
+        $this->getJson('/lookup/rooms-by-pg?pg_id='.$ownedPg->id)
+            ->assertOk()
+            ->assertJsonFragment(['value' => (string) $ownedRoom->id, 'label' => 'A-101']);
+
+        $this->getJson('/lookup/rooms-by-pg?pg_id='.$otherPg->id)
+            ->assertOk()
+            ->assertExactJson([]);
     }
 
     public function test_pending_is_scoped_to_owner_and_pg_id(): void

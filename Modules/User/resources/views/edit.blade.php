@@ -34,7 +34,7 @@
 </div>
 @endif
 
-<form action="{{ route('users.update', [$user->id]) }}" method="POST" id="userForm" enctype="multipart/form-data" novalidate>
+<form action="{{ route('users.update', [$user->public_id ?: $user->id]) }}" method="POST" id="userForm" enctype="multipart/form-data" novalidate>
     @csrf
     @method('PUT')
     <input type="hidden" name="user_id" value="{{ $user->id }}">

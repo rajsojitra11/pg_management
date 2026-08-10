@@ -125,12 +125,12 @@
                                                 </a>
                                                 @endcan
                                                 @can('menu-master-create')
-                                                <button type="button" class="py-1 px-1.5 rounded-md bg-zinc-100 text-zinc-700 text-xs font-medium inline-flex items-center duplicate-item" data-id="{{ $item->id }}" title="{{ __('menumaster::message.duplicate') }}">
+                                                <button type="button" class="py-1 px-1.5 rounded-md bg-zinc-100 text-zinc-700 text-xs font-medium inline-flex items-center duplicate-item" data-id="{{ $item->public_id ?: $item->id }}" title="{{ __('menumaster::message.duplicate') }}">
                                                     <i class="fa-solid fa-copy" style="font-size:10px;"></i>
                                                 </button>
                                                 @endcan
                                                 @can('menu-master-delete')
-                                                <button type="button" class="py-1 px-1.5 rounded-md bg-red-50 text-red-700 text-xs font-medium inline-flex items-center delete-item" data-id="{{ $item->id }}" title="{{ __('menumaster::message.delete') }}">
+                                                <button type="button" class="py-1 px-1.5 rounded-md bg-red-50 text-red-700 text-xs font-medium inline-flex items-center delete-item" data-id="{{ $item->public_id ?: $item->id }}" title="{{ __('menumaster::message.delete') }}">
                                                     <i class="fa-solid fa-trash" style="font-size:10px;"></i>
                                                 </button>
                                                 @endcan
@@ -269,7 +269,7 @@
                         if (evt.to.closest('#menu-tree') && !parentElement) {
                             parentElement = null;
                         }
-                        var parentId = parentElement ? parentElement.dataset.id : null;
+                        var parentId = parentElement ? parentElement.dataset.parentId : null;
                         moveMenuItem(itemId, parentId, newIndex);
                     }
                 });

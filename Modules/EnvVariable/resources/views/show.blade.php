@@ -58,7 +58,7 @@
         </a>
         @endcan
         @can('env-variable-edit')
-        <a href="{{ route('env-variable.edit', $envVariable->id) }}"
+        <a href="{{ route('env-variable.edit', $envVariable->public_id ?: $envVariable->id) }}"
            class="h-10 px-4 rounded-full bg-blue-50 text-sm font-medium text-blue-700 hover:bg-blue-100 whitespace-nowrap inline-flex items-center gap-2">
             <i class="fa-solid fa-pen text-xs"></i> {{ __('lang.common.edit') }}
         </a>

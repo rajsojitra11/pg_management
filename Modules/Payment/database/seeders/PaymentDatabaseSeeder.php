@@ -29,7 +29,7 @@ class PaymentDatabaseSeeder extends Seeder
         }
 
         $paymentMethods = ['UPI', 'Cash', 'Bank Transfer', 'Cheque', 'Card'];
-        $statuses = ['paid', 'paid', 'paid', 'paid', 'pending', 'verified'];
+        $statuses = ['pending', 'pending', 'pending', 'pending', 'verified', 'verified'];
         $remarks = [
             'Monthly rent payment',
             'Rent for current month',

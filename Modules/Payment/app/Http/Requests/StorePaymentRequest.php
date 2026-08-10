@@ -3,6 +3,7 @@
 namespace Modules\Payment\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StorePaymentRequest extends FormRequest
 {
@@ -13,10 +14,29 @@ class StorePaymentRequest extends FormRequest
 
     public function rules(): array
     {
+        $user = $this->user();
+        $pgRule = Rule::exists('pg_management', 'id')->whereNull('deleted_at');
+
+        if ($user && $user->hasRole('Pg_Admin')) {
+            $pgRule->where('owner_id', $user->id);
+        }
+
         return [
-            'tenant_id' => ['required', 'integer', 'exists:tenants,id,deleted_at,NULL'],
-            'pg_id' => ['required', 'integer', 'exists:pg_management,id,deleted_at,NULL'],
-            'room_id' => ['required', 'integer', 'exists:pg_rooms,id,deleted_at,NULL'],
+            'tenant_id' => [
+                'required',
+                'integer',
+                Rule::exists('tenants', 'id')
+                    ->whereNull('deleted_at')
+                    ->where('pg_id', $this->input('pg_id')),
+            ],
+            'pg_id' => ['required', 'integer', $pgRule],
+            'room_id' => [
+                'required',
+                'integer',
+                Rule::exists('pg_rooms', 'id')
+                    ->whereNull('deleted_at')
+                    ->where('pg_id', $this->input('pg_id')),
+            ],
             'payment_date' => ['required', 'date'],
             'amount' => ['required', 'numeric', 'min:0'],
             'payment_method' => ['required', 'string', 'max:50', 'in:Cash,Bank Transfer,Cheque,UPI,Card,Other'],

@@ -15,11 +15,11 @@ class ComplaintApiController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:complaint-list|complaint-create', ['only' => ['index', 'store']]);
-        $this->middleware('permission:complaint-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:complaint-show', ['only' => ['show']]);
-        $this->middleware('permission:complaint-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:complaint-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:mobile-complaint-list|mobile-complaint-create', ['only' => ['index', 'store']]);
+        $this->middleware('permission:mobile-complaint-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:mobile-complaint-view', ['only' => ['show']]);
+        $this->middleware('permission:mobile-complaint-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:mobile-complaint-delete', ['only' => ['destroy']]);
     }
 
     public function index()

@@ -202,9 +202,20 @@ class LookupController extends Controller
 
     public function roomsByPg(Request $request): JsonResponse
     {
+        $user = auth()->user();
         $pgId = $request->input('pg_id');
         if (! $pgId) {
             return response()->json([]);
+        }
+
+        if ($user->hasRole('Pg_Admin')) {
+            $ownsPg = PgManagement::where('id', $pgId)
+                ->where('owner_id', $user->id)
+                ->exists();
+
+            if (! $ownsPg) {
+                return response()->json([]);
+            }
         }
 
         $rows = Room::select('id', 'room_no', 'bed_capacity')

@@ -15,11 +15,11 @@ class PaymentApiController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:payment-list|payment-create', ['only' => ['index', 'store']]);
-        $this->middleware('permission:payment-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:payment-show', ['only' => ['show']]);
-        $this->middleware('permission:payment-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:payment-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:mobile-payment-list|mobile-payment-create', ['only' => ['index', 'store']]);
+        $this->middleware('permission:mobile-payment-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:mobile-payment-view', ['only' => ['show']]);
+        $this->middleware('permission:mobile-payment-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:mobile-payment-delete', ['only' => ['destroy']]);
     }
 
     public function index()

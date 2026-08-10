@@ -13,11 +13,11 @@ class RoomCategoryApiController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:room-category-list|room-category-create', ['only' => ['index', 'store']]);
-        $this->middleware('permission:room-category-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:room-category-show', ['only' => ['show']]);
-        $this->middleware('permission:room-category-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:room-category-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:mobile-category-list|mobile-category-create', ['only' => ['index', 'store']]);
+        $this->middleware('permission:mobile-category-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:mobile-category-view', ['only' => ['show']]);
+        $this->middleware('permission:mobile-category-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:mobile-category-delete', ['only' => ['destroy']]);
     }
 
     public function index()
@@ -41,7 +41,8 @@ class RoomCategoryApiController extends Controller
 
         $data = $categories->map(function ($category) {
             return [
-                'id' => $category->public_id,
+                'id' => (string) $category->id,
+                'public_id' => $category->public_id,
                 'categoryName' => $category->category_name,
                 'status' => $category->status,
             ];
@@ -70,7 +71,8 @@ class RoomCategoryApiController extends Controller
             if (! is_null($category)) {
                 return response()->json([
                     'data' => [
-                        'id' => $category->public_id,
+                        'id' => (string) $category->id,
+                        'public_id' => $category->public_id,
                         'categoryName' => $category->category_name,
                         'status' => $category->status,
                     ],
@@ -96,7 +98,8 @@ class RoomCategoryApiController extends Controller
 
             return response()->json([
                 'data' => [
-                    'id' => $category->public_id,
+                    'id' => (string) $category->id,
+                    'public_id' => $category->public_id,
                     'categoryName' => $category->category_name,
                     'status' => $category->status,
                 ],
@@ -127,7 +130,8 @@ class RoomCategoryApiController extends Controller
 
             return response()->json([
                 'data' => [
-                    'id' => $category->public_id,
+                    'id' => (string) $category->id,
+                    'public_id' => $category->public_id,
                     'categoryName' => $category->category_name,
                     'status' => $category->status,
                 ],

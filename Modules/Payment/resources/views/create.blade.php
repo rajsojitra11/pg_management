@@ -46,6 +46,9 @@
                             data-placeholder="— {{ __('payment::message.select_pg') }} —"
                             class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2">
                         <option value=""></option>
+                        @foreach (($ownedPgs ?? collect()) as $ownedPg)
+                            <option value="{{ $ownedPg->id }}" @selected(($ownedPgs ?? collect())->count() === 1)>{{ $ownedPg->pg_name }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div>
@@ -152,8 +155,12 @@
             if (typeof erpSearchSelect === 'function') {
                 pgSelect = erpSearchSelect('#pg_id', {
                     placeholder: '— {{ __("payment::message.select_pg") }} —',
-                    freshPrefetch: '{{ route("lookup.pg-list") }}',
+                    options: typeof getOptionsFromSelect === 'function' ? getOptionsFromSelect('#pg_id') : [],
+                    freshPrefetch: { url: '{{ route("lookup.pg-list") }}' },
                 });
+                @if (($ownedPgs ?? collect())->count() === 1)
+                    pgSelect.setValue('{{ $ownedPgs->first()->id }}', true);
+                @endif
             }
         }
 
@@ -165,7 +172,7 @@
                 }
                 roomSelect = erpSearchSelect('#room_id', {
                     placeholder: '— {{ __("payment::message.select_room") }} —',
-                    freshPrefetch: url,
+                    freshPrefetch: { url: url },
                 });
             }
         }
@@ -178,7 +185,7 @@
                 }
                 tenantSelect = erpSearchSelect('#tenant_id', {
                     placeholder: '— {{ __("payment::message.select_tenant") }} —',
-                    freshPrefetch: url,
+                    freshPrefetch: { url: url },
                 });
             }
         }

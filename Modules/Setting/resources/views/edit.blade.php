@@ -281,7 +281,7 @@
 
         $.ajax({
             type: 'POST',
-            url: "{{ route('setting.update', $setting->id) }}",
+            url: "{{ route('setting.update', $setting->public_id ?: $setting->id) }}",
             data: formData,
             dataType: 'json',
             cache: false,

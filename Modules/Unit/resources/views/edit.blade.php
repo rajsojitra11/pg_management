@@ -14,7 +14,7 @@
     @endcan
 </div>
 
-<form action="{{ route('unit.update', $unit->id) }}" method="POST" id="unitForm" novalidate>
+<form action="{{ route('unit.update', $unit->public_id ?: $unit->id) }}" method="POST" id="unitForm" novalidate>
     @csrf
     @method('PUT')
     <input type="hidden" name="id" id="id" value="{{ $unit->id }}">

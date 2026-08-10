@@ -21,7 +21,7 @@ class ProfileApiController extends Controller
 
             return response()->json([
                 'data' => [
-                    'public_id' => (string) $user->id,
+                    'public_id' => (string) ($user->public_id ?: $user->id),
                     'name' => $user->name,
                     'firstname' => $profile?->firstname ?? '',
                     'lastname' => $profile?->lastname ?? '',
@@ -76,7 +76,7 @@ class ProfileApiController extends Controller
 
             return response()->json([
                 'data' => [
-                    'public_id' => (string) $user->id,
+                    'public_id' => (string) ($user->public_id ?: $user->id),
                     'name' => $user->name,
                     'firstname' => $profile->firstname,
                     'lastname' => $profile->lastname,

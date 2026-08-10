@@ -10,6 +10,7 @@ use Modules\Payment\Http\Requests\DeletePaymentRequest;
 use Modules\Payment\Http\Requests\StorePaymentRequest;
 use Modules\Payment\Http\Requests\UpdatePaymentRequest;
 use Modules\Payment\Models\Payment;
+use Modules\PgManagement\Models\PgManagement;
 use Modules\Tenant\Models\Tenant;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -92,7 +93,18 @@ class PaymentController extends Controller
 
     public function create()
     {
-        return view('payment::create');
+        $user = auth()->user();
+        $ownedPgs = collect();
+
+        if ($user->hasRole('Pg_Admin')) {
+            $ownedPgs = PgManagement::select('id', 'pg_name')
+                ->where('owner_id', $user->id)
+                ->where('status', 'active')
+                ->orderBy('pg_name')
+                ->get();
+        }
+
+        return view('payment::create', compact('ownedPgs'));
     }
 
     public function store(StorePaymentRequest $request)

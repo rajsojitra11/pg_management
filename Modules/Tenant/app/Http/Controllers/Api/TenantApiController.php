@@ -19,11 +19,11 @@ class TenantApiController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:tenant-list|tenant-create', ['only' => ['index', 'store']]);
-        $this->middleware('permission:tenant-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:tenant-show', ['only' => ['show']]);
-        $this->middleware('permission:tenant-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:tenant-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:mobile-tenant-list|mobile-tenant-create', ['only' => ['index', 'store']]);
+        $this->middleware('permission:mobile-tenant-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:mobile-tenant-view', ['only' => ['show']]);
+        $this->middleware('permission:mobile-tenant-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:mobile-tenant-delete', ['only' => ['destroy']]);
     }
 
     public function index()
