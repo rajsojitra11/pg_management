@@ -289,6 +289,25 @@ class AuthController extends Controller
         ]);
     }
 
+    public function user(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User fetched successfully.',
+            'data' => [
+                'id' => (string) $user->id,
+                'public_id' => (string) ($user->public_id ?: $user->id),
+                'name' => $user->name,
+                'email' => $user->email,
+                'mobile' => $user->mobile,
+                'current_pg' => $user->current_pg ? (string) $user->current_pg : null,
+                'permissions' => $user->getAllPermissions()->pluck('name')->values()->all(),
+            ],
+        ]);
+    }
+
     public function updateCurrentPg(Request $request): JsonResponse
     {
         $request->validate([
