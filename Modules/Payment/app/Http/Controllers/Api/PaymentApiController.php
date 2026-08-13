@@ -272,7 +272,7 @@ class PaymentApiController extends Controller
             'days_elapsed' => $t->last_payment_date
                 ? $t->checkin_date->copy()->addMonths($t->checkin_date->diffInMonths(Carbon::parse($t->last_payment_date)) + 1)->diffInDays(now())
                 : ($t->checkin_date ? $t->checkin_date->copy()->addMonths($t->checkin_date->diffInMonths(now()))->diffInDays(now()) : 0),
-        ]);
+        ])->values();
 
         return response()->json(['data' => $data]);
     }

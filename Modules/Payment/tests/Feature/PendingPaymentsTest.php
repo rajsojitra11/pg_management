@@ -75,6 +75,47 @@ class PendingPaymentsTest extends TestCase
         $this->assertEquals(5000.0, $data[0]['monthly_rent']);
     }
 
+    public function test_pending_returns_list_even_when_filtered_tenants_precede_kept_ones(): void
+    {
+        $pg = PgManagement::create(['pg_name' => 'Test PG', 'owner_id' => $this->user->id]);
+        $room = Room::create(['pg_id' => $pg->id, 'category_id' => 1, 'room_no' => 'A-101']);
+
+        $paid = Tenant::create([
+            'pg_id' => $pg->id,
+            'room_id' => $room->id,
+            'name' => 'Aa Paid Tenant',
+            'checkin_date' => now()->subMonths(3)->startOfMonth(),
+            'monthly_rent' => 4000,
+        ]);
+
+        Payment::create([
+            'tenant_id' => $paid->id,
+            'pg_id' => $pg->id,
+            'room_id' => $room->id,
+            'payment_date' => now(),
+            'amount' => 4000,
+            'payment_method' => 'Cash',
+            'verified' => 'verified',
+        ]);
+
+        Tenant::create([
+            'pg_id' => $pg->id,
+            'room_id' => $room->id,
+            'name' => 'Zz Overdue Tenant',
+            'checkin_date' => now()->subMonths(3)->startOfMonth(),
+            'monthly_rent' => 5000,
+        ]);
+
+        $response = $this->getJson('/api/v1/payments/pending');
+
+        $response->assertOk();
+        $data = $response->json('data');
+
+        $this->assertTrue(array_is_list($data), 'pending data must be a JSON array, not an object');
+        $this->assertCount(1, $data);
+        $this->assertEquals('Zz Overdue Tenant', $data[0]['name']);
+    }
+
     public function test_web_pending_payments_endpoint_is_not_matched_as_payment_show(): void
     {
         $route = app('router')

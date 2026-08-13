@@ -25,7 +25,8 @@ class AuthUserEndpointTest extends TestCase
             ->assertOk()
             ->assertJsonPath('success', true)
             ->assertJsonPath('data.email', $user->email)
-            ->assertJsonPath('data.permissions', ['mobile-maintenance-create']);
+            ->assertJsonPath('data.permissions', ['mobile-maintenance-create'])
+            ->assertJsonPath('data.roles', ['Pg_Admin']);
     }
 
     public function test_reflects_permission_changes_without_re_login(): void

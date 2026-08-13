@@ -188,6 +188,7 @@ class AuthController extends Controller
                 'token' => $token,
                 'current_pg' => $user->current_pg ? (string) $user->current_pg : null,
                 'permissions' => $user->getAllPermissions()->pluck('name')->values()->all(),
+                'roles' => $user->getRoleNames()->values()->all(),
             ],
         ]);
     }
@@ -285,6 +286,7 @@ class AuthController extends Controller
                 'token' => $token,
                 'current_pg' => $user->current_pg ? (string) $user->current_pg : null,
                 'permissions' => $user->getAllPermissions()->pluck('name')->values()->all(),
+                'roles' => $user->getRoleNames()->values()->all(),
             ],
         ]);
     }
@@ -304,6 +306,7 @@ class AuthController extends Controller
                 'mobile' => $user->mobile,
                 'current_pg' => $user->current_pg ? (string) $user->current_pg : null,
                 'permissions' => $user->getAllPermissions()->pluck('name')->values()->all(),
+                'roles' => $user->getRoleNames()->values()->all(),
             ],
         ]);
     }
