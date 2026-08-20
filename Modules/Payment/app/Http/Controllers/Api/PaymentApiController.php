@@ -60,6 +60,7 @@ class PaymentApiController extends Controller
             'tenant_id' => (string) $p->tenant_id,
             'tenant_name' => $p->tenant?->name,
             'tenant_checkin_date' => $p->tenant?->checkin_date?->toDateString(),
+            'tenant_phone' => $p->tenant?->phone,
             'pg_id' => (string) $p->pg?->id,
             'pg_name' => $p->pg?->pg_name,
             'room_id' => (string) $p->room?->id,
@@ -101,6 +102,7 @@ class PaymentApiController extends Controller
                         'tenant_id' => (string) $p->tenant_id,
                         'tenant_name' => $p->tenant?->name,
                         'tenant_checkin_date' => $p->tenant?->checkin_date?->toDateString(),
+                        'tenant_phone' => $p->tenant?->phone,
                         'pg_id' => (string) $p->pg?->id,
                         'pg_name' => $p->pg?->pg_name,
                         'room_id' => (string) $p->room?->id,
@@ -140,6 +142,7 @@ class PaymentApiController extends Controller
                     'tenant_id' => (string) $payment->tenant_id,
                     'tenant_name' => $payment->tenant?->name,
                     'tenant_checkin_date' => $payment->tenant?->checkin_date?->toDateString(),
+                    'tenant_phone' => $payment->tenant?->phone,
                     'pg_id' => (string) $payment->pg?->id,
                     'pg_name' => $payment->pg?->pg_name,
                     'room_id' => (string) $payment->room?->id,
@@ -184,6 +187,7 @@ class PaymentApiController extends Controller
                     'tenant_id' => (string) $payment->tenant_id,
                     'tenant_name' => $payment->tenant?->name,
                     'tenant_checkin_date' => $payment->tenant?->checkin_date?->toDateString(),
+                    'tenant_phone' => $payment->tenant?->phone,
                     'pg_id' => (string) $payment->pg?->id,
                     'pg_name' => $payment->pg?->pg_name,
                     'room_id' => (string) $payment->room?->id,
@@ -234,7 +238,7 @@ class PaymentApiController extends Controller
         $user = auth()->user();
 
         $query = Tenant::with('pg:id,public_id,pg_name', 'room:id,public_id,room_no')
-            ->select('id', 'public_id', 'name', 'pg_id', 'room_id', 'checkin_date', 'monthly_rent')
+            ->select('id', 'public_id', 'name', 'phone', 'pg_id', 'room_id', 'checkin_date', 'monthly_rent')
             ->withMax('payments as last_payment_date', 'payment_date')
             ->whereNotNull('checkin_date')
             ->where('checkin_date', '<=', now()->subMonth());
@@ -263,6 +267,7 @@ class PaymentApiController extends Controller
             'id' => (string) $t->id,
             'public_id' => $t->public_id,
             'name' => $t->name,
+            'phone' => $t->phone,
             'pg_id' => (string) $t->pg?->id,
             'pg_name' => $t->pg?->pg_name,
             'room_id' => (string) $t->room?->id,

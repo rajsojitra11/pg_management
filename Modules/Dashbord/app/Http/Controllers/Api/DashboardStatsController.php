@@ -4,6 +4,7 @@ namespace Modules\Dashbord\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Modules\Complaint\Models\Complaint;
+use Modules\Maintenance\Models\Maintenance;
 use Modules\Payment\Models\Payment;
 use Modules\Room\Models\Room;
 use Modules\Tenant\Models\Tenant;
@@ -30,12 +31,18 @@ class DashboardStatsController extends Controller
         $roomQuery = $scopedByAdmin(Room::query());
         $paymentQuery = $scopedByAdmin(Payment::query());
         $complaintQuery = $scopedByAdmin(Complaint::query());
+        $maintenanceQuery = Maintenance::query();
+
+        if ($user->hasRole('Pg_Admin')) {
+            $maintenanceQuery->whereHas('complaint.pg', fn ($q) => $q->where('owner_id', $user->id));
+        }
 
         if ($pgId) {
             $tenantQuery->where('pg_id', $pgId);
             $roomQuery->where('pg_id', $pgId);
             $paymentQuery->where('pg_id', $pgId);
             $complaintQuery->where('pg_id', $pgId);
+            $maintenanceQuery->whereHas('complaint', fn ($q) => $q->where('pg_id', $pgId));
         }
 
         $totalTenants = $tenantQuery->count();
@@ -56,12 +63,17 @@ class DashboardStatsController extends Controller
             ->whereNotIn('status', ['resolved'])
             ->count();
 
+        $totalMaintenanceCost = (float) $maintenanceQuery
+            ->whereNotIn('status', ['cancelled'])
+            ->sum('cost');
+
         return response()->json([
             'data' => [
                 'total_tenants' => $totalTenants,
                 'available_rooms' => $availableRooms,
                 'total_approved_payment' => $totalApprovedPayment,
                 'open_complaints' => $openComplaints,
+                'total_maintenance_cost' => $totalMaintenanceCost,
             ],
         ]);
     }
