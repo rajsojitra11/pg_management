@@ -87,10 +87,18 @@ class RoomApiController extends Controller
             }
             $room = $query->first();
             if (! is_null($room)) {
-                $occupiedBeds = Tenant::where('room_id', $room->id)
+                $activeTenants = Tenant::where('room_id', $room->id)
                     ->whereIn('status', ['active', 'Active'])
-                    ->pluck('bed_no')
-                    ->toArray();
+                    ->whereNotNull('bed_no')
+                    ->get();
+
+                $occupiedBeds = $activeTenants->pluck('bed_no')->toArray();
+
+                $bedTenants = $activeTenants->mapWithKeys(function ($t) {
+                    $firstname = trim(explode(' ', (string) $t->name)[0]);
+
+                    return [$t->bed_no => $firstname];
+                });
 
                 return response()->json([
                     'data' => [
@@ -103,6 +111,7 @@ class RoomApiController extends Controller
                         'status' => $room->status,
                         'pg_id' => (string) $room->pg?->id,
                         'occupied_beds' => $occupiedBeds,
+                        'bed_tenants' => $bedTenants,
                         'created_at' => $room->created_at?->toIso8601String(),
                     ],
                 ]);

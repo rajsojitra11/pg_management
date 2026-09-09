@@ -118,6 +118,7 @@ class ComplaintApiController extends Controller
         DB::beginTransaction();
         try {
             $data = $request->validated();
+            $data['complaint_date'] = $data['complaint_date'] ?? now();
             $data['complaint_no'] = $this->generateComplaintNo();
             $data['created_by'] = auth()->id();
             $complaint = Complaint::create($data);

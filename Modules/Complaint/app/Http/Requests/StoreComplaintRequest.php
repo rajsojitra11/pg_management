@@ -18,7 +18,7 @@ class StoreComplaintRequest extends FormRequest
             'room_id' => 'required|exists:pg_rooms,id,deleted_at,NULL',
             'service_category_id' => 'required|exists:service_categories,id,deleted_at,NULL',
             'service_id' => 'required|exists:services,id,deleted_at,NULL',
-            'complaint_date' => 'required|date',
+            'complaint_date' => 'nullable|date',
             'note' => 'required|string',
         ];
     }
