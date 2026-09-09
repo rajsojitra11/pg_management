@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Modules\Payment\Http\Requests\StorePaymentRequest;
 use Modules\Payment\Http\Requests\UpdatePaymentRequest;
 use Modules\Payment\Models\Payment;
@@ -70,6 +71,7 @@ class PaymentApiController extends Controller
             'payment_method' => $p->payment_method,
             'reference_no' => $p->reference_no,
             'remarks' => $p->remarks,
+            'payment_proof' => $p->payment_proof ? request()->getSchemeAndHttpHost().'/storage/'.$p->payment_proof : null,
             'verified' => $p->verified,
             'created_at' => $p->created_at?->toIso8601String(),
         ]);
@@ -129,6 +131,9 @@ class PaymentApiController extends Controller
         DB::beginTransaction();
         try {
             $data = $request->validated();
+            if ($request->hasFile('payment_proof')) {
+                $data['payment_proof'] = $request->file('payment_proof')->store('payment-proofs', 'public');
+            }
             $data['created_by'] = auth()->id();
             $payment = Payment::create($data);
             $payment->load('tenant', 'pg', 'room');
@@ -152,6 +157,7 @@ class PaymentApiController extends Controller
                     'payment_method' => $payment->payment_method,
                     'reference_no' => $payment->reference_no,
                     'remarks' => $payment->remarks,
+                    'payment_proof' => $payment->payment_proof ? request()->getSchemeAndHttpHost().'/storage/'.$payment->payment_proof : null,
                     'verified' => $payment->verified,
                     'created_at' => $payment->created_at?->toIso8601String(),
                 ],
@@ -174,6 +180,12 @@ class PaymentApiController extends Controller
             }
             $payment = $query->firstOrFail();
             $data = $request->validated();
+            if ($request->hasFile('payment_proof')) {
+                if ($payment->payment_proof) {
+                    Storage::disk('public')->delete($payment->payment_proof);
+                }
+                $data['payment_proof'] = $request->file('payment_proof')->store('payment-proofs', 'public');
+            }
             $data['updated_by'] = auth()->id();
             $payment->update($data);
             $payment->load('tenant', 'pg', 'room');
@@ -197,6 +209,7 @@ class PaymentApiController extends Controller
                     'payment_method' => $payment->payment_method,
                     'reference_no' => $payment->reference_no,
                     'remarks' => $payment->remarks,
+                    'payment_proof' => $payment->payment_proof ? request()->getSchemeAndHttpHost().'/storage/'.$payment->payment_proof : null,
                     'verified' => $payment->verified,
                     'created_at' => $payment->created_at?->toIso8601String(),
                 ],

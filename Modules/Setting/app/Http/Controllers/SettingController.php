@@ -203,6 +203,33 @@ class SettingController extends Controller
         ]);
     }
 
+    public function clearStorage()
+    {
+        $dirs = ['tenant-id-proofs', 'profile-photos', 'noticeboard', 'payment-proofs'];
+        $base = storage_path('app/public');
+        $totalRemoved = 0;
+
+        foreach ($dirs as $dir) {
+            $path = $base.'/'.$dir;
+            if (! is_dir($path)) {
+                continue;
+            }
+            $files = File::files($path);
+            foreach ($files as $file) {
+                if ($file->getFilename() === '.gitignore') {
+                    continue;
+                }
+                File::delete($file->getPathname());
+                $totalRemoved++;
+            }
+        }
+
+        return response()->json([
+            'status_code' => 200,
+            'message' => "Cleared {$totalRemoved} file(s) from storage.",
+        ]);
+    }
+
     /**
      * Remove the specified resource from storage.
      */

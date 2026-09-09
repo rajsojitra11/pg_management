@@ -184,10 +184,16 @@
 
         {{-- Actions --}}
         <div class="flex items-center justify-between mt-6 pt-4 border-t border-zinc-200">
-            <a href="{{ route('setting.index') }}"
-               class="h-9 px-4 rounded-md border border-zinc-200 bg-white text-sm font-medium text-zinc-700 hover:bg-zinc-50 whitespace-nowrap inline-flex items-center">
-                {{ __('message.common.cancel') }}
-            </a>
+            <div class="flex items-center gap-2">
+                <a href="{{ route('setting.index') }}"
+                   class="h-9 px-4 rounded-md border border-zinc-200 bg-white text-sm font-medium text-zinc-700 hover:bg-zinc-50 whitespace-nowrap inline-flex items-center">
+                    {{ __('message.common.cancel') }}
+                </a>
+                <button type="button" id="clear-storage-btn"
+                        class="h-9 px-4 rounded-md border border-red-200 bg-white text-sm font-medium text-red-600 hover:bg-red-50 whitespace-nowrap inline-flex items-center">
+                    <i class="fa-solid fa-trash mr-1.5 text-xs"></i> Clear Storage
+                </button>
+            </div>
             <button type="button" id="save-settings"
                     class="h-9 px-4 rounded-md bg-zinc-900 text-white text-sm font-medium hover:bg-zinc-800 whitespace-nowrap inline-flex items-center save-settings">
                 <i class="fa-solid fa-check mr-1.5 text-xs"></i>
@@ -236,6 +242,37 @@
         }
     );
     var countryInst = loc.country, stateInst = loc.state, cityInst = loc.city;
+
+    $(document).on('click', '#clear-storage-btn', function(e) {
+        e.preventDefault();
+        var $btn = $(this);
+        erpConfirm({
+            title: 'Clear Storage',
+            message: 'This will permanently delete all uploaded files (tenant ID proofs, profile photos, noticeboard images, payment proofs). This action cannot be undone.',
+            confirmText: 'Yes, Clear All',
+        }).then(function(confirmed) {
+            if (!confirmed) return;
+            $btn.html('<i class="fa-solid fa-spinner fa-spin mr-1.5 text-xs"></i> Clearing...').attr('disabled', true);
+            $.ajax({
+                type: 'POST',
+                url: '{{ route("setting.clear-storage") }}',
+                data: { _token: '{{ csrf_token() }}' },
+                dataType: 'json',
+                success: function(res) {
+                    $btn.html('<i class="fa-solid fa-trash mr-1.5 text-xs"></i> Clear Storage').attr('disabled', false);
+                    if (res.status_code == 200) {
+                        erpToast({ title: 'Success', message: res.message, type: 'success' });
+                    } else {
+                        erpToast({ title: 'Error', message: res.message || 'Something went wrong', type: 'error' });
+                    }
+                },
+                error: function() {
+                    $btn.html('<i class="fa-solid fa-trash mr-1.5 text-xs"></i> Clear Storage').attr('disabled', false);
+                    erpToast({ title: 'Error', message: 'Failed to clear storage.', type: 'error' });
+                }
+            });
+        });
+    });
 
     // Custom save handler (FormData needed for file uploads)
     $(document).on('click', '.save-settings', function(e) {

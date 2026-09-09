@@ -42,6 +42,7 @@ class StorePaymentRequest extends FormRequest
             'payment_method' => ['required', 'string', 'max:50', 'in:Cash,Bank Transfer,Cheque,UPI,Card,Other'],
             'reference_no' => ['nullable', 'string', 'max:100'],
             'remarks' => ['nullable', 'string'],
+            'payment_proof' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
         ];
     }
 
@@ -56,6 +57,7 @@ class StorePaymentRequest extends FormRequest
             'payment_method' => __('payment::message.payment_method'),
             'reference_no' => __('payment::message.reference_no'),
             'remarks' => __('payment::message.remarks'),
+            'payment_proof' => __('payment::message.payment_proof'),
         ];
     }
 
@@ -74,6 +76,9 @@ class StorePaymentRequest extends FormRequest
             'payment_date.date' => __('payment::message.payment_date_invalid'),
             'payment_method.required' => __('payment::message.select_payment_method'),
             'payment_method.in' => __('payment::message.select_payment_method'),
+            'payment_proof.image' => __('payment::message.payment_proof_image'),
+            'payment_proof.mimes' => __('payment::message.payment_proof_image'),
+            'payment_proof.max' => __('payment::message.payment_proof_max'),
         ];
     }
 }

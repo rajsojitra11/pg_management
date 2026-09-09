@@ -148,6 +148,10 @@
                         <p class="text-sm text-zinc-900" id="view_reference_no">-</p>
                     </div>
                     <div>
+                        <p class="text-xs font-medium text-zinc-500 mb-1">{{ __('payment::message.payment_proof') }}</p>
+                        <p class="text-sm text-zinc-900" id="view_payment_proof">-</p>
+                    </div>
+                    <div>
                         <p class="text-xs font-medium text-zinc-500 mb-1">{{ __('payment::message.verified') }}</p>
                         <p class="text-sm" id="view_status">-</p>
                     </div>
@@ -233,6 +237,7 @@
         pendingTable = initErpTable('#pendingTable', {
             ajax: {
                 url: '{{ route("payment.pending.data") }}',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
             },
             processing: true,
             serverSide: true,
@@ -259,6 +264,7 @@
         table = initErpTable('#table', {
             ajax: {
                 url: window.URL_ROUTE,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
                 data: function (d) {
                     d.filter_search = $('#filterSearch').val();
                     d.filter_verified = $('#filterVerified').val();
@@ -382,6 +388,12 @@
                     $('#view_amount').text(d.amount ? '₹' + parseFloat(d.amount).toFixed(2) : '-');
                     $('#view_payment_method').text(d.payment_method || '-');
                     $('#view_reference_no').text(d.reference_no || '-');
+                    if (d.payment_proof) {
+                        var proofUrl = "{{ url('storage') }}/" + d.payment_proof;
+                        $('#view_payment_proof').html('<a href="' + proofUrl + '" target="_blank" class="text-blue-600 hover:underline inline-flex items-center"><i class="fa-solid fa-image mr-1.5 text-xs"></i>View Proof</a>');
+                    } else {
+                        $('#view_payment_proof').text('-');
+                    }
                     if (d.verified === 'verified') {
                         $('#view_status').html('<span class="inline-flex items-center rounded-md bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800 border border-green-200">Verified</span>');
                     } else {

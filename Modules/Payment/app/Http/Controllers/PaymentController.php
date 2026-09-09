@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Modules\Payment\Http\Requests\DeletePaymentRequest;
 use Modules\Payment\Http\Requests\StorePaymentRequest;
 use Modules\Payment\Http\Requests\UpdatePaymentRequest;
@@ -112,6 +113,9 @@ class PaymentController extends Controller
         DB::beginTransaction();
         try {
             $data = $request->validated();
+            if ($request->hasFile('payment_proof')) {
+                $data['payment_proof'] = $request->file('payment_proof')->store('payment-proofs', 'public');
+            }
             $data['created_by'] = auth()->id();
             Payment::create($data);
 
@@ -174,6 +178,12 @@ class PaymentController extends Controller
             }
             $payment = $query->firstOrFail();
             $data = $request->validated();
+            if ($request->hasFile('payment_proof')) {
+                if ($payment->payment_proof) {
+                    Storage::disk('public')->delete($payment->payment_proof);
+                }
+                $data['payment_proof'] = $request->file('payment_proof')->store('payment-proofs', 'public');
+            }
             $data['updated_by'] = auth()->id();
             $payment->update($data);
 
@@ -215,10 +225,6 @@ class PaymentController extends Controller
 
     public function pendingPaymentsData()
     {
-        if (! request()->ajax()) {
-            abort(404);
-        }
-
         $user = auth()->user();
 
         $billingRaw = 'DATE_ADD(tenants.checkin_date, INTERVAL TIMESTAMPDIFF(MONTH, tenants.checkin_date, CURDATE()) MONTH)';

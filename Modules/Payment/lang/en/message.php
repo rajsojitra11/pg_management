@@ -21,6 +21,7 @@ return [
     'payment_method' => 'Payment Method',
     'reference_no' => 'Reference No',
     'remarks' => 'Remarks',
+    'payment_proof' => 'Payment Proof',
     'verified' => 'Verified',
 
     // Payment methods
@@ -46,6 +47,9 @@ return [
     'enter_amount' => 'Enter Amount',
     'enter_reference_no' => 'Enter Reference No',
     'enter_remarks' => 'Enter Remarks',
+    'select_payment_proof' => 'Select Payment Proof',
+    'payment_proof_image' => 'Payment Proof must be an image (jpg, jpeg, png).',
+    'payment_proof_max' => 'Payment Proof must not exceed 2MB.',
     'select_payment_date' => 'Select Payment Date',
     'select_payment_method' => 'Select Payment Method',
     'payment_date_invalid' => 'Enter a valid Payment Date',

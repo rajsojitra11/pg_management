@@ -16,7 +16,7 @@
     @endcan
 </div>
 
-<form action="{{ route('payment.store') }}" method="POST" id="paymentForm" novalidate class="w-full">
+<form action="{{ route('payment.store') }}" method="POST" id="paymentForm" enctype="multipart/form-data" novalidate class="w-full">
     @csrf
 
     <div class="rounded-lg border border-zinc-200 bg-white shadow-sm overflow-hidden w-full">
@@ -116,7 +116,17 @@
                 </div>
             </div>
 
-            {{-- Row 4: Remarks --}}
+            {{-- Row 4: Payment Proof --}}
+            <div class="grid grid-cols-1 md:grid-cols-1 gap-4 sm:gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-zinc-700 mb-1.5">{{ __('payment::message.payment_proof') }}</label>
+                    <input type="file" name="payment_proof" id="payment_proof" accept=".jpg,.jpeg,.png,image/*"
+                           class="h-9 w-full rounded-md border border-zinc-200 bg-transparent px-3 text-sm file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-zinc-100 file:text-zinc-700 hover:file:bg-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2">
+                    <div class="mt-1 text-xs text-red-500 erp-field-error" id="error_payment_proof"></div>
+                </div>
+            </div>
+
+            {{-- Row 5: Remarks --}}
             @include('partials-tw.remarks-field', [
                 'type' => 'create',
                 'fieldName' => 'remarks',
@@ -229,7 +239,9 @@
             $.ajax({
                 type: 'POST',
                 url: form.attr('action'),
-                data: form.serialize(),
+                data: new FormData(form[0]),
+                processData: false,
+                contentType: false,
                 dataType: 'json',
                 success: function(response) {
                     if (response.status_code === 200) {
