@@ -52,9 +52,15 @@ RUN npm ci --no-audit --no-fund \
     && rm -rf node_modules
 
 # Install PHP deps (--no-scripts prevents post-autoload-dump which runs
-# artisan optimize:clear — that needs a database connection we don't have at build time)
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts \
-    && php artisan package:discover --ansi 2>/dev/null || true
+# artisan optimize:clear and package:discover — those need the app booted
+# at build time, which we cannot guarantee without .env / APP_KEY).
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress --no-scripts
+
+# Fail the build loudly if composer did not produce vendor/autoload.php
+RUN test -f vendor/autoload.php
+
+# Generate the package/module discovery manifests (no database needed)
+RUN php artisan package:discover --ansi || true
 
 # Permissions
 RUN chown -R www-data:www-data storage bootstrap/cache public/build \
