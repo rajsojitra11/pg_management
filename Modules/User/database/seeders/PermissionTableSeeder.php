@@ -643,6 +643,32 @@ class PermissionTableSeeder extends Seeder
                 'section' => 'Reports',
             ],
 
+            // Reports module
+            [
+                'title_tag' => 'Tenant',
+                'title' => 'Tenant Report',
+                'name' => 'report-tenant',
+                'section' => 'Reports',
+            ],
+            [
+                'title_tag' => 'Payment',
+                'title' => 'Payment Report',
+                'name' => 'report-payment',
+                'section' => 'Reports',
+            ],
+            [
+                'title_tag' => 'Complaint',
+                'title' => 'Complaint Report',
+                'name' => 'report-complaint',
+                'section' => 'Reports',
+            ],
+            [
+                'title_tag' => 'Maintenance',
+                'title' => 'Maintenance Report',
+                'name' => 'report-maintenance',
+                'section' => 'Reports',
+            ],
+
             // Mobile App
             [
                 'title_tag' => 'Mobile_Room',

@@ -446,6 +446,21 @@ class MenuMasterDatabaseSeeder extends Seeder
                 'updated_by' => 1,
             ],
 
+            [
+                'id' => 13,
+                'menu_icon' => 'fa-solid fa-chart-column',
+                'menu_title' => 'report::message.module_name',
+                'menu_route' => 'report.index',
+                'is_main_menu' => 0,
+                'parent_id' => null,
+                'module_name' => 'Report',
+                'order_display' => '001.013',
+                'display_order' => '1.13',
+                'if_can' => 'report-list',
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
+
             // ── Parent: General Master (id 2) ──────────────────────────
             [
                 'id' => 2,

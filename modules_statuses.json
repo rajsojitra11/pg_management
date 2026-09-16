@@ -22,5 +22,6 @@
     "Complaint": true,
     "Maintenance": true,
     "Email": true,
-    "Notification": true
+    "Notification": true,
+    "Report": true
 }

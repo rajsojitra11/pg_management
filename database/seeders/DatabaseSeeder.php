@@ -20,6 +20,7 @@ use Modules\MenuMaster\Database\Seeders\MenuMasterDatabaseSeeder;
 use Modules\Noticeboard\Models\Noticeboard;
 use Modules\Payment\Database\Seeders\PaymentDatabaseSeeder;
 use Modules\PgManagement\Database\Seeders\PgManagementDatabaseSeeder;
+use Modules\Report\Database\Seeders\ReportDatabaseSeeder;
 use Modules\Role\Database\Seeders\RoleDatabaseSeeder;
 use Modules\Room\Database\Seeders\RoomDatabaseSeeder;
 use Modules\Service\Database\Seeders\ServiceDatabaseSeeder;
@@ -83,6 +84,7 @@ class DatabaseSeeder extends Seeder
             PaymentDatabaseSeeder::class,
             ComplaintDatabaseSeeder::class,
             MaintenanceDatabaseSeeder::class,
+            ReportDatabaseSeeder::class,
         ]);
 
         // ── Demo data: one record per remaining entity table ──────────────
