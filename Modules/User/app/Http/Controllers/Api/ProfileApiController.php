@@ -8,7 +8,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Modules\User\Http\Requests\PasswordChangeRequest;
 use Modules\User\Models\UserProfile;
 
 class ProfileApiController extends Controller
@@ -89,6 +91,29 @@ class ProfileApiController extends Controller
                     'designation' => $user->designation ?? '',
                 ],
             ]);
+        } catch (Exception $e) {
+            DB::rollback();
+
+            return response()->json(['message' => 'Something went wrong. Please try again.'], 500);
+        }
+    }
+
+    public function changePassword(PasswordChangeRequest $request): JsonResponse
+    {
+        $user = Auth::user();
+
+        if (! $user || ! Hash::check($request->current_password, $user->password)) {
+            return response()->json(['message' => 'Current password does not match.'], 403);
+        }
+
+        DB::beginTransaction();
+        try {
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+            DB::commit();
+
+            return response()->json(['message' => 'Password updated successfully.']);
         } catch (Exception $e) {
             DB::rollback();
 

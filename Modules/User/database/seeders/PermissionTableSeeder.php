@@ -419,6 +419,37 @@ class PermissionTableSeeder extends Seeder
             ],
 
             [
+                'title_tag' => 'FoodMenu',
+                'name' => 'foodmenu-list',
+                'title' => 'List',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'FoodMenu',
+                'name' => 'foodmenu-create',
+                'title' => 'Create',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'FoodMenu',
+                'name' => 'foodmenu-show',
+                'title' => 'Show',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'FoodMenu',
+                'name' => 'foodmenu-edit',
+                'title' => 'Edit',
+                'section' => 'General',
+            ],
+            [
+                'title_tag' => 'FoodMenu',
+                'name' => 'foodmenu-delete',
+                'title' => 'Delete',
+                'section' => 'General',
+            ],
+
+            [
                 'title_tag' => 'Tenant',
                 'name' => 'tenant-list',
                 'title' => 'List',
@@ -853,6 +884,37 @@ class PermissionTableSeeder extends Seeder
                 'title_tag' => 'Mobile_Maintenance',
                 'title' => 'Delete',
                 'name' => 'mobile-maintenance-delete',
+                'section' => 'Mobile App',
+            ],
+
+            [
+                'title_tag' => 'Mobile_FoodMenu',
+                'title' => 'List',
+                'name' => 'mobile-foodmenu-list',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_FoodMenu',
+                'title' => 'View',
+                'name' => 'mobile-foodmenu-view',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_FoodMenu',
+                'title' => 'Create',
+                'name' => 'mobile-foodmenu-create',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_FoodMenu',
+                'title' => 'Edit',
+                'name' => 'mobile-foodmenu-edit',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_FoodMenu',
+                'title' => 'Delete',
+                'name' => 'mobile-foodmenu-delete',
                 'section' => 'Mobile App',
             ],
 

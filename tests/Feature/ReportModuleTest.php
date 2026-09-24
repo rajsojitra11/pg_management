@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Modules\City\Models\City;
 use Modules\Complaint\Models\Complaint;
 use Modules\Country\Models\Country;
@@ -450,4 +451,125 @@ it('redirects guests away from the report pages', function () {
 
     $this->get(route('report.index'))->assertRedirect(route('login'));
     $this->get(route('report.tenants.export'))->assertRedirect(route('login'));
+});
+
+it('returns report center counts through the api', function () {
+    Sanctum::actingAs($this->user, ['report-list']);
+
+    $this->getJson(route('api.report.summary'))
+        ->assertOk()
+        ->assertJsonStructure(['data' => ['tenant', 'payment', 'complaint', 'maintenance']]);
+});
+
+it('returns tenant report rows through the api', function () {
+    Sanctum::actingAs($this->user, ['report-list']);
+
+    $this->getJson(route('api.report.tenants'))
+        ->assertOk()
+        ->assertJsonStructure(['data', 'meta' => ['current_page', 'last_page', 'per_page', 'total']]);
+});
+
+it('returns grouped payment report rows through the api', function () {
+    Sanctum::actingAs($this->user, ['report-list']);
+
+    $this->getJson(route('api.report.payments'))
+        ->assertOk()
+        ->assertJsonStructure(['data', 'meta' => ['current_page', 'last_page', 'per_page', 'total']]);
+});
+
+it('returns complaint report rows through the api', function () {
+    Sanctum::actingAs($this->user, ['report-list']);
+
+    $this->getJson(route('api.report.complaints'))
+        ->assertOk()
+        ->assertJsonStructure(['data', 'meta' => ['current_page', 'last_page', 'per_page', 'total']]);
+});
+
+it('returns maintenance report rows through the api', function () {
+    Sanctum::actingAs($this->user, ['report-list']);
+
+    $this->getJson(route('api.report.maintenance'))
+        ->assertOk()
+        ->assertJsonStructure(['data', 'meta' => ['current_page', 'last_page', 'per_page', 'total']]);
+});
+
+it('filters the tenant report api by search and status', function () {
+    Sanctum::actingAs($this->user, ['report-list']);
+    $category = RoomCategory::factory()->create();
+    $pg = PgManagement::factory()->create();
+    $room = Room::factory()->create(['pg_id' => $pg->id, 'category_id' => $category->id]);
+    Tenant::create(['name' => 'Alpha Search Tenant', 'status' => 'active', 'pg_id' => $pg->id, 'room_id' => $room->id]);
+    Tenant::create(['name' => 'Beta Inactive Tenant', 'status' => 'inactive', 'pg_id' => $pg->id, 'room_id' => $room->id]);
+
+    $data = $this->getJson(route('api.report.tenants').'?search=Search&status=active')
+        ->assertOk()
+        ->json('data');
+
+    expect($data)->toHaveCount(1);
+    expect($data[0]['name'])->toBe('Alpha Search Tenant');
+    expect($data[0]['room_no'])->toBe($room->room_no);
+});
+
+it('only includes approved payments grouped in the payment report api', function () {
+    Sanctum::actingAs($this->user, ['report-list']);
+    $category = RoomCategory::factory()->create();
+    $pg = PgManagement::factory()->create();
+    $room = Room::factory()->create(['pg_id' => $pg->id, 'category_id' => $category->id]);
+    $tenant = Tenant::create(['name' => 'API Tenant', 'status' => 'active', 'pg_id' => $pg->id, 'room_id' => $room->id]);
+
+    Payment::create(['tenant_id' => $tenant->id, 'pg_id' => $pg->id, 'room_id' => $room->id, 'payment_date' => '2024-06-15', 'amount' => 5000, 'payment_method' => 'UPI', 'verified' => 'verified']);
+    Payment::create(['tenant_id' => $tenant->id, 'pg_id' => $pg->id, 'room_id' => $room->id, 'payment_date' => '2024-06-16', 'amount' => 6000, 'payment_method' => 'UPI', 'verified' => 'pending']);
+
+    $data = $this->getJson(route('api.report.payments'))
+        ->assertOk()
+        ->json('data');
+
+    expect($data)->toHaveCount(1);
+    expect($data[0]['tenant_name'])->toBe($tenant->name);
+    expect((int) $data[0]['payment_count'])->toBe(1);
+    expect((float) $data[0]['total_amount'])->toBe(5000.0);
+});
+
+it('filters the complaint report api by room', function () {
+    Sanctum::actingAs($this->user, ['report-list']);
+    $category = RoomCategory::factory()->create();
+    $pg = PgManagement::factory()->create();
+    $room1 = Room::factory()->create(['pg_id' => $pg->id, 'category_id' => $category->id]);
+    $room2 = Room::factory()->create(['pg_id' => $pg->id, 'category_id' => $category->id]);
+    $serviceCategory = ServiceCategory::factory()->create();
+    $service1 = Service::factory()->create(['service_category_id' => $serviceCategory->id]);
+    $service2 = Service::factory()->create(['service_category_id' => $serviceCategory->id]);
+
+    Complaint::create(['complaint_no' => 'CMP-API1', 'pg_id' => $pg->id, 'room_id' => $room1->id, 'service_category_id' => $serviceCategory->id, 'service_id' => $service1->id, 'complaint_date' => '2024-06-15', 'note' => 'AC not working', 'status' => 'pending', 'created_by' => $this->user->id]);
+    Complaint::create(['complaint_no' => 'CMP-API2', 'pg_id' => $pg->id, 'room_id' => $room2->id, 'service_category_id' => $serviceCategory->id, 'service_id' => $service2->id, 'complaint_date' => '2024-06-16', 'note' => 'Leakage', 'status' => 'pending', 'created_by' => $this->user->id]);
+
+    $data = $this->getJson(route('api.report.complaints').'?room_id='.$room2->id)
+        ->assertOk()
+        ->json('data');
+
+    expect($data)->toHaveCount(1);
+    expect($data[0]['room_no'])->toBe($room2->room_no);
+    expect($data[0]['note'])->toBe('Leakage');
+});
+
+it('filters the maintenance report api by room', function () {
+    Sanctum::actingAs($this->user, ['report-list']);
+    $category = RoomCategory::factory()->create();
+    $pg = PgManagement::factory()->create();
+    $room1 = Room::factory()->create(['pg_id' => $pg->id, 'category_id' => $category->id]);
+    $room2 = Room::factory()->create(['pg_id' => $pg->id, 'category_id' => $category->id]);
+    $serviceCategory = ServiceCategory::factory()->create();
+    $service = Service::factory()->create(['service_category_id' => $serviceCategory->id]);
+
+    $complaint1 = Complaint::create(['complaint_no' => 'CMP-MNT1', 'pg_id' => $pg->id, 'room_id' => $room1->id, 'service_category_id' => $serviceCategory->id, 'service_id' => $service->id, 'complaint_date' => '2024-06-15', 'note' => 'AC not working', 'status' => 'resolved', 'created_by' => $this->user->id]);
+    $complaint2 = Complaint::create(['complaint_no' => 'CMP-MNT2', 'pg_id' => $pg->id, 'room_id' => $room2->id, 'service_category_id' => $serviceCategory->id, 'service_id' => $service->id, 'complaint_date' => '2024-06-16', 'note' => 'Leakage', 'status' => 'resolved', 'created_by' => $this->user->id]);
+
+    Maintenance::create(['maintenance_no' => 'MNT-API1', 'complaint_id' => $complaint1->id, 'cost' => 1200, 'description' => 'Compressor replaced', 'maintenance_date' => '2024-06-18', 'status' => 'completed']);
+    Maintenance::create(['maintenance_no' => 'MNT-API2', 'complaint_id' => $complaint2->id, 'cost' => 800, 'description' => 'Pipe fixed', 'maintenance_date' => '2024-06-19', 'status' => 'completed']);
+
+    $this->getJson(route('api.report.maintenance').'?room_id='.$room2->id)
+        ->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.room_no', $room2->room_no)
+        ->assertJsonPath('data.0.description', 'Pipe fixed');
 });

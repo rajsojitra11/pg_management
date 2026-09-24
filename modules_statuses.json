@@ -23,5 +23,6 @@
     "Maintenance": true,
     "Email": true,
     "Notification": true,
-    "Report": true
+    "Report": true,
+    "FoodMenu": true
 }

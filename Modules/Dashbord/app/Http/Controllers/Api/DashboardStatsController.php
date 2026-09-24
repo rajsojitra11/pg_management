@@ -3,6 +3,7 @@
 namespace Modules\Dashbord\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Modules\Complaint\Models\Complaint;
 use Modules\Maintenance\Models\Maintenance;
 use Modules\Payment\Models\Payment;
@@ -55,9 +56,27 @@ class DashboardStatsController extends Controller
             ->count();
         $availableRooms = max(0, $totalRooms - $occupiedRooms);
 
-        $totalApprovedPayment = (float) $paymentQuery
+        $totalApprovedPayment = (float) (clone $paymentQuery)
             ->where('verified', 'verified')
             ->sum('amount');
+
+        // A tenant's current billing month is due once a full month has elapsed
+        // since check-in. Payments are "pending" when no payment covers that
+        // month (same rule as the pending payments API).
+        $totalPendingPayment = (float) (clone $tenantQuery)
+            ->withMax('payments as last_payment_date', 'payment_date')
+            ->whereNotNull('checkin_date')
+            ->where('checkin_date', '<=', now()->subMonth())
+            ->get()
+            ->filter(fn ($t) => $t->checkin_date !== null
+                && (
+                    $t->last_payment_date === null
+                    || Carbon::parse($t->last_payment_date)->lt(
+                        $t->checkin_date->copy()->addMonths($t->checkin_date->diffInMonths(Carbon::now()))
+                    )
+                )
+            )
+            ->sum('monthly_rent');
 
         $openComplaints = $complaintQuery
             ->whereNotIn('status', ['resolved'])
@@ -72,6 +91,7 @@ class DashboardStatsController extends Controller
                 'total_tenants' => $totalTenants,
                 'available_rooms' => $availableRooms,
                 'total_approved_payment' => $totalApprovedPayment,
+                'total_pending_payment' => $totalPendingPayment,
                 'open_complaints' => $openComplaints,
                 'total_maintenance_cost' => $totalMaintenanceCost,
             ],

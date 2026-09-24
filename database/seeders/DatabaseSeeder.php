@@ -14,6 +14,7 @@ use Modules\Country\Database\Seeders\CountryDatabaseSeeder;
 use Modules\Currency\Database\Seeders\CurrencyDatabaseSeeder;
 use Modules\Email\Database\Seeders\EmailDatabaseSeeder;
 use Modules\EnvVariable\Database\Seeders\EnvVariableDatabaseSeeder;
+use Modules\FoodMenu\Database\Seeders\FoodMenuDatabaseSeeder;
 use Modules\Login\Database\Seeders\LoginDatabaseSeeder;
 use Modules\Maintenance\Database\Seeders\MaintenanceDatabaseSeeder;
 use Modules\MenuMaster\Database\Seeders\MenuMasterDatabaseSeeder;
@@ -84,6 +85,7 @@ class DatabaseSeeder extends Seeder
             PaymentDatabaseSeeder::class,
             ComplaintDatabaseSeeder::class,
             MaintenanceDatabaseSeeder::class,
+            FoodMenuDatabaseSeeder::class,
             ReportDatabaseSeeder::class,
         ]);
 

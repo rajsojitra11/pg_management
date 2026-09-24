@@ -1,0 +1,11 @@
+{
+    "name": "FoodMenu",
+    "alias": "foodmenu",
+    "description": "FoodMenu module for managing weekly menus and special day menus",
+    "keywords": [],
+    "priority": 94,
+    "providers": [
+        "Modules\\FoodMenu\\Providers\\FoodMenuServiceProvider"
+    ],
+    "files": []
+}

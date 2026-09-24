@@ -460,6 +460,20 @@ class MenuMasterDatabaseSeeder extends Seeder
                 'created_by' => 1,
                 'updated_by' => 1,
             ],
+            [
+                'id' => 14,
+                'menu_icon' => 'fa-solid fa-utensils',
+                'menu_title' => 'foodmenu::message.foodmenus',
+                'menu_route' => 'foodmenu.index',
+                'is_main_menu' => 0,
+                'parent_id' => null,
+                'module_name' => 'FoodMenu',
+                'order_display' => '001.014',
+                'display_order' => '1.14',
+                'if_can' => 'foodmenu-list',
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
 
             // ── Parent: General Master (id 2) ──────────────────────────
             [
