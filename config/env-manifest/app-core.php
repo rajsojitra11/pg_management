@@ -25,6 +25,13 @@ return [
         'criticality' => 'low',
         'business_relevant' => false,
     ],
+    'APP_VERSION' => [
+        'description' => 'Application version shown in the web footer.',
+        'type' => 'string',
+        'default' => '1.0.0',
+        'criticality' => 'low',
+        'business_relevant' => false,
+    ],
     'APP_ENV' => [
         'description' => 'Controls error display and config caching behavior.',
         'long' => '`local` shows detailed errors; `production` hides them. Always use `production` on live servers.',

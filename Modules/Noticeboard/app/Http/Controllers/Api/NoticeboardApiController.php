@@ -14,11 +14,11 @@ class NoticeboardApiController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:noticeboard-list|noticeboard-create', ['only' => ['index', 'store']]);
-        $this->middleware('permission:noticeboard-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:noticeboard-show', ['only' => ['show']]);
-        $this->middleware('permission:noticeboard-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:noticeboard-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:mobile-noticeboard-list|mobile-noticeboard-create', ['only' => ['index', 'store']]);
+        $this->middleware('permission:mobile-noticeboard-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:mobile-noticeboard-view', ['only' => ['show']]);
+        $this->middleware('permission:mobile-noticeboard-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:mobile-noticeboard-delete', ['only' => ['destroy']]);
     }
 
     public function index()

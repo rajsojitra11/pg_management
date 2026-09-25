@@ -45,7 +45,7 @@ class RoomApiController extends Controller
             $query->where('room_no', 'like', "%{$search}%");
         }
 
-        $rooms = $query->orderBy('room_no')->paginate((int) request('per_page', 10));
+        $rooms = $query->orderByDesc('created_at')->paginate((int) request('per_page', 10));
 
         $data = $rooms->map(function ($room) {
             $occupied = $room->occupied_beds_count ?? 0;
@@ -95,9 +95,7 @@ class RoomApiController extends Controller
                 $occupiedBeds = $activeTenants->pluck('bed_no')->toArray();
 
                 $bedTenants = $activeTenants->mapWithKeys(function ($t) {
-                    $firstname = trim(explode(' ', (string) $t->name)[0]);
-
-                    return [$t->bed_no => $firstname];
+                    return [$t->bed_no => trim((string) $t->name)];
                 });
 
                 return response()->json([

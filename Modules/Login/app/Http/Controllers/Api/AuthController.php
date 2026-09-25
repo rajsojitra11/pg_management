@@ -190,6 +190,7 @@ class AuthController extends Controller
                 'current_pg_name' => $user->current_pg ? PgManagement::find($user->current_pg)?->pg_name : null,
                 'permissions' => $user->getAllPermissions()->pluck('name')->values()->all(),
                 'roles' => $user->getRoleNames()->values()->all(),
+                'app_version' => config('app.version'),
             ],
         ]);
     }
@@ -289,6 +290,7 @@ class AuthController extends Controller
                 'current_pg_name' => $user->current_pg ? PgManagement::find($user->current_pg)?->pg_name : null,
                 'permissions' => $user->getAllPermissions()->pluck('name')->values()->all(),
                 'roles' => $user->getRoleNames()->values()->all(),
+                'app_version' => config('app.version'),
             ],
         ]);
     }

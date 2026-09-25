@@ -37,7 +37,7 @@ class RoomCategoryApiController extends Controller
             $query->where('category_name', 'like', "%{$search}%");
         }
 
-        $categories = $query->orderBy('category_name')->paginate((int) request('per_page', 10));
+        $categories = $query->orderByDesc('created_at')->paginate((int) request('per_page', 10));
 
         $data = $categories->map(function ($category) {
             return [

@@ -918,6 +918,37 @@ class PermissionTableSeeder extends Seeder
                 'section' => 'Mobile App',
             ],
 
+            [
+                'title_tag' => 'Mobile_Noticeboard',
+                'title' => 'List',
+                'name' => 'mobile-noticeboard-list',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Noticeboard',
+                'title' => 'View',
+                'name' => 'mobile-noticeboard-view',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Noticeboard',
+                'title' => 'Create',
+                'name' => 'mobile-noticeboard-create',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Noticeboard',
+                'title' => 'Edit',
+                'name' => 'mobile-noticeboard-edit',
+                'section' => 'Mobile App',
+            ],
+            [
+                'title_tag' => 'Mobile_Noticeboard',
+                'title' => 'Delete',
+                'name' => 'mobile-noticeboard-delete',
+                'section' => 'Mobile App',
+            ],
+
             // Administration - Export & Masters
             [
                 'title_tag' => 'Menu_Master_Export',
@@ -1052,6 +1083,7 @@ class PermissionTableSeeder extends Seeder
                 'subscription-list', 'subscription-show',
                 'tenant-list', 'tenant-show',
                 'payment-list', 'payment-show',
+                'mobile-noticeboard-list', 'mobile-noticeboard-view',
             ];
             $tenantPermissions = Permission::whereIn('name', $tenantPermissionNames)->pluck('id')->toArray();
             $tenantRole->syncPermissions($tenantPermissions);
