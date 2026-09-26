@@ -55,26 +55,7 @@ class PaymentApiController extends Controller
 
         $payments = $query->orderByDesc('created_at')->paginate((int) request('per_page', 10));
 
-        $data = $payments->map(fn ($p) => [
-            'id' => (string) $p->id,
-            'public_id' => $p->public_id,
-            'tenant_id' => (string) $p->tenant_id,
-            'tenant_name' => $p->tenant?->name,
-            'tenant_checkin_date' => $p->tenant?->checkin_date?->toDateString(),
-            'tenant_phone' => $p->tenant?->phone,
-            'pg_id' => (string) $p->pg?->id,
-            'pg_name' => $p->pg?->pg_name,
-            'room_id' => (string) $p->room?->id,
-            'room_no' => $p->room?->room_no,
-            'payment_date' => $p->payment_date?->toDateString(),
-            'amount' => (float) $p->amount,
-            'payment_method' => $p->payment_method,
-            'reference_no' => $p->reference_no,
-            'remarks' => $p->remarks,
-            'payment_proof' => $p->payment_proof ? request()->getSchemeAndHttpHost().'/storage/'.$p->payment_proof : null,
-            'verified' => $p->verified,
-            'created_at' => $p->created_at?->toIso8601String(),
-        ]);
+        $data = $payments->map(fn (Payment $p) => $this->transformPayment($p));
 
         return response()->json([
             'data' => $data,
@@ -98,25 +79,7 @@ class PaymentApiController extends Controller
             $p = $query->first();
             if (! is_null($p)) {
                 return response()->json([
-                    'data' => [
-                        'id' => (string) $p->id,
-                        'public_id' => $p->public_id,
-                        'tenant_id' => (string) $p->tenant_id,
-                        'tenant_name' => $p->tenant?->name,
-                        'tenant_checkin_date' => $p->tenant?->checkin_date?->toDateString(),
-                        'tenant_phone' => $p->tenant?->phone,
-                        'pg_id' => (string) $p->pg?->id,
-                        'pg_name' => $p->pg?->pg_name,
-                        'room_id' => (string) $p->room?->id,
-                        'room_no' => $p->room?->room_no,
-                        'payment_date' => $p->payment_date?->toDateString(),
-                        'amount' => (float) $p->amount,
-                        'payment_method' => $p->payment_method,
-                        'reference_no' => $p->reference_no,
-                        'remarks' => $p->remarks,
-                        'verified' => $p->verified,
-                        'created_at' => $p->created_at?->toIso8601String(),
-                    ],
+                    'data' => $this->transformPayment($p),
                 ]);
             }
 
@@ -141,26 +104,7 @@ class PaymentApiController extends Controller
             DB::commit();
 
             return response()->json([
-                'data' => [
-                    'id' => (string) $payment->id,
-                    'public_id' => $payment->public_id,
-                    'tenant_id' => (string) $payment->tenant_id,
-                    'tenant_name' => $payment->tenant?->name,
-                    'tenant_checkin_date' => $payment->tenant?->checkin_date?->toDateString(),
-                    'tenant_phone' => $payment->tenant?->phone,
-                    'pg_id' => (string) $payment->pg?->id,
-                    'pg_name' => $payment->pg?->pg_name,
-                    'room_id' => (string) $payment->room?->id,
-                    'room_no' => $payment->room?->room_no,
-                    'payment_date' => $payment->payment_date?->toDateString(),
-                    'amount' => (float) $payment->amount,
-                    'payment_method' => $payment->payment_method,
-                    'reference_no' => $payment->reference_no,
-                    'remarks' => $payment->remarks,
-                    'payment_proof' => $payment->payment_proof ? request()->getSchemeAndHttpHost().'/storage/'.$payment->payment_proof : null,
-                    'verified' => $payment->verified,
-                    'created_at' => $payment->created_at?->toIso8601String(),
-                ],
+                'data' => $this->transformPayment($payment),
             ], 201);
         } catch (Exception $e) {
             DB::rollback();
@@ -193,26 +137,7 @@ class PaymentApiController extends Controller
             DB::commit();
 
             return response()->json([
-                'data' => [
-                    'id' => (string) $payment->id,
-                    'public_id' => $payment->public_id,
-                    'tenant_id' => (string) $payment->tenant_id,
-                    'tenant_name' => $payment->tenant?->name,
-                    'tenant_checkin_date' => $payment->tenant?->checkin_date?->toDateString(),
-                    'tenant_phone' => $payment->tenant?->phone,
-                    'pg_id' => (string) $payment->pg?->id,
-                    'pg_name' => $payment->pg?->pg_name,
-                    'room_id' => (string) $payment->room?->id,
-                    'room_no' => $payment->room?->room_no,
-                    'payment_date' => $payment->payment_date?->toDateString(),
-                    'amount' => (float) $payment->amount,
-                    'payment_method' => $payment->payment_method,
-                    'reference_no' => $payment->reference_no,
-                    'remarks' => $payment->remarks,
-                    'payment_proof' => $payment->payment_proof ? request()->getSchemeAndHttpHost().'/storage/'.$payment->payment_proof : null,
-                    'verified' => $payment->verified,
-                    'created_at' => $payment->created_at?->toIso8601String(),
-                ],
+                'data' => $this->transformPayment($payment),
             ]);
         } catch (Exception $e) {
             DB::rollback();
@@ -304,6 +229,9 @@ class PaymentApiController extends Controller
                 $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
             }
             $payment = $query->firstOrFail();
+            if ($payment->payment_proof) {
+                Storage::disk('public')->delete($payment->payment_proof);
+            }
             $payment->update(['deleted_by' => auth()->id()]);
             $payment->delete();
 
@@ -311,5 +239,45 @@ class PaymentApiController extends Controller
         } catch (Exception $e) {
             return response()->json(['message' => 'Something went wrong. Please try again.'], 500);
         }
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function transformPayment(Payment $payment): array
+    {
+        return [
+            'id' => (string) $payment->id,
+            'public_id' => $payment->public_id,
+            'tenant_id' => (string) $payment->tenant_id,
+            'tenant_name' => $payment->tenant?->name,
+            'tenant_checkin_date' => $payment->tenant?->checkin_date?->toDateString(),
+            'tenant_phone' => $payment->tenant?->phone,
+            'pg_id' => (string) $payment->pg?->id,
+            'pg_name' => $payment->pg?->pg_name,
+            'room_id' => (string) $payment->room?->id,
+            'room_no' => $payment->room?->room_no,
+            'payment_date' => $payment->payment_date?->toDateString(),
+            'amount' => (float) $payment->amount,
+            'payment_method' => $payment->payment_method,
+            'reference_no' => $payment->reference_no,
+            'remarks' => $payment->remarks,
+            'payment_proof' => $this->paymentProofUrl($payment),
+            'verified' => $payment->verified,
+            'created_at' => $payment->created_at?->toIso8601String(),
+        ];
+    }
+
+    /**
+     * Built from the current request host so the app receives a reachable URL
+     * even when APP_URL does not match the host the device is talking to.
+     */
+    private function paymentProofUrl(Payment $payment): ?string
+    {
+        if (! $payment->payment_proof) {
+            return null;
+        }
+
+        return request()->getSchemeAndHttpHost().'/storage/'.$payment->payment_proof;
     }
 }
