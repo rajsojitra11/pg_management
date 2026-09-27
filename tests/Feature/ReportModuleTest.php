@@ -573,3 +573,253 @@ it('filters the maintenance report api by room', function () {
         ->assertJsonPath('data.0.room_no', $room2->room_no)
         ->assertJsonPath('data.0.description', 'Pipe fixed');
 });
+
+it('returns tenant and room filter options for the selected pg through the api', function () {
+    Sanctum::actingAs($this->user, ['report-list']);
+    $category = RoomCategory::factory()->create();
+    $pg1 = PgManagement::factory()->create();
+    $pg2 = PgManagement::factory()->create();
+    $room1 = Room::factory()->create(['pg_id' => $pg1->id, 'category_id' => $category->id]);
+    $room2 = Room::factory()->create(['pg_id' => $pg2->id, 'category_id' => $category->id]);
+    $tenantOne = Tenant::create(['name' => 'Option Tenant One', 'status' => 'active', 'pg_id' => $pg1->id, 'room_id' => $room1->id]);
+    Tenant::create(['name' => 'Option Tenant Two', 'status' => 'active', 'pg_id' => $pg2->id, 'room_id' => $room2->id]);
+
+    $this->getJson(route('api.report.filter-options').'?pg_id='.$pg1->id)
+        ->assertOk()
+        ->assertJsonCount(1, 'data.tenants')
+        ->assertJsonPath('data.tenants.0.name', 'Option Tenant One')
+        ->assertJsonPath('data.tenants.0.id', (string) $tenantOne->id)
+        ->assertJsonCount(1, 'data.rooms')
+        ->assertJsonPath('data.rooms.0.room_no', $room1->room_no)
+        ->assertJsonPath('data.rooms.0.pg_id', (string) $pg1->id);
+});
+
+it('excludes inactive tenants and rooms from the filter options api', function () {
+    Sanctum::actingAs($this->user, ['report-list']);
+    $category = RoomCategory::factory()->create();
+    $pg = PgManagement::factory()->create();
+    $activeRoom = Room::factory()->create(['pg_id' => $pg->id, 'category_id' => $category->id]);
+    Room::factory()->create(['pg_id' => $pg->id, 'category_id' => $category->id, 'status' => 'inactive']);
+    Tenant::create(['name' => 'Active Option', 'status' => 'active', 'pg_id' => $pg->id, 'room_id' => $activeRoom->id]);
+    Tenant::create(['name' => 'Inactive Option', 'status' => 'inactive', 'pg_id' => $pg->id, 'room_id' => $activeRoom->id]);
+
+    $this->getJson(route('api.report.filter-options').'?pg_id='.$pg->id)
+        ->assertOk()
+        ->assertJsonCount(1, 'data.tenants')
+        ->assertJsonPath('data.tenants.0.name', 'Active Option')
+        ->assertJsonCount(1, 'data.rooms')
+        ->assertJsonPath('data.rooms.0.room_no', $activeRoom->room_no);
+});
+
+it('filters the tenant report api by tenant and room', function () {
+    Sanctum::actingAs($this->user, ['report-list']);
+    $category = RoomCategory::factory()->create();
+    $pg = PgManagement::factory()->create();
+    $room1 = Room::factory()->create(['pg_id' => $pg->id, 'category_id' => $category->id]);
+    $room2 = Room::factory()->create(['pg_id' => $pg->id, 'category_id' => $category->id]);
+    $tenant1 = Tenant::create(['name' => 'Api Filter One', 'status' => 'active', 'pg_id' => $pg->id, 'room_id' => $room1->id]);
+    Tenant::create(['name' => 'Api Filter Two', 'status' => 'active', 'pg_id' => $pg->id, 'room_id' => $room2->id]);
+
+    $this->getJson(route('api.report.tenants').'?tenant_id='.$tenant1->id)
+        ->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.name', 'Api Filter One');
+
+    $this->getJson(route('api.report.tenants').'?room_id='.$room2->id)
+        ->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.name', 'Api Filter Two');
+});
+
+it('filters the payment report api by tenant and room', function () {
+    Sanctum::actingAs($this->user, ['report-list']);
+    $category = RoomCategory::factory()->create();
+    $pg = PgManagement::factory()->create();
+    $room1 = Room::factory()->create(['pg_id' => $pg->id, 'category_id' => $category->id]);
+    $room2 = Room::factory()->create(['pg_id' => $pg->id, 'category_id' => $category->id]);
+    $tenant1 = Tenant::create(['name' => 'Pay Filter One', 'status' => 'active', 'pg_id' => $pg->id, 'room_id' => $room1->id]);
+    $tenant2 = Tenant::create(['name' => 'Pay Filter Two', 'status' => 'active', 'pg_id' => $pg->id, 'room_id' => $room2->id]);
+
+    Payment::create(['tenant_id' => $tenant1->id, 'pg_id' => $pg->id, 'room_id' => $room1->id, 'payment_date' => '2024-06-15', 'amount' => 3000, 'payment_method' => 'UPI', 'verified' => 'verified']);
+    Payment::create(['tenant_id' => $tenant2->id, 'pg_id' => $pg->id, 'room_id' => $room2->id, 'payment_date' => '2024-06-16', 'amount' => 7000, 'payment_method' => 'UPI', 'verified' => 'verified']);
+
+    $this->getJson(route('api.report.payments').'?tenant_id='.$tenant1->id)
+        ->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.tenant_name', 'Pay Filter One');
+
+    $this->getJson(route('api.report.payments').'?room_id='.$room2->id)
+        ->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.tenant_name', 'Pay Filter Two');
+});
+
+it('filters the payment report api by a date range', function () {
+    Sanctum::actingAs($this->user, ['report-list']);
+    $category = RoomCategory::factory()->create();
+    $pg = PgManagement::factory()->create();
+    $room = Room::factory()->create(['pg_id' => $pg->id, 'category_id' => $category->id]);
+    $tenant = Tenant::create(['name' => 'Date Range Tenant', 'status' => 'active', 'pg_id' => $pg->id, 'room_id' => $room->id]);
+
+    Payment::create(['tenant_id' => $tenant->id, 'pg_id' => $pg->id, 'room_id' => $room->id, 'payment_date' => '2024-06-15', 'amount' => 3000, 'payment_method' => 'UPI', 'verified' => 'verified']);
+    Payment::create(['tenant_id' => $tenant->id, 'pg_id' => $pg->id, 'room_id' => $room->id, 'payment_date' => '2024-08-15', 'amount' => 7000, 'payment_method' => 'UPI', 'verified' => 'verified']);
+
+    $this->getJson(route('api.report.payments').'?from=2024-08-01&to=2024-08-31')
+        ->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.total_amount', 7000);
+});
+
+it('downloads the tenant report excel from the api with the active filters', function () {
+    Sanctum::actingAs($this->user, ['report-list']);
+    $category = RoomCategory::factory()->create();
+    $pg = PgManagement::factory()->create();
+    $room = Room::factory()->create(['pg_id' => $pg->id, 'category_id' => $category->id]);
+    $otherRoom = Room::factory()->create(['pg_id' => $pg->id, 'category_id' => $category->id]);
+
+    $tenant = Tenant::create(['name' => 'Export Tenant', 'status' => 'active', 'pg_id' => $pg->id, 'room_id' => $room->id, 'checkin_date' => '2024-06-01', 'monthly_rent' => 4500]);
+    Tenant::create(['name' => 'Excluded Tenant', 'status' => 'active', 'pg_id' => $pg->id, 'room_id' => $otherRoom->id, 'checkin_date' => '2024-06-02', 'monthly_rent' => 5500]);
+
+    $response = $this->get(route('api.report.tenants.export').'?room_id='.$room->id.'&search=Export&from=2024-01-01&to=2024-12-31&status=active');
+    $response->assertOk()->assertDownload();
+
+    $path = tempnam(sys_get_temp_dir(), 'api_tenant_export_').'.xlsx';
+    file_put_contents($path, $response->streamedContent());
+
+    $sheet = (new Xlsx)->load($path)->getActiveSheet();
+    $rows = $sheet->toArray();
+
+    expect($rows[1])->toContain('Export Tenant');
+    expect($rows)->toHaveCount(2);
+
+    unlink($path);
+});
+
+it('downloads every payment record vertically from the api when a tenant is filtered', function () {
+    Sanctum::actingAs($this->user, ['report-list']);
+    $category = RoomCategory::factory()->create();
+    $pg = PgManagement::factory()->create();
+    $room = Room::factory()->create(['pg_id' => $pg->id, 'category_id' => $category->id]);
+    $tenant = Tenant::create(['name' => 'Vertical Api Tenant', 'status' => 'active', 'pg_id' => $pg->id, 'room_id' => $room->id]);
+    $otherTenant = Tenant::create(['name' => 'Other Api Tenant', 'status' => 'active', 'pg_id' => $pg->id, 'room_id' => $room->id]);
+
+    Payment::create(['tenant_id' => $tenant->id, 'pg_id' => $pg->id, 'room_id' => $room->id, 'payment_date' => '2024-06-10', 'amount' => 3000, 'payment_method' => 'UPI', 'verified' => 'verified']);
+    Payment::create(['tenant_id' => $tenant->id, 'pg_id' => $pg->id, 'room_id' => $room->id, 'payment_date' => '2024-07-10', 'amount' => 3500, 'payment_method' => 'Bank Transfer', 'reference_no' => 'NEFT-API', 'verified' => 'verified']);
+    Payment::create(['tenant_id' => $otherTenant->id, 'pg_id' => $pg->id, 'room_id' => $room->id, 'payment_date' => '2024-06-12', 'amount' => 9000, 'payment_method' => 'UPI', 'verified' => 'verified']);
+
+    $response = $this->get(route('api.report.payments.export').'?tenant_id='.$tenant->id);
+    $response->assertOk()->assertDownload();
+
+    $path = tempnam(sys_get_temp_dir(), 'api_pay_detail_').'.xlsx';
+    file_put_contents($path, $response->streamedContent());
+
+    $sheet = (new Xlsx)->load($path)->getActiveSheet();
+    $rows = $sheet->toArray();
+
+    expect($rows)->toHaveCount(3);
+    expect($rows[1])->toContain('Vertical Api Tenant');
+    expect($rows[2])->toContain('Vertical Api Tenant');
+    expect($rows[1])->toContain('₹3,000.00');
+    expect($rows[2])->toContain('NEFT-API');
+
+    unlink($path);
+});
+
+it('downloads the payment report excel from the api with the active filters', function () {
+    Sanctum::actingAs($this->user, ['report-list']);
+    $category = RoomCategory::factory()->create();
+    $pg = PgManagement::factory()->create();
+    $room = Room::factory()->create(['pg_id' => $pg->id, 'category_id' => $category->id]);
+    $otherRoom = Room::factory()->create(['pg_id' => $pg->id, 'category_id' => $category->id]);
+    $tenant = Tenant::create(['name' => 'Grouped Api Tenant', 'status' => 'active', 'pg_id' => $pg->id, 'room_id' => $room->id]);
+    Tenant::create(['name' => 'Filtered Out Tenant', 'status' => 'active', 'pg_id' => $pg->id, 'room_id' => $otherRoom->id]);
+
+    Payment::create(['tenant_id' => $tenant->id, 'pg_id' => $pg->id, 'room_id' => $room->id, 'payment_date' => now()->format('Y-m-d'), 'amount' => 4200, 'payment_method' => 'UPI', 'verified' => 'verified']);
+    Payment::create(['tenant_id' => $tenant->id, 'pg_id' => $pg->id, 'room_id' => $room->id, 'payment_date' => now()->subMonth()->format('Y-m-d'), 'amount' => 3800, 'payment_method' => 'UPI', 'verified' => 'verified']);
+
+    $response = $this->get(route('api.report.payments.export').'?room_id='.$room->id);
+    $response->assertOk()->assertDownload();
+
+    $path = tempnam(sys_get_temp_dir(), 'api_pay_export_').'.xlsx';
+    file_put_contents($path, $response->streamedContent());
+
+    $sheet = (new Xlsx)->load($path)->getActiveSheet();
+    $headings = $sheet->rangeToArray('A1:Q1')[0];
+    $row = $sheet->rangeToArray('A2:Q2')[0];
+    $totalIndex = array_search('Total Amount', $headings, true);
+    $currentMonthIndex = array_search(now()->format('M-y'), $headings, true);
+
+    expect($headings)->toHaveCount(17);
+    expect($totalIndex)->not->toBe(false);
+    expect($currentMonthIndex)->not->toBe(false);
+    expect($row[$totalIndex])->toContain('8,000');
+    expect($row[$currentMonthIndex])->toContain('4,200.00');
+
+    unlink($path);
+});
+
+it('downloads the complaint report excel from the api with the active filters', function () {
+    Sanctum::actingAs($this->user, ['report-list']);
+    $category = RoomCategory::factory()->create();
+    $pg = PgManagement::factory()->create();
+    $room1 = Room::factory()->create(['pg_id' => $pg->id, 'category_id' => $category->id]);
+    $room2 = Room::factory()->create(['pg_id' => $pg->id, 'category_id' => $category->id]);
+    $serviceCategory = ServiceCategory::factory()->create();
+    $service1 = Service::factory()->create(['service_category_id' => $serviceCategory->id]);
+    $service2 = Service::factory()->create(['service_category_id' => $serviceCategory->id]);
+
+    Complaint::create(['complaint_no' => 'CMP-EXPT1', 'pg_id' => $pg->id, 'room_id' => $room1->id, 'service_category_id' => $serviceCategory->id, 'service_id' => $service1->id, 'complaint_date' => '2024-06-15', 'note' => 'Exported complaint', 'status' => 'pending', 'created_by' => $this->user->id]);
+    Complaint::create(['complaint_no' => 'CMP-EXPT2', 'pg_id' => $pg->id, 'room_id' => $room2->id, 'service_category_id' => $serviceCategory->id, 'service_id' => $service2->id, 'complaint_date' => '2024-06-16', 'note' => 'Filtered out', 'status' => 'resolved', 'created_by' => $this->user->id]);
+
+    $response = $this->get(route('api.report.complaints.export').'?room_id='.$room1->id.'&status=pending');
+    $response->assertOk()->assertDownload();
+
+    $path = tempnam(sys_get_temp_dir(), 'api_complaint_export_').'.xlsx';
+    file_put_contents($path, $response->streamedContent());
+
+    $sheet = (new Xlsx)->load($path)->getActiveSheet();
+    $rows = $sheet->toArray();
+
+    expect($rows)->toHaveCount(2);
+    expect($rows[1])->toContain('CMP-EXPT1');
+
+    unlink($path);
+});
+
+it('downloads the maintenance report excel from the api with the active filters', function () {
+    Sanctum::actingAs($this->user, ['report-list']);
+    $category = RoomCategory::factory()->create();
+    $pg = PgManagement::factory()->create();
+    $room1 = Room::factory()->create(['pg_id' => $pg->id, 'category_id' => $category->id]);
+    $room2 = Room::factory()->create(['pg_id' => $pg->id, 'category_id' => $category->id]);
+    $serviceCategory = ServiceCategory::factory()->create();
+    $service = Service::factory()->create(['service_category_id' => $serviceCategory->id]);
+
+    $complaint1 = Complaint::create(['complaint_no' => 'CMP-MEXPT1', 'pg_id' => $pg->id, 'room_id' => $room1->id, 'service_category_id' => $serviceCategory->id, 'service_id' => $service->id, 'complaint_date' => '2024-06-15', 'note' => 'AC not working', 'status' => 'resolved', 'created_by' => $this->user->id]);
+    $complaint2 = Complaint::create(['complaint_no' => 'CMP-MEXPT2', 'pg_id' => $pg->id, 'room_id' => $room2->id, 'service_category_id' => $serviceCategory->id, 'service_id' => $service->id, 'complaint_date' => '2024-06-16', 'note' => 'Leakage', 'status' => 'resolved', 'created_by' => $this->user->id]);
+
+    Maintenance::create(['maintenance_no' => 'MNT-EXPT1', 'complaint_id' => $complaint1->id, 'cost' => 1200, 'description' => 'Exported maintenance', 'maintenance_date' => '2024-06-18', 'status' => 'completed']);
+    Maintenance::create(['maintenance_no' => 'MNT-EXPT2', 'complaint_id' => $complaint2->id, 'cost' => 800, 'description' => 'Filtered out', 'maintenance_date' => '2024-06-19', 'status' => 'completed']);
+
+    $response = $this->get(route('api.report.maintenance.export').'?room_id='.$room1->id);
+    $response->assertOk()->assertDownload();
+
+    $path = tempnam(sys_get_temp_dir(), 'api_maint_export_').'.xlsx';
+    file_put_contents($path, $response->streamedContent());
+
+    $sheet = (new Xlsx)->load($path)->getActiveSheet();
+    $rows = $sheet->toArray();
+
+    expect($rows)->toHaveCount(2);
+    expect($rows[1])->toContain('MNT-EXPT1');
+
+    unlink($path);
+});
+
+it('blocks report excel downloads without the report permission', function () {
+    Sanctum::actingAs($this->user);
+    $this->user->roles()->detach();
+
+    $this->getJson(route('api.report.tenants.export'))
+        ->assertForbidden();
+});

@@ -3,9 +3,17 @@
 namespace Modules\Report\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 use Modules\Complaint\Models\Complaint;
 use Modules\Maintenance\Models\Maintenance;
 use Modules\Payment\Models\Payment;
+use Modules\Report\Exports\ComplaintReportExport;
+use Modules\Report\Exports\MaintenanceReportExport;
+use Modules\Report\Exports\PaymentDetailReportExport;
+use Modules\Report\Exports\PaymentReportExport;
+use Modules\Report\Exports\TenantReportExport;
+use Modules\Room\Models\Room;
 use Modules\Tenant\Models\Tenant;
 
 class ReportApiController extends Controller
@@ -47,6 +55,40 @@ class ReportApiController extends Controller
                 'payment' => $paymentQuery->count(),
                 'complaint' => $complaintQuery->count(),
                 'maintenance' => $maintenanceQuery->count(),
+            ],
+        ]);
+    }
+
+    /**
+     * Dropdown options for the report filter popup — mirrors the web filter bar.
+     */
+    public function filterOptions()
+    {
+        $user = auth()->user();
+
+        $tenantQuery = Tenant::select('id', 'name')->where('status', 'active');
+        $roomQuery = Room::select('id', 'room_no', 'pg_id')->where('status', 'active');
+
+        if ($user->hasRole('Pg_Admin')) {
+            $tenantQuery->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
+            $roomQuery->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
+        }
+
+        if ($pgId = request('pg_id')) {
+            $tenantQuery->where('pg_id', $pgId);
+            $roomQuery->where('pg_id', $pgId);
+        }
+
+        return response()->json([
+            'data' => [
+                'tenants' => $tenantQuery->orderBy('name')->get()
+                    ->map(fn ($t) => ['id' => (string) $t->id, 'name' => $t->name]),
+                'rooms' => $roomQuery->orderBy('room_no')->get()
+                    ->map(fn ($r) => [
+                        'id' => (string) $r->id,
+                        'room_no' => $r->room_no,
+                        'pg_id' => (string) $r->pg_id,
+                    ]),
             ],
         ]);
     }
@@ -170,14 +212,71 @@ class ReportApiController extends Controller
     }
 
     /**
-     * Base query for the tenant report with scoping + filters applied.
+     * Tenant report as an excel file, honouring the active filters.
      */
-    protected function tenantReportQuery()
+    public function tenantsExport()
+    {
+        return Excel::download(
+            new TenantReportExport($this->tenantReportQuery(forExport: true)),
+            'tenant-report-'.now()->format('Y-m-d').'.xlsx'
+        );
+    }
+
+    /**
+     * Payment report as an excel file, honouring the active filters.
+     * Exports every payment record vertically when a tenant is selected.
+     */
+    public function paymentsExport()
+    {
+        $filename = 'payment-report-'.now()->format('Y-m-d').'.xlsx';
+
+        if (request('tenant_id')) {
+            return Excel::download(new PaymentDetailReportExport($this->paymentBaseQuery()), $filename);
+        }
+
+        return Excel::download(
+            new PaymentReportExport($this->paymentReportQuery(), $this->paymentMonthlyTotalsQuery()->get()),
+            $filename
+        );
+    }
+
+    /**
+     * Complaint report as an excel file, honouring the active filters.
+     */
+    public function complaintsExport()
+    {
+        return Excel::download(
+            new ComplaintReportExport($this->complaintReportQuery()),
+            'complaint-report-'.now()->format('Y-m-d').'.xlsx'
+        );
+    }
+
+    /**
+     * Maintenance report as an excel file, honouring the active filters.
+     */
+    public function maintenanceExport()
+    {
+        return Excel::download(
+            new MaintenanceReportExport($this->maintenanceReportQuery()),
+            'maintenance-report-'.now()->format('Y-m-d').'.xlsx'
+        );
+    }
+
+    /**
+     * Base query for the tenant report with scoping + filters applied.
+     *
+     * @param  bool  $forExport  Selects every column the excel export needs.
+     */
+    protected function tenantReportQuery(bool $forExport = false)
     {
         $user = auth()->user();
 
-        $query = Tenant::with('pg', 'room')
-            ->select('id', 'public_id', 'name', 'email', 'phone', 'pg_id', 'room_id', 'checkin_date', 'expected_checkout_date', 'monthly_rent', 'status');
+        $columns = $forExport
+            ? ['id', 'public_id', 'name', 'email', 'phone', 'pg_id', 'room_id', 'bed_no', 'date_of_birth', 'gender', 'occupation', 'address', 'checkin_date', 'expected_checkout_date', 'monthly_rent', 'security_deposit', 'payment_method', 'id_proof_type', 'id_proof_number', 'emergency_contact_name', 'emergency_relation', 'emergency_contact_number', 'permanent_state_id', 'permanent_city_id', 'permanent_address', 'additional_notes', 'status']
+            : ['id', 'public_id', 'name', 'email', 'phone', 'pg_id', 'room_id', 'checkin_date', 'expected_checkout_date', 'monthly_rent', 'status'];
+
+        $query = Tenant::with('pg', 'room', 'permanentState', 'permanentCity')
+            ->select($columns);
 
         if ($user->hasRole('Pg_Admin')) {
             $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
@@ -212,23 +311,23 @@ class ReportApiController extends Controller
             $query->where('room_id', $roomId);
         }
 
+        if ($tenantId = request('tenant_id')) {
+            $query->where('id', $tenantId);
+        }
+
         return $query;
     }
 
     /**
-     * Base query for the payment report (approved, grouped) with scoping + filters applied.
+     * Base query for approved payments with scoping + filters applied.
      */
-    protected function paymentReportQuery()
+    protected function paymentBaseQuery()
     {
         $user = auth()->user();
 
         $query = Payment::query()
             ->with(['pg', 'room', 'tenant'])
-            ->where('verified', 'verified')
-            ->select(['room_id', 'tenant_id'])
-            ->selectRaw('SUM(amount) as total_amount')
-            ->selectRaw('COUNT(*) as payment_count')
-            ->groupBy(['room_id', 'tenant_id']);
+            ->where('verified', 'verified');
 
         if ($user->hasRole('Pg_Admin')) {
             $query->whereHas('pg', fn ($q) => $q->where('owner_id', $user->id));
@@ -258,7 +357,39 @@ class ReportApiController extends Controller
             $query->where('room_id', $roomId);
         }
 
+        if ($tenantId = request('tenant_id')) {
+            $query->where('tenant_id', $tenantId);
+        }
+
         return $query;
+    }
+
+    /**
+     * Base query for the payment report (approved, grouped) with scoping + filters applied.
+     */
+    protected function paymentReportQuery()
+    {
+        return $this->paymentBaseQuery()
+            ->select(['room_id', 'tenant_id'])
+            ->selectRaw('SUM(amount) as total_amount')
+            ->selectRaw('COUNT(*) as payment_count')
+            ->groupBy(['room_id', 'tenant_id']);
+    }
+
+    /**
+     * Row query for the last-12-months rent breakdown in the payment export.
+     */
+    protected function paymentMonthlyTotalsQuery()
+    {
+        $monthExpr = DB::connection()->getDriverName() === 'sqlite'
+            ? "strftime('%Y-%m', payment_date)"
+            : "DATE_FORMAT(payment_date, '%Y-%m')";
+
+        return $this->paymentBaseQuery()
+            ->select(['room_id', 'tenant_id'])
+            ->selectRaw("{$monthExpr} as month")
+            ->selectRaw('SUM(amount) as month_amount')
+            ->groupBy(['room_id', 'tenant_id', 'month']);
     }
 
     /**
