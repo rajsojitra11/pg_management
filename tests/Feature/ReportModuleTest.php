@@ -9,6 +9,7 @@ use Modules\Maintenance\Models\Maintenance;
 use Modules\Payment\Models\Payment;
 use Modules\PgManagement\Models\PgManagement;
 use Modules\Report\Exports\PaymentReportExport;
+use Modules\Report\Support\PaymentMonthExpression;
 use Modules\Room\Models\Room;
 use Modules\Room\Models\RoomCategory;
 use Modules\Service\Models\Service;
@@ -822,4 +823,9 @@ it('blocks report excel downloads without the report permission', function () {
 
     $this->getJson(route('api.report.tenants.export'))
         ->assertForbidden();
+});
+it('builds a driver safe month expression for the payment export', function () {
+    expect(PaymentMonthExpression::for('sqlite'))->toBe("strftime('%Y-%m', payment_date)");
+    expect(PaymentMonthExpression::for('mysql'))->toBe("DATE_FORMAT(payment_date, '%Y-%m')");
+    expect(PaymentMonthExpression::for('mariadb'))->toBe("DATE_FORMAT(payment_date, '%Y-%m')");
 });
