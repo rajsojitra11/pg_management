@@ -2,16 +2,25 @@
 
 namespace Modules\Report\Support;
 
-class PaymentMonthExpression
+use InvalidArgumentException;
+
+class MonthExpression
 {
     /**
-     * SQL expression that renders a payment date as a `Y-m` month key.
+     * Driver safe SQL expression that renders a date column as a `Y-m` month key.
+     *
+     * @throws InvalidArgumentException when the column name is not a plain identifier
      */
-    public static function for(string $driver): string
+    public static function for(string $driver, string $column = 'payment_date'): string
     {
+        if (preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $column) !== 1) {
+            throw new InvalidArgumentException("Invalid month expression column [{$column}].");
+        }
+
         return match ($driver) {
-            'sqlite' => "strftime('%Y-%m', payment_date)",
-            default => "DATE_FORMAT(payment_date, '%Y-%m')",
+            'sqlite' => "strftime('%Y-%m', {$column})",
+            'pgsql' => "TO_CHAR({$column}, 'YYYY-MM')",
+            default => "DATE_FORMAT({$column}, '%Y-%m')",
         };
     }
 }
