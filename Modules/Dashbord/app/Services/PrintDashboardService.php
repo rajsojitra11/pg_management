@@ -6,6 +6,7 @@ namespace Modules\Dashbord\Services;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Modules\Report\Support\MonthExpression;
 
 class PrintDashboardService
 {
@@ -96,6 +97,8 @@ class PrintDashboardService
             $cursor->addMonth();
         }
 
+        $monthExpr = MonthExpression::for(DB::connection()->getDriverName());
+
         $rows = DB::table('payments')
             ->whereNull('deleted_at')
             ->where('verified', 'verified')
@@ -103,8 +106,8 @@ class PrintDashboardService
             ->when($pgIds !== null, fn ($q) => $q->whereIn('pg_id', $pgIds))
             ->when($sDate, fn ($q) => $q->whereDate('payment_date', '>=', $sDate))
             ->when($eDate, fn ($q) => $q->whereDate('payment_date', '<=', $eDate))
-            ->selectRaw("DATE_FORMAT(payment_date, '%Y-%m') AS ym, COALESCE(SUM(amount), 0) AS total")
-            ->groupBy('ym')
+            ->selectRaw("{$monthExpr} AS ym, COALESCE(SUM(amount), 0) AS total")
+            ->groupByRaw($monthExpr)
             ->pluck('total', 'ym');
 
         foreach ($rows as $ym => $total) {

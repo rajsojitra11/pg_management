@@ -13,7 +13,7 @@ use Modules\Report\Exports\MaintenanceReportExport;
 use Modules\Report\Exports\PaymentDetailReportExport;
 use Modules\Report\Exports\PaymentReportExport;
 use Modules\Report\Exports\TenantReportExport;
-use Modules\Report\Support\PaymentMonthExpression;
+use Modules\Report\Support\MonthExpression;
 use Modules\Room\Models\Room;
 use Modules\Tenant\Models\Tenant;
 
@@ -382,7 +382,7 @@ class ReportApiController extends Controller
      */
     protected function paymentMonthlyTotalsQuery()
     {
-        $monthExpr = PaymentMonthExpression::for(DB::connection()->getDriverName());
+        $monthExpr = MonthExpression::for(DB::connection()->getDriverName());
 
         return $this->paymentBaseQuery()
             ->select(['room_id', 'tenant_id'])

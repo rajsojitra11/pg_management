@@ -14,6 +14,7 @@ use Modules\Report\Exports\MaintenanceReportExport;
 use Modules\Report\Exports\PaymentDetailReportExport;
 use Modules\Report\Exports\PaymentReportExport;
 use Modules\Report\Exports\TenantReportExport;
+use Modules\Report\Support\MonthExpression;
 use Modules\Room\Models\Room;
 use Modules\Tenant\Models\Tenant;
 use Yajra\DataTables\Facades\DataTables;
@@ -278,15 +279,14 @@ class ReportController extends Controller
      */
     protected function paymentMonthlyTotalsQuery()
     {
-        $monthExpr = DB::connection()->getDriverName() === 'sqlite'
-            ? "strftime('%Y-%m', payment_date)"
-            : "DATE_FORMAT(payment_date, '%Y-%m')";
+        $monthExpr = MonthExpression::for(DB::connection()->getDriverName());
 
         return $this->paymentBaseQuery()
             ->select(['room_id', 'tenant_id'])
             ->selectRaw("{$monthExpr} as month")
             ->selectRaw('SUM(amount) as month_amount')
-            ->groupBy(['room_id', 'tenant_id', 'month']);
+            ->groupBy(['room_id', 'tenant_id'])
+            ->groupByRaw($monthExpr);
     }
 
     /**

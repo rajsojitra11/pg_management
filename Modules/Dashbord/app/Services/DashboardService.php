@@ -17,6 +17,7 @@ use Modules\Production\Models\Production;
 use Modules\Purchase\Models\Purchase;
 use Modules\Rawmaterial\Models\Rawmaterial;
 use Modules\Rawmaterial\Models\RawMaterialStock;
+use Modules\Report\Support\MonthExpression;
 use Modules\SalesOrder\Models\SalesOrder;
 use Modules\Supplier\Models\Supplier;
 use Modules\Testing\Models\Testing;
@@ -408,17 +409,19 @@ class DashboardService
             $end = Carbon::now()->endOfMonth();
         }
 
+        $monthExpr = MonthExpression::for(DB::connection()->getDriverName(), 'date');
+
         // Single grouped query instead of per-month loop
         $purchaseByMonth = Purchase::where('year_id', $yearId)
             ->whereBetween('date', [$start->toDateString(), $end->toDateString()])
-            ->selectRaw("DATE_FORMAT(date, '%Y-%m') as month, SUM(amount) as total")
-            ->groupBy('month')
+            ->selectRaw("{$monthExpr} as month, SUM(amount) as total")
+            ->groupByRaw($monthExpr)
             ->pluck('total', 'month');
 
         $salesByMonth = SalesOrder::where('year_id', $yearId)
             ->whereBetween('date', [$start->toDateString(), $end->toDateString()])
-            ->selectRaw("DATE_FORMAT(date, '%Y-%m') as month, SUM(amount) as total")
-            ->groupBy('month')
+            ->selectRaw("{$monthExpr} as month, SUM(amount) as total")
+            ->groupByRaw($monthExpr)
             ->pluck('total', 'month');
 
         // Build aligned arrays for all months in range
