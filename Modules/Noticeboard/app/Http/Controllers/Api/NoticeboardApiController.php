@@ -41,7 +41,7 @@ class NoticeboardApiController extends Controller
             });
         }
 
-        $notices = $query->orderByDesc('created_at')->paginate((int) request('per_page', 10));
+        $notices = $query->orderByDesc('created_at')->orderByDesc('id')->paginate((int) request('per_page', 10));
 
         $data = $notices->map(fn ($n) => [
             'id' => (string) $n->id,

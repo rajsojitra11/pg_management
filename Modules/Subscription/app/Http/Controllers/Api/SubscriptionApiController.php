@@ -40,7 +40,7 @@ class SubscriptionApiController extends Controller
             $query->where('payment_status', $paymentStatus);
         }
 
-        $subscriptions = $query->orderByDesc('created_at')->paginate((int) request('per_page', 10));
+        $subscriptions = $query->orderByDesc('created_at')->orderByDesc('id')->paginate((int) request('per_page', 10));
 
         $data = $subscriptions->map(fn ($s) => [
             'id' => (string) $s->id,

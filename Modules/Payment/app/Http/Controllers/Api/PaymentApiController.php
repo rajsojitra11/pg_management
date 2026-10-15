@@ -53,7 +53,7 @@ class PaymentApiController extends Controller
             $query->where('verified', $verified);
         }
 
-        $payments = $query->orderByDesc('created_at')->paginate((int) request('per_page', 10));
+        $payments = $query->orderByDesc('created_at')->orderByDesc('id')->paginate((int) request('per_page', 10));
 
         $data = $payments->map(fn (Payment $p) => $this->transformPayment($p));
 

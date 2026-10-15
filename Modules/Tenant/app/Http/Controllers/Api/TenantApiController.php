@@ -51,7 +51,7 @@ class TenantApiController extends Controller
             });
         }
 
-        $tenants = $query->orderByDesc('created_at')->paginate((int) request('per_page', 10));
+        $tenants = $query->orderByDesc('created_at')->orderByDesc('id')->paginate((int) request('per_page', 10));
 
         $data = $tenants->map(fn ($t) => [
             'id' => (string) $t->id,

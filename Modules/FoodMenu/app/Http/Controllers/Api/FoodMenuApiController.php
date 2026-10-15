@@ -42,7 +42,7 @@ class FoodMenuApiController extends Controller
             $query->where(fn ($q) => $q->where('title', 'like', "%{$search}%"));
         }
 
-        $menus = $query->orderByDesc('created_at')->paginate((int) request('per_page', 10));
+        $menus = $query->orderByDesc('created_at')->orderByDesc('id')->paginate((int) request('per_page', 10));
 
         $data = $menus->map(fn ($m) => $this->format($m));
 

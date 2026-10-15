@@ -14,6 +14,7 @@ class NotificationApiController extends Controller
 
         $notifications = Notification::where('user_id', $user->id)
             ->orderByDesc('created_at')
+            ->orderByDesc('id')
             ->paginate((int) request('per_page', 20));
 
         $data = $notifications->map(fn ($n) => [

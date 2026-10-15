@@ -45,7 +45,7 @@ class RoomApiController extends Controller
             $query->where('room_no', 'like', "%{$search}%");
         }
 
-        $rooms = $query->orderByDesc('created_at')->paginate((int) request('per_page', 10));
+        $rooms = $query->orderByDesc('created_at')->orderByDesc('id')->paginate((int) request('per_page', 10));
 
         $data = $rooms->map(function ($room) {
             $occupied = $room->occupied_beds_count ?? 0;
