@@ -1,104 +1,149 @@
 services:
-  - type: web
-    name: pg-management
-    runtime: docker
-    plan: free
-    branch: main
-    dockerfilePath: ./Dockerfile
+    - type: web
+      name: pg-management
+      runtime: docker
+      plan: free
+      branch: main
+      dockerfilePath: ./Dockerfile
+      dockerContext: .
+      autoDeploy: true
 
-    autoDeploy: true
+      healthCheckPath: /up
 
-    healthCheckPath: /up
+      envVars:
+          # ---------------------------------------------------------------------
+          # Application
+          # ---------------------------------------------------------------------
+          - key: APP_NAME
+            value: 'PG Management'
 
-    envVars:
-      # Laravel
-      - key: APP_NAME
-        value: "PG Management"
+          - key: APP_ENV
+            value: production
 
-      - key: APP_ENV
-        value: production
+          - key: APP_DEBUG
+            value: 'false'
 
-      - key: APP_DEBUG
-        value: "false"
+          # IMPORTANT: keep the SAME APP_KEY as the currently running service.
+          # Generating a new key logs everyone out and makes existing encrypted
+          # data unreadable. `sync: false` keeps the value that is already stored
+          # on the Render service and keeps it out of this file.
+          - key: APP_KEY
+            sync: false
 
-      - key: APP_KEY
-        value: "base64:DKD/5JhDEbr9BCzGmC/sUI4IArXgGL1oyJc+8skaww4="
+          - key: APP_URL
+            sync: false
 
-      - key: APP_URL
-        sync: false
+          - key: APP_TIMEZONE
+            value: Asia/Kolkata
 
-      - key: APP_TIMEZONE
-        value: Asia/Kolkata
+          - key: LOG_CHANNEL
+            value: stderr
 
-      - key: LOG_CHANNEL
-        value: stderr
+          - key: LOG_LEVEL
+            value: error
 
-      # Database
-      - key: DB_CONNECTION
-        value: pgsql
+          # ---------------------------------------------------------------------
+          # Database — existing production Render PostgreSQL
+          # ---------------------------------------------------------------------
+          # These point at the database that is already in use. Do NOT add a
+          # `databases:` block here: that would create a new, empty database and
+          # the app would lose all existing data.
+          - key: DB_CONNECTION
+            value: pgsql
 
-      - key: DB_HOST
-        value: dpg-d9if0ljtqb8s738qc0vg-a
+          # Make sure the app never silently switches to the local MySQL/MariaDB
+          # connection on Render.
+          - key: USE_LOCAL_DB
+            value: 'false'
 
-      - key: DB_PORT
-        value: "5432"
+          - key: DB_HOST
+            value: dpg-d9if0ljtqb8s738qc0vg-a
 
-      - key: DB_DATABASE
-        value: pgmanagement_db_v0f7
+          - key: DB_PORT
+            value: '5432'
 
-      - key: DB_USERNAME
-        value: pgmanagement_db_v0f7_user
+          - key: DB_DATABASE
+            value: pgmanagement_db_v0f7
 
-      - key: DB_PASSWORD
-        value: hTiWCZTtTA7Gij8osbRwBWQJjVB1txmB
+          - key: DB_USERNAME
+            value: pgmanagement_db_v0f7_user
 
-      - key: DB_SSLMODE
-        value: require
+          # Keep the live password in the Render dashboard, not in this file.
+          - key: DB_PASSWORD
+            sync: false
 
-      # Laravel Drivers
-      - key: SESSION_DRIVER
-        value: file
+          - key: DB_SSLMODE
+            value: require
 
-      - key: CACHE_STORE
-        value: array
+          # ---------------------------------------------------------------------
+          # Cache / session / queue / filesystem
+          # ---------------------------------------------------------------------
+          - key: SESSION_DRIVER
+            value: file
 
-      - key: QUEUE_CONNECTION
-        value: sync
+          - key: SESSION_SECURE_COOKIE
+            value: 'true'
 
-      - key: FILESYSTEM_DISK
-        value: public
+          - key: SESSION_SAME_SITE
+            value: lax
 
-      # Company
-      - key: COMPANY_NAME
-        value: PG Management
+          - key: CACHE_STORE
+            value: array
 
-      - key: COMPANY_ADDRESS
-        value: "14/A Lohanagar, Nr. Pavagadhi Estate, B/h Passport Office, Gondal Road, Rajkot"
+          - key: QUEUE_CONNECTION
+            value: sync
 
-      - key: INSTALL_TYPE
-        value: default
+          - key: FILESYSTEM_DISK
+            value: public
 
-      # Mail
-      - key: MAIL_MAILER
-        value: smtp
+          # ---------------------------------------------------------------------
+          # Deploy safety
+          # ---------------------------------------------------------------------
+          # Only pending, non-destructive migrations are run on boot.
+          # `migrate:fresh`, `db:seed`, and truncation are never run automatically.
+          # Set RUN_MIGRATIONS=false if you want deploys to leave the schema alone.
+          - key: RUN_MIGRATIONS
+            value: 'true'
 
-      - key: MAIL_HOST
-        sync: false
+          # Seeders are destructive on an existing database, so they stay off.
+          - key: RUN_SEEDERS
+            value: 'true'
 
-      - key: MAIL_PORT
-        sync: false
+          # ---------------------------------------------------------------------
+          # Company
+          # ---------------------------------------------------------------------
+          - key: COMPANY_NAME
+            value: PG Management
 
-      - key: MAIL_USERNAME
-        sync: false
+          - key: COMPANY_ADDRESS
+            value: '14/A Lohanagar, Nr. Pavagadhi Estate, B/h Passport Office, Gondal Road, Rajkot'
 
-      - key: MAIL_PASSWORD
-        sync: false
+          - key: INSTALL_TYPE
+            value: default
 
-      - key: MAIL_ENCRYPTION
-        sync: false
+          # ---------------------------------------------------------------------
+          # Mail
+          # ---------------------------------------------------------------------
+          - key: MAIL_MAILER
+            value: smtp
 
-      - key: MAIL_FROM_ADDRESS
-        sync: false
+          - key: MAIL_HOST
+            sync: false
 
-      - key: MAIL_FROM_NAME
-        value: "PG Management"
+          - key: MAIL_PORT
+            sync: false
+
+          - key: MAIL_USERNAME
+            sync: false
+
+          - key: MAIL_PASSWORD
+            sync: false
+
+          - key: MAIL_ENCRYPTION
+            sync: false
+
+          - key: MAIL_FROM_ADDRESS
+            sync: false
+
+          - key: MAIL_FROM_NAME
+            value: 'PG Management'

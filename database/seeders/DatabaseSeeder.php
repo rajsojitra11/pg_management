@@ -75,18 +75,18 @@ class DatabaseSeeder extends Seeder
             SettingDatabaseSeeder::class,
 
             // Subscriptions
-            SubscriptionDatabaseSeeder::class,
+            // SubscriptionDatabaseSeeder::class,
 
             // PG & Rooms — needs users, countries/states/cities
-            PgManagementDatabaseSeeder::class,
-            RoomDatabaseSeeder::class,
-            ServiceDatabaseSeeder::class,
-            TenantDatabaseSeeder::class,
-            PaymentDatabaseSeeder::class,
-            ComplaintDatabaseSeeder::class,
-            MaintenanceDatabaseSeeder::class,
-            FoodMenuDatabaseSeeder::class,
-            ReportDatabaseSeeder::class,
+            // PgManagementDatabaseSeeder::class,
+            // RoomDatabaseSeeder::class,
+            // ServiceDatabaseSeeder::class,
+            // TenantDatabaseSeeder::class,
+            // PaymentDatabaseSeeder::class,
+            // ComplaintDatabaseSeeder::class,
+            // MaintenanceDatabaseSeeder::class,
+            // FoodMenuDatabaseSeeder::class,
+            // ReportDatabaseSeeder::class,
         ]);
 
         // ── Demo data: one record per remaining entity table ──────────────
@@ -103,10 +103,10 @@ class DatabaseSeeder extends Seeder
             if ($process->isSuccessful()) {
                 $this->command->info('Autoload regenerated successfully.');
             } else {
-                $this->command->warn('Autoload regeneration failed: '.$process->getErrorOutput());
+                $this->command->warn('Autoload regeneration failed: ' . $process->getErrorOutput());
             }
         } catch (\Throwable $e) {
-            $this->command->warn('Autoload regeneration skipped: '.$e->getMessage());
+            $this->command->warn('Autoload regeneration skipped: ' . $e->getMessage());
             $this->command->warn('If needed, run "composer dump-autoload -o" manually.');
         }
     }
@@ -157,7 +157,6 @@ class DatabaseSeeder extends Seeder
                 'state_id' => $state->id,
                 'city_id' => $city->id,
             ]);
-
         }
     }
 }
