@@ -81,7 +81,7 @@ fi
 #
 # `migrate --force` is additive: it only applies migrations that have not
 # already been recorded in the `migrations` table and never drops data.
-if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
+if [ "${RUN_MIGRATIONS}" = "true" ]; then
     echo "Running pending migrations (non-destructive)..."
     # php artisan migrate --force --no-interaction
     php artisan migrate:fresh --force
@@ -90,7 +90,7 @@ else
 fi
 
 # Seeders are opt-in because they can duplicate or overwrite production data.
-if [ "${RUN_SEEDERS:-true}" = "true" ]; then
+if [ "${RUN_SEEDERS}" = "true" ]; then
     echo "Running seeders because RUN_SEEDERS=true..."
     php artisan db:seed --force --no-interaction
 else
