@@ -90,7 +90,7 @@ else
 fi
 
 # Seeders are opt-in because they can duplicate or overwrite production data.
-if [ "${RUN_SEEDERS:-false}" = "true" ]; then
+if [ "${RUN_SEEDERS:-true}" = "true" ]; then
     echo "Running seeders because RUN_SEEDERS=true..."
     php artisan db:seed --force --no-interaction
 else
