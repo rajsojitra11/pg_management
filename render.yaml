@@ -43,32 +43,27 @@ services:
             value: error
 
           # ---------------------------------------------------------------------
-          # Database — existing production Render PostgreSQL
+          # Database — Supabase PostgreSQL
           # ---------------------------------------------------------------------
-          # These point at the database that is already in use. Do NOT add a
-          # `databases:` block here: that would create a new, empty database and
-          # the app would lose all existing data.
           - key: DB_CONNECTION
             value: pgsql
 
-          # Make sure the app never silently switches to the local MySQL/MariaDB
-          # connection on Render.
           - key: USE_LOCAL_DB
             value: 'false'
 
           - key: DB_HOST
-            value: dpg-d9if0ljtqb8s738qc0vg-a
+            value: aws-0-us-west-2.pooler.supabase.com
 
           - key: DB_PORT
             value: '5432'
 
           - key: DB_DATABASE
-            value: pgmanagement_db_v0f7
+            value: postgres
 
           - key: DB_USERNAME
-            value: pgmanagement_db_v0f7_user
+            value: postgres.ylgnulnlwaskaymotwmq
 
-          # Keep the live password in the Render dashboard, not in this file.
+          # Keep your Supabase database password in the Render dashboard, not in this file.
           - key: DB_PASSWORD
             sync: false
 
@@ -99,13 +94,9 @@ services:
           # ---------------------------------------------------------------------
           # Deploy safety
           # ---------------------------------------------------------------------
-          # Only pending, non-destructive migrations are run on boot.
-          # `migrate:fresh`, `db:seed`, and truncation are never run automatically.
-          # Set RUN_MIGRATIONS=false if you want deploys to leave the schema alone.
           - key: RUN_MIGRATIONS
             value: 'true'
 
-          # Seeders are destructive on an existing database, so they stay off.
           - key: RUN_SEEDERS
             value: 'true'
 
