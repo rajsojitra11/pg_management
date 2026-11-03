@@ -103,11 +103,11 @@ services:
           # `migrate:fresh`, `db:seed`, and truncation are never run automatically.
           # Set RUN_MIGRATIONS=false if you want deploys to leave the schema alone.
           - key: RUN_MIGRATIONS
-            value: 'false'
+            value: 'true'
 
           # Seeders are destructive on an existing database, so they stay off.
           - key: RUN_SEEDERS
-            value: 'false'
+            value: 'true'
 
           # ---------------------------------------------------------------------
           # Company
